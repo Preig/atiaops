@@ -1,0 +1,39 @@
+event_id,date,cause,departure,bookings_affected,guests_affected,guests_rebooked,guests_seat_refilled,guests_refunded,net_revenue_lost,staff_hours
+E34,2026-05-04,Road or traffic delay on the shuttle route,13:00,2,7,0,0,7,801.66,1.9
+E05,2026-05-06,Ship late or tendering from anchor,08:00,5,18,5,5,8,850.64,2.1
+E22,2026-05-09,Marine weather hold,13:00,4,10,0,0,10,1412.21,3.8
+E01,2026-05-11,Ship late or tendering from anchor,15:30,5,12,3,0,9,1005.02,4.3
+E24,2026-05-13,Flight delay or fog (independent guests),10:30,3,6,4,0,2,424.86,5.6
+E32,2026-05-18,Road or traffic delay on the shuttle route,13:00,3,7,0,0,7,876.9,4.7
+E35,2026-05-25,Road or traffic delay on the shuttle route,10:30,2,7,0,0,7,1341.51,2.1
+E27,2026-05-31,Flight delay or fog (independent guests),10:30,5,14,4,4,6,1090.28,3.7
+E02,2026-06-01,Ship late or tendering from anchor,10:30,2,4,2,0,2,271.56,2.5
+E25,2026-06-04,Flight delay or fog (independent guests),13:00,5,13,0,0,13,2087.35,1.8
+E26,2026-06-07,Flight delay or fog (independent guests),10:30,4,10,0,0,10,1922.5,2.1
+E17,2026-06-08,Marine weather hold,15:30,8,30,7,5,18,2880.84,3.7
+E07,2026-06-09,Ship late or tendering from anchor,13:00,4,13,0,0,13,1641.14,3.4
+E36,2026-06-20,Ship schedule change or skipped call,08:00,7,18,0,7,11,1431.58,2.2
+E12,2026-06-22,Ship late or tendering from anchor,10:30,1,2,2,0,0,0,4.0
+E04,2026-06-25,Ship late or tendering from anchor,10:30,4,13,10,0,3,339.14,2.0
+E28,2026-07-09,Flight delay or fog (independent guests),13:00,5,15,7,0,8,1324.68,5.2
+E37,2026-07-10,Ship schedule change or skipped call,15:30,6,11,2,0,9,1184.82,4.1
+E38,2026-07-12,Ship schedule change or skipped call,10:30,4,11,0,3,8,900.24,2.1
+E18,2026-07-13,Marine weather hold,10:30,11,28,4,4,20,2968.65,4.7
+E08,2026-07-14,Ship late or tendering from anchor,13:00,3,6,6,0,0,0,2.7
+E15,2026-07-17,Marine weather hold,10:30,8,25,5,3,17,2254.14,3.7
+E19,2026-07-21,Marine weather hold,15:30,13,27,7,3,17,2413.11,3.6
+E20,2026-07-24,Marine weather hold,08:00,9,27,9,2,16,2536.54,3.4
+E13,2026-07-29,Ship late or tendering from anchor,13:00,5,17,5,0,12,1598.36,5.4
+E16,2026-08-01,Marine weather hold,08:00,9,27,6,5,16,2820.72,3.4
+E23,2026-08-01,Marine weather hold,15:30,6,18,5,0,13,2230.99,2.4
+E10,2026-08-05,Ship late or tendering from anchor,13:00,2,3,0,0,3,376.34,2.8
+E29,2026-08-07,Flight delay or fog (independent guests),10:30,5,19,5,2,12,1904.96,2.6
+E14,2026-08-08,Ship late or tendering from anchor,13:00,7,14,0,4,10,1295.8,4.5
+E21,2026-08-12,Marine weather hold,08:00,6,13,2,2,9,1670.01,3.5
+E11,2026-08-12,Ship late or tendering from anchor,10:30,6,24,12,4,8,1024.24,3.3
+E09,2026-09-01,Ship late or tendering from anchor,13:00,7,23,9,7,7,876.06,1.9
+E06,2026-09-02,Ship late or tendering from anchor,08:00,4,10,0,0,10,1109.8,5.7
+E31,2026-09-04,Road or traffic delay on the shuttle route,10:30,3,9,2,0,7,1095.86,2.2
+E03,2026-09-14,Ship late or tendering from anchor,15:30,6,21,4,0,17,2215.26,4.3
+E33,2026-09-15,Road or traffic delay on the shuttle route,13:00,4,9,0,4,5,869.11,3.8
+E30,2026-09-28,Flight delay or fog (independent guests),15:30,2,4,0,0,4,549.34,2.6

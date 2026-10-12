@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>3.b Off-cap product lab · ATIA Operations Kit</title>
+<meta name="description" content="Find next season's light days, have AI draft product concepts that use no capped slot, score them with a kill-or-test rule you set, and draft a light-day offer calendar with honest pricing. Works in your browser; nothing you type leaves it.">
+<link rel="stylesheet" href="../assets/kit.css">
+<style>
+/* Page-specific styles for tool 3b. Shared styles live in ../assets/kit.css. */
+.onpage{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:12px 0 0;padding:0;list-style:none}
+.onpage a{color:var(--teal-d)}
+.card>h2:first-child{margin-top:0}
+.reminder{font-size:14px;line-height:1.45;color:#5c3d00;background:var(--amber-t);border-left:4px solid #d49a1a;border-radius:4px;padding:7px 11px;margin:6px 0 4px}
+.figs{list-style:none;padding:0;margin:0}
+.figs li{margin:0 0 12px}
+.figs b.n{font-size:28px;color:var(--teal-d);display:block;line-height:1.1}
+.fgrid{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.fgrid>div{min-width:0;display:flex;flex-direction:column;justify-content:flex-end}
+.fgrid.wide{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+textarea.short{min-height:64px}
+textarea.mono{font:14px/1.5 Consolas,"Courier New",monospace}
+input[type=file]{font-size:15px;max-width:100%;margin:4px 0}
+button.small{font-size:14px;padding:6px 12px}
+.counts{display:grid;gap:8px;grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0;max-width:520px}
+.counts div{border-radius:4px;padding:8px 10px;font-size:14px;line-height:1.3}
+.counts b{display:block;font-size:26px}
+.k-light{background:#c9dcae;color:#1e293b}
+.k-medium{background:#eef1ec;color:#1e293b}
+.k-heavy{background:#176374;color:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;padding:0;margin:6px 0 10px;font-size:14px}
+.legend li{display:flex;align-items:center;gap:6px}
+.legend b{display:inline-block;width:24px;text-align:center;border-radius:3px;font-size:13px;line-height:20px}
+.months{display:grid;gap:14px 18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));margin:10px 0}
+table.cal{table-layout:fixed;width:100%;border-collapse:separate;border-spacing:2px;background:none;font-size:14px}
+table.cal caption{text-align:left;font-weight:bold;color:var(--teal-d);padding:0 0 4px}
+table.cal caption span{font-weight:normal;color:var(--slate-m);font-size:13px}
+table.cal th{background:none;border:0;color:var(--slate);font-size:12px;text-align:center;padding:2px 0}
+table.cal th abbr{text-decoration:none}
+table.cal td{border:0;padding:3px 2px;height:42px;text-align:center;vertical-align:middle;border-radius:3px;position:relative}
+table.cal td.blank{background:none}
+table.cal td .d{position:absolute;top:2px;left:4px;font-size:11px;line-height:1}
+table.cal td .k{font-weight:bold;font-size:15px}
+.lightlist{margin:6px 0 12px;padding-left:1.2em}
+.lightlist li{margin:0 0 6px;overflow-wrap:anywhere}
+.notes{list-style:none;padding:0;margin:6px 0;font-size:14px}
+.notes li{padding:4px 0;border-bottom:1px dashed var(--line);overflow-wrap:anywhere}
+.clist{list-style:none;padding:0;margin:8px 0}
+.clist>li{border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:4px;padding:10px 12px;margin:0 0 10px;background:#fbfcfa}
+.clist .top{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;justify-content:space-between}
+.clist h4{margin:0;font-size:16px;color:var(--teal-d)}
+.clist pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.5 Consolas,"Courier New",monospace;margin:8px 0 0;max-height:26em;overflow:auto}
+.dec{display:inline-block;font-size:12px;font-weight:bold;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:2px 10px;white-space:nowrap}
+.dec.test{background:var(--green-t);color:var(--green-d)}
+.dec.kill{background:var(--red-t);color:var(--red)}
+.dec.unscored{background:#eef1ec;color:var(--slate)}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0 14px}
+table.grid td select{width:100%;min-width:3.6em;padding:6px 4px}
+table.grid td.r{font-size:14px;color:var(--slate)}
+.offersel{list-style:none;padding:0;margin:6px 0}
+.offersel label{display:flex;gap:8px;align-items:flex-start;font-weight:normal;font-size:15px;color:var(--ink);margin:6px 0}
+.offersel input,.chk input{width:18px;height:18px;flex:none;margin:3px 0 0}
+.chk{display:flex;gap:8px;align-items:flex-start;font-weight:normal;font-size:15px;margin:12px 0 0;color:var(--ink)}
+.obl{list-style:none;padding:0;margin:10px 0}
+.obl>li{padding:8px 0;border-top:1px solid var(--line)}
+.output pre{max-height:30em;overflow:auto}
+.ailinks a{margin-right:12px;white-space:nowrap}
+.calc{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.calcout{font-weight:bold;color:var(--teal-d);min-height:1.6em}
+.files li{flex-wrap:wrap;gap:4px 12px}
+#recipe-preview{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.5 Consolas,"Courier New",monospace;margin:8px 0 0;max-height:30em;overflow:auto}
+h3.flush{margin-top:0}
+.myread{font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:var(--slate-m)}
+@media(max-width:640px){
+  table.cal td{height:38px}
+  table.cal td .d{font-size:10px;left:2px}
+  table.grid thead{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  table.grid,table.grid tbody,table.grid tr,table.grid th,table.grid td{display:block;width:auto}
+  table.grid{background:none}
+  table.grid tr{background:#fff;border:1px solid #ccd2c8;border-radius:4px;margin:0 0 10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0 0 6px}
+  table.grid tr>th{grid-column:1/-1;background:var(--green-t)}
+  table.grid td.wide{grid-column:1/-1}
+  table.grid th,table.grid td,table.grid td.num{border:0;padding:4px 10px;text-align:left}
+  .fgrid.nums{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fgrid.nums label{font-size:14px}
+  table.grid td[data-label]::before{content:attr(data-label);display:block;font-weight:bold;font-size:13px;color:var(--slate)}
+}
+@media print{.reminder,.ailinks,#sched-box{display:none}}
+</style>
+<script src="../assets/kit.js" defer></script>
+<script src="lab-core.js" defer></script>
+<script src="lab.js" defer></script>
+</head>
+<body data-page="3b">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs">ATIA 2026 Annual Convention · Fairbanks · <a href="../">Operations Kit</a></p>
+  <p class="kicker"><span class="rung r2" aria-hidden="true"><i></i><i></i><i></i></span>Pain 3 · Intermediate · <span class="focus product">PRODUCT</span></p>
+  <h1>3.b Off-cap product lab</h1>
+  <p class="lede">Find next season's light days, have AI draft product concepts that use no capped slot, score them with a kill-or-test rule you set before you score, and draft a light-day offer calendar with honest total prices. AI drafts; you decide and publish.</p>
+  <ul class="meta">
+    <li><b>Time</b> estimate: half a day for the lab, then 15 to 30 minutes a week</li><li><b>Cost</b> estimate: free tier for the prompts; a paid no-code plan may be needed for the weekly refresh</li><li><b>Who</b> owner, a lead guide, partners</li><li><b>Feeds</b> Number 4 · light-day share</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="3b" aria-label="All tools"></nav>
+  <ul class="onpage" aria-label="On this page">
+    <li><a href="#why">The pain</a></li><li><a href="#how">How to use it</a></li><li><a href="#calendar">Light-day calendar</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#score">Kill or test</a></li><li><a href="#offers">Offer calendar</a></li><li><a href="#refresh">Weekly refresh</a></li><li><a href="#files">Downloads</a></li><li><a href="#measure">Measure</a></li><li><a href="#safe">Before you use it</a></li><li><a href="#next">Next rung</a></li>
+  </ul>
+</header>
+
+<main class="kit">
+  <section class="card teal" aria-labelledby="why">
+    <h2 id="why">The pain it fixes</h2>
+    <p>Theory of Constraints, step 5: repeat. Once the cap gets full use (<a href="../3a/">3.a</a>) and the rest of the operation serves it, go back to step 1 for the parts of the business the cap does not touch. On light days, and for products that use no capped slot, the constraint is demand: there is no product those guests want yet. Product development works on that constraint. Step 5 also carries a warning: do not let inertia, selling only the capped product, become the constraint. Step 4, elevate, is the land manager's decision for a regulatory cap, made through the permit process, so this lab does not plan on more allocation.</p>
+    <h3>The fictional example: Channel Light Excursions, Juneau (FICTIONAL TEACHING BUSINESS)</h3>
+    <ul class="figs">
+      <li><b class="n">66 days</b> at the glacier cap in 2026, while May (56% used), September (62%) and Saturdays (66%) left slots empty.</li>
+      <li><b class="n">Whale Only</b> ($159 adult, fictional) uses no glacier slot. It is the base for products that grow off the cap.</li>
+      <li><b class="n">Tern Point Lodge</b> (fictional partner) sells packages for independent travelers in May, early June and September: the light months.</li>
+    </ul>
+    <p>The calendar below classifies the fictional 2027 schedule (invented ship calls, Ship A to Ship J) with the thresholds you set.</p>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <ol class="steps">
+      <li><b>Set the light-day rule</b> (daily limit and thresholds) and read the calendar. Use the fictional 2027 schedule or paste your port's schedule. Write down the light days by month.</li>
+      <li><b>List what the cap does not touch:</b> boats, crew, partners, products, guest groups. Write them into the concept prompt fields.</li>
+      <li><b>Copy the 5-concept prompt</b> into Claude, ChatGPT or Gemini. Write the concepts worth a look into the concept card builder.</li>
+      <li><b>Set the kill-or-test rule, then score</b> each concept with your team. Write down the decision and the reason for each.</li>
+      <li><b>Copy the offer calendar prompt</b> for the "test" concepts. Write down the offers you approve, with total prices.</li>
+      <li><b>Set up the weekly refresh</b> (optional). Write down who reviews the drafts each week.</li>
+      <li><b>Count</b> the share of bookings on light days at season end, and Number 4.</li>
+    </ol>
+    <p class="hint">Times are estimates for a small operator with one capped product and one or two partners.</p>
+  </section>
+
+  <section class="card" aria-labelledby="calendar">
+    <h2 id="calendar">Light-day calendar</h2>
+    <p id="sched-status" role="status" aria-live="polite">Loading the fictional 2027 schedule.</p>
+    <fieldset>
+      <legend>Light-day rule <span class="lbl">Policy choice</span></legend>
+      <div class="fgrid nums">
+        <div><label for="limit">Daily passenger limit</label><input type="text" id="limit" inputmode="numeric" autocomplete="off" value="16000"></div>
+        <div><label for="satLimit">Saturday limit <small>(blank: same as daily)</small></label><input type="text" id="satLimit" inputmode="numeric" autocomplete="off" value="12000"></div>
+        <div><label for="heavyPct">Heavy: port load at or above (%)</label><input type="text" id="heavyPct" inputmode="decimal" autocomplete="off" value="70"></div>
+        <div><label for="lightPct">Light: port load below (%)</label><input type="text" id="lightPct" inputmode="decimal" autocomplete="off" value="40"></div>
+        <div><label for="heavyUse">Heavy: your last-season use at or above (%)</label><input type="text" id="heavyUse" inputmode="decimal" autocomplete="off" value="95"></div>
+        <div><label for="lightUse">Light: your last-season use below (%)</label><input type="text" id="lightUse" inputmode="decimal" autocomplete="off" value="75"></div>
+      </div>
+      <p class="status" id="settings-status" role="status" aria-live="polite"></p>
+      <details>
+        <summary>How a day is classified</summary>
+        <p><b>Port load</b> is passengers in port that day divided by the daily limit you enter. The fictional schedule uses 16,000, and 12,000 on Saturdays; these are teaching values for an invented schedule. Use the limit that applies at your port.</p>
+        <p><b>Your last-season use</b> is your capped product's allocation used % on the same weekday in the same month last season (for 2027 dates, the fictional 2026 glacier use).</p>
+        <p><b>Heavy</b> if either signal is high: port load at or above the heavy threshold, or your use at or above yours. <b>Light</b> only if both are low: port load below the light threshold and your use below yours (or no use data). <b>Medium</b> is everything else. The rule is deliberately strict about "light", so an offer never lands on a day the cap is likely to bind.</p>
+        <p>The thresholds are a policy choice. Write down why you picked them, and keep the same rule all season so the light-day share stays comparable.</p>
+      </details>
+    </fieldset>
+
+    <div id="cal-out">
+      <div class="counts" id="counts"></div>
+      <ul class="legend" aria-label="Key">
+        <li><b class="k-light" aria-hidden="true">L</b>light: the target days</li>
+        <li><b class="k-medium" aria-hidden="true">M</b>medium</li>
+        <li><b class="k-heavy" aria-hidden="true">H</b>heavy: the cap may bind</li>
+      </ul>
+      <div class="months" id="cal"></div>
+      <h3>Light days by month</h3>
+      <ul class="lightlist" id="light-list"></ul>
+      <p id="light-weekdays"></p>
+      <div>
+        <div class="btns"><button type="button" class="secondary" id="dlCal">Save the calendar (.csv)</button></div>
+        <p class="status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <details id="sched-box">
+      <summary>Use your own port schedule</summary>
+      <p class="reminder" id="sched-reminder"><b>Schedules and counts only.</b> Never paste guest or staff names, emails, phone numbers, payment data, IDs or medical details. Everything is read on this device.</p>
+      <label for="sched">Port schedule (CSV) <small>columns: date and passengers (est_passengers also works). One row per ship call or per day; calls on the same date are added up.</small></label>
+      <textarea id="sched" class="mono" spellcheck="false" autocomplete="off" aria-describedby="sched-reminder" placeholder="date,ship,est_passengers&#10;2027-05-01,Ship B,3778"></textarea>
+      <label for="sched-file">Or upload the schedule <small>(read on this device)</small></label>
+      <input type="file" id="sched-file" accept=".csv,.txt,.tsv,text/csv,text/plain">
+      <label for="use">Your daily counts from last season <small>(optional; the 3.a format: date, allocation, used)</small></label>
+      <textarea id="use" class="mono" spellcheck="false" autocomplete="off" aria-describedby="sched-reminder" placeholder="date,allocation,used&#10;2026-05-01,100,58"></textarea>
+      <label for="use-file">Or upload last season's counts</label>
+      <input type="file" id="use-file" accept=".csv,.txt,.tsv,text/csv,text/plain">
+      <div>
+        <div class="btns">
+          <button type="button" id="useMine">Use my schedule</button>
+          <button type="button" class="secondary" id="useDemo">Back to the fictional schedule</button>
+        </div>
+        <p class="status" role="status" aria-live="polite"></p>
+      </div>
+      <ul class="notes" id="sched-notes"></ul>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="concepts">
+    <h2 id="concepts">Product concepts</h2>
+    <h3 id="aih">Have AI draft 5 concepts</h3>
+    <p>The prompt carries your facts, what the cap does not touch and the light-day list from the calendar above. The AI drafts cards; you keep the ones worth a look.</p>
+    <p class="reminder" id="cp-reminder">Facts about your business only: products, prices, boats, crew roles, partners. No guest or staff details.</p>
+    <label for="cp-facts">Your approved facts</label>
+    <textarea id="cp-facts" aria-describedby="cp-reminder"></textarea>
+    <div class="fgrid wide">
+      <div><label for="cp-res">Resources the cap does not touch</label><textarea id="cp-res" class="short" aria-describedby="cp-reminder"></textarea></div>
+      <div><label for="cp-seg">Guest groups to consider</label><textarea id="cp-seg" class="short" aria-describedby="cp-reminder"></textarea></div>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="cpDemo">Load the fictional inputs</button>
+        <button type="button" class="ghost" id="cpClear">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <div class="output">
+      <p class="label">5-concept prompt</p>
+      <pre id="out-concepts" tabindex="0" aria-label="5-concept prompt"></pre>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" data-copy="out-concepts">Copy prompt</button>
+        <button type="button" class="secondary" data-download="3b-concepts-prompt.txt" data-from="out-concepts">Save as .txt</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <p class="ailinks">Paste it into <a href="https://claude.ai/" target="_blank" rel="noopener">Claude</a> <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a> <span class="hint">(opens a new tab; the prompt is never put in the link)</span></p>
+
+    <h3 id="cardh">Concept card builder</h3>
+    <div class="fgrid wide">
+      <div><label for="ex-pick">Fictional examples</label>
+        <select id="ex-pick"></select></div>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="exLoad">Load into the form</button>
+        <button type="button" class="ghost" id="exAll">Add all four to my concepts</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <form id="cform" autocomplete="off" aria-labelledby="cardh">
+      <div class="fgrid wide" id="cfields"></div>
+    </form>
+    <div class="output">
+      <p class="label">Card preview</p>
+      <pre id="card-preview" tabindex="0" aria-label="Card preview"></pre>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" id="cSave">Add to my concepts</button>
+        <button type="button" class="ghost" id="cReset">Clear the form</button>
+        <button type="button" class="secondary" data-copy="card-preview" data-copy-msg="Card copied.">Copy card</button>
+      </div>
+      <p class="status" id="c-status" role="status" aria-live="polite"></p>
+    </div>
+    <h3>My concepts <span class="hint">(saved in this browser only)</span></h3>
+    <ul class="clist" id="clist"></ul>
+  </section>
+
+  <section class="card" aria-labelledby="score">
+    <h2 id="score">Kill or test</h2>
+    <p>Set the rule <b>before</b> you score, so a favorite concept cannot bend it. Score 1 (poor) to 5 (strong). The rule decides test or kill; the owner can still override it, in writing. <span class="lbl">Policy choice</span></p>
+    <div class="fgrid nums">
+      <div><label for="w_desirability">Weight: desirability</label><input type="text" id="w_desirability" inputmode="decimal" value="1"></div>
+      <div><label for="w_feasibility">Weight: feasibility</label><input type="text" id="w_feasibility" inputmode="decimal" value="1"></div>
+      <div><label for="w_viability">Weight: viability</label><input type="text" id="w_viability" inputmode="decimal" value="1"></div>
+      <div><label for="w_capIndependence">Weight: cap-independence</label><input type="text" id="w_capIndependence" inputmode="decimal" value="1"></div>
+      <div><label for="minScore">Test if weighted score is at least</label><input type="text" id="minScore" inputmode="decimal" value="3.5"></div>
+      <div><label for="floor">and no single score below</label><input type="text" id="floor" inputmode="decimal" value="2"></div>
+      <div><label for="minCap">and cap-independence at least</label><input type="text" id="minCap" inputmode="decimal" value="3"></div>
+    </div>
+    <p class="status" id="rule-status" role="status" aria-live="polite"></p>
+    <p id="rule-text" class="hint"></p>
+    <details>
+      <summary>What each score asks</summary>
+      <ul id="crit-help"></ul>
+      <p>Score products, never people. Scores are judgments: write one line on why next to each low score.</p>
+    </details>
+    <div class="tablewrap"><table class="grid" id="grid"></table></div>
+    <p id="grid-empty" class="hint">No concepts yet. Add one with the card builder, or add the four fictional examples.</p>
+    <div>
+      <div class="btns"><button type="button" class="secondary" id="dlScores">Save the scores (.csv)</button></div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="offers">
+    <h2 id="offers">Offer calendar prompt</h2>
+    <p>Drafts offers for the light days only, from the concepts you decided to test. You set the price range; the AI never sets a price, and nothing is published or sent.</p>
+    <div class="callout amber" role="note" aria-labelledby="guard-h">
+      <h3 id="guard-h" class="flush">Pricing guardrails</h3>
+      <ul class="obl">
+        <li><span class="lbl">Policy choice</span> A minimum and maximum total price per person, set by the owner. No offer on heavy days.</li>
+        <li><span class="lbl legal">Legal mandate</span> <b>Scoped:</b> the FTC Rule on Unfair or Deceptive Fees, 16 CFR Part 464, covers short-term lodging and live-event tickets. A package that includes a lodge night shows the total price, with every fee the guest cannot avoid. Confirm current text.</li>
+        <li><span class="lbl">Recommendation</span> Tours sold alone are not covered by that rule. Show the total price anyway: guests compare totals, and a fee that appears at checkout costs trust.</li>
+        <li><span class="lbl">Recommendation</span> No fake urgency: no countdowns, no "last chance" for an offer that will run again, no "only N left" unless the live booking system says so when it goes out. Cost of ignoring it: guests learn to discount every offer you send.</li>
+        <li><span class="lbl legal">Legal mandate</span> No invented reviews or testimonials in any offer copy: FTC Consumer Review Rule, 16 CFR Part 465. Confirm current text.</li>
+      </ul>
+    </div>
+    <fieldset>
+      <legend>Concepts to offer</legend>
+      <ul class="offersel" id="offersel"></ul>
+      <p class="hint" id="offersel-empty">No concepts yet. Concepts scored "test" are ticked for you.</p>
+    </fieldset>
+    <div class="fgrid">
+      <div><label for="minPrice">Minimum total price per person ($)</label><input type="text" id="minPrice" inputmode="decimal" autocomplete="off"></div>
+      <div><label for="maxPrice">Maximum total price per person ($)</label><input type="text" id="maxPrice" inputmode="decimal" autocomplete="off"></div>
+    </div>
+    <label class="chk"><input type="checkbox" id="lodging"> <span>An offer includes a lodge night (the fee rule for short-term lodging applies)</span></label>
+    <div class="fgrid wide">
+      <div><label for="channels">Channels <small>where offers go</small></label><input type="text" id="channels" autocomplete="off" placeholder="For example: own website and email list"></div>
+      <div><label for="terms">Booking and cancellation terms</label><input type="text" id="terms" autocomplete="off" placeholder="Your written terms, in one line"></div>
+    </div>
+    <p class="status" id="offer-status" role="status" aria-live="polite"></p>
+    <div class="output">
+      <p class="label">Offer calendar prompt</p>
+      <pre id="out-offer" tabindex="0" aria-label="Offer calendar prompt"></pre>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" data-copy="out-offer">Copy prompt</button>
+        <button type="button" class="secondary" data-download="3b-offer-prompt.txt" data-from="out-offer">Save as .txt</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="refresh">
+    <h2 id="refresh">Weekly no-code refresh</h2>
+    <p>A recipe for Google Sheets plus Zapier or Make: every Monday it lists the light days in the next 8 weeks and drafts offer copy into a sheet for the owner to review. It never publishes, sends or changes a price. The recipe carries the rule you set above, as sheet formulas.</p>
+    <p><b>Status: draft recipe, untested in live accounts.</b> Step names change; test it on a copy of the sheet first.</p>
+    <div>
+      <div class="btns"><button type="button" class="secondary" id="dlRecipe">Save the recipe (.md)</button></div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <details>
+      <summary>Read the recipe here</summary>
+      <pre id="recipe-preview" tabindex="0" aria-label="Weekly refresh recipe"></pre>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files">Downloads</h2>
+    <ul class="files">
+      <li><button type="button" class="ghost small" id="dlRecipe2">light-day-refresh-recipe.md</button> <span class="hint">The weekly no-code recipe with your thresholds. Untested in live accounts.</span></li>
+      <li><button type="button" class="ghost small" id="dlCal2">light-day-calendar.csv</button> <span class="hint">Every date with passengers, limit, load, last-season use and class.</span></li>
+      <li><button type="button" class="ghost small" id="dlCards">concept-cards.txt</button> <span class="hint">All your concept cards, with decisions.</span></li>
+      <li><button type="button" class="ghost small" id="dlScores2">kill-or-test-scores.csv</button> <span class="hint">Scores, the rule and the decisions.</span></li>
+      <li><a href="../data/port_schedule_2027.csv" download>port_schedule_2027.csv</a> <span class="hint">The fictional 2027 schedule (invented ship calls), one row per call.</span></li>
+    </ul>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure">How you will know it worked</h2>
+    <ul>
+      <li><b>Share of bookings on light days:</b> bookings on light days divided by all bookings, with the same light-day rule all season. Compare season to season.</li>
+      <li><b>Off-cap net revenue:</b> net revenue from products that use no capped slot. This is the growth.</li>
+      <li><b>Number 4, revenue per allocated slot:</b> net revenue of the capped product divided by allocated slots. <span class="myread">My read</span> It should not fall. If it does, an off-cap product is pulling guests off the capped product on capped days, which breaks step 3 (subordinate: the cap comes first).</li>
+      <li><b>Each test:</b> the kill result you wrote on the card, checked when the test ends.</li>
+    </ul>
+    <p>Monthly counts of light-day bookings are small, so month-to-month swings are mostly noise. Judge the share season to season, and look at passengers in port alongside it.</p>
+    <h3>Light-day share calculator <span class="hint">(saved in this browser only)</span></h3>
+    <div class="calc">
+      <div><label for="ls-light">Bookings on light days</label><input type="text" id="ls-light" inputmode="numeric" autocomplete="off"></div>
+      <div><label for="ls-all">All bookings</label><input type="text" id="ls-all" inputmode="numeric" autocomplete="off"></div>
+    </div>
+    <p class="calcout" id="ls-out" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe">Before you use it</h2>
+    <p><strong>AI drafts. You approve.</strong> Every prompt asks for DRAFT - PENDING OWNER REVIEW and [FILL] gaps instead of guesses. The owner sets prices, decides kill or test and publishes every offer.</p>
+    <ul class="obl">
+      <li><span class="lbl legal">Legal mandate</span> <b>Lodge packages: total price.</b> FTC Rule on Unfair or Deceptive Fees, 16 CFR Part 464, covers short-term lodging and live-event tickets. A package with a lodge night shows the total price. Tours sold alone are not covered by that rule. Confirm current text.</li>
+      <li><span class="lbl legal">Legal mandate</span> <b>No fake reviews.</b> FTC Consumer Review Rule, 16 CFR Part 465: no fake or AI-invented reviews or testimonials in any marketing copy. Confirm current text.</li>
+      <li><span class="lbl legal">Legal mandate</span> <b>Vessel capacity.</b> Passenger limits come from each vessel's Coast Guard certificate of inspection. A new departure never sells above it. Vessel-specific: confirm the current certificate.</li>
+      <li><span class="lbl legal">Legal mandate</span> <b>Whale viewing distance.</b> Approaching humpback whales in Alaska within 100 yards is prohibited (NOAA Fisheries, 50 CFR 216.18). No product promises closer viewing or a sighting. Confirm current text.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Partners.</b> A package with Tern Point Lodge (fictional) or any real partner needs written rates, room blocks, cancellation terms and who refunds what. Check your partner agreement.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Channels.</b> A locals' or light-day price can conflict with rate-parity clauses in OTA or cruise line contracts. Check your contracts before you publish a lower price.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Permits.</b> A new product that uses public land, a park or a permitted site may need its own permit or authorization. Check your permit and ask the land manager.</li>
+      <li><span class="lbl">Recommendation</span> <b>No automatic price changes or publishing.</b> The weekly recipe drafts only. Reason: a tool that publishes or prices on its own can break a contract or a published total price before anyone sees it.</li>
+      <li><span class="lbl">Policy choice</span> <b>The light-day rule, the weights and the kill-or-test rule</b> are the owner's. Set them before scoring and keep them all season.</li>
+      <li><span class="lbl">Recommendation</span> <b>Schedules and counts only.</b> No guest or staff data in the prompts, the sheet or the automation. Alaska's Personal Information Protection Act, AS 45.48, sets breach-notification duties for certain personal information you hold. <span class="lbl legal">Legal mandate</span></li>
+    </ul>
+  </section>
+
+  <section class="card teal" aria-labelledby="next">
+    <h2 id="next">Next rung</h2>
+    <p><a href="../3c/"><b>3.c Revenue-per-slot optimizer</b></a>: at the cap, choose the product mix and prices per day type (heavy, medium, light) that raise revenue per slot, under ranges instead of point guesses. It reuses the day types from this calendar.</p>
+    <p>Before this rung: <a href="../3a/">3.a Fill every capped slot</a> shows where the cap binds and where slots sit empty.</p>
+    <div class="btns no-print">
+      <button type="button" class="ghost" id="forget">Clear everything this page saved in this browser</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+<script type="application/json" id="port-2027">{"note":"FICTIONAL TEACHING DATA: invented ship calls (Ship A to Ship J), not a real schedule. Generated by 3b/dev/make_embed.py from data/port_schedule_2027.csv. Do not edit by hand.","source":"data/port_schedule_2027.csv (est_passengers summed per date)","limits":{"weekday":16000,"saturday":12000},"columns":["date","ships","passengers"],"rows":[["2027-05-01",1,3778],["2027-05-02",3,7377],["2027-05-03",3,3881],["2027-05-04",3,4798],["2027-05-05",3,6406],["2027-05-06",3,6319],["2027-05-07",3,7239],["2027-05-08",1,3674],["2027-05-09",3,4455],["2027-05-10",2,1791],["2027-05-11",3,6342],["2027-05-12",3,7223],["2027-05-13",3,7821],["2027-05-14",3,4500],["2027-05-15",1,888],["2027-05-16",4,10355],["2027-05-17",3,4888],["2027-05-18",4,9567],["2027-05-19",3,6640],["2027-05-20",3,7122],["2027-05-21",4,8896],["2027-05-22",1,1288],["2027-05-23",3,7896],["2027-05-24",3,6724],["2027-05-25",4,7378],["2027-05-26",3,4585],["2027-05-27",4,6500],["2027-05-28",4,5066],["2027-05-29",2,5460],["2027-05-30",3,8627],["2027-05-31",4,6126],["2027-06-01",4,8955],["2027-06-02",4,9248],["2027-06-03",3,3610],["2027-06-04",3,6183],["2027-06-05",1,3991],["2027-06-06",4,6627],["2027-06-07",3,7613],["2027-06-08",5,10115],["2027-06-09",5,11456],["2027-06-10",4,8189],["2027-06-11",4,9164],["2027-06-12",3,7216],["2027-06-13",5,6464],["2027-06-14",4,7094],["2027-06-15",5,10478],["2027-06-16",4,10555],["2027-06-17",5,11077],["2027-06-18",5,7817],["2027-06-19",3,8418],["2027-06-20",5,9614],["2027-06-21",5,11840],["2027-06-22",6,15215],["2027-06-23",5,11689],["2027-06-24",4,7389],["2027-06-25",6,15463],["2027-06-26",4,8042],["2027-06-27",5,7970],["2027-06-28",6,11947],["2027-06-29",5,9109],["2027-06-30",6,12493],["2027-07-01",6,8983],["2027-07-02",6,14199],["2027-07-03",3,5438],["2027-07-04",5,9807],["2027-07-05",6,14123],["2027-07-06",5,13764],["2027-07-07",6,13490],["2027-07-08",5,10743],["2027-07-09",5,11513],["2027-07-10",3,8840],["2027-07-11",6,10043],["2027-07-12",6,12197],["2027-07-13",6,13524],["2027-07-14",6,10645],["2027-07-15",6,14064],["2027-07-16",6,15054],["2027-07-17",4,7378],["2027-07-18",6,13464],["2027-07-19",6,10767],["2027-07-20",6,12076],["2027-07-21",6,15788],["2027-07-22",6,12295],["2027-07-23",6,11864],["2027-07-24",4,6291],["2027-07-25",6,12493],["2027-07-26",6,12595],["2027-07-27",6,13668],["2027-07-28",6,12385],["2027-07-29",5,10229],["2027-07-30",6,15666],["2027-07-31",4,8505],["2027-08-01",6,14671],["2027-08-02",6,12396],["2027-08-03",6,15515],["2027-08-04",5,9928],["2027-08-05",5,8561],["2027-08-06",6,12780],["2027-08-07",3,9911],["2027-08-08",6,10964],["2027-08-09",5,10482],["2027-08-10",5,9760],["2027-08-11",5,7895],["2027-08-12",5,9063],["2027-08-13",5,12867],["2027-08-14",3,5741],["2027-08-15",5,9869],["2027-08-16",5,10071],["2027-08-17",5,12243],["2027-08-18",4,10131],["2027-08-19",4,7187],["2027-08-20",4,6085],["2027-08-21",2,3673],["2027-08-22",4,10598],["2027-08-23",4,4745],["2027-08-24",4,8782],["2027-08-25",3,5290],["2027-08-26",4,9899],["2027-08-27",4,7661],["2027-08-28",1,2401],["2027-08-29",3,6080],["2027-08-30",4,8799],["2027-08-31",3,6648],["2027-09-01",4,8490],["2027-09-02",3,5131],["2027-09-03",3,5583],["2027-09-04",1,4036],["2027-09-05",3,4805],["2027-09-06",3,4918],["2027-09-07",2,6145],["2027-09-08",4,12653],["2027-09-09",3,6511],["2027-09-10",3,7342],["2027-09-11",1,2998],["2027-09-12",3,5822],["2027-09-13",3,7791],["2027-09-14",3,6073],["2027-09-15",2,1853],["2027-09-16",3,9704],["2027-09-17",4,8431],["2027-09-18",1,3783],["2027-09-19",3,7287],["2027-09-20",3,5580],["2027-09-21",2,5158],["2027-09-22",3,3602],["2027-09-23",2,4419],["2027-09-24",2,4375],["2027-09-25",1,3851],["2027-09-26",3,3747],["2027-09-27",3,9523],["2027-09-28",2,6292],["2027-09-29",3,6628],["2027-09-30",3,2571]]}</script>
+<script type="application/json" id="use-2026">{"note":"FICTIONAL TEACHING DATA: Channel Light Excursions (fictional) glacier allocation use. Generated by 3b/dev/make_embed.py from data/allocation_2026.csv. Do not edit by hand.","source":"data/allocation_2026.csv (combo_guests read as used)","columns":["date","allocation","used"],"rows":[["2026-05-01",100,58],["2026-05-02",100,30],["2026-05-03",100,56],["2026-05-04",100,53],["2026-05-05",100,62],["2026-05-06",100,55],["2026-05-07",100,54],["2026-05-08",100,31],["2026-05-09",100,39],["2026-05-10",100,54],["2026-05-11",100,68],["2026-05-12",100,56],["2026-05-13",100,22],["2026-05-14",100,47],["2026-05-15",100,78],["2026-05-16",100,36],["2026-05-17",100,60],["2026-05-18",100,84],["2026-05-19",100,37],["2026-05-20",100,55],["2026-05-21",100,68],["2026-05-22",100,42],["2026-05-23",100,37],["2026-05-24",100,80],["2026-05-25",100,54],["2026-05-26",100,79],["2026-05-27",100,75],["2026-05-28",100,96],["2026-05-29",100,42],["2026-05-30",100,55],["2026-05-31",100,65],["2026-06-01",100,75],["2026-06-02",100,58],["2026-06-03",100,97],["2026-06-04",100,99],["2026-06-05",100,48],["2026-06-06",100,79],["2026-06-07",100,100],["2026-06-08",100,76],["2026-06-09",100,95],["2026-06-10",100,100],["2026-06-11",100,99],["2026-06-12",100,98],["2026-06-13",100,82],["2026-06-14",100,99],["2026-06-15",100,78],["2026-06-16",100,100],["2026-06-17",100,97],["2026-06-18",100,100],["2026-06-19",100,100],["2026-06-20",100,80],["2026-06-21",100,100],["2026-06-22",100,99],["2026-06-23",100,99],["2026-06-24",100,100],["2026-06-25",100,100],["2026-06-26",100,100],["2026-06-27",100,98],["2026-06-28",100,94],["2026-06-29",100,99],["2026-06-30",100,99],["2026-07-01",100,100],["2026-07-02",100,100],["2026-07-03",100,100],["2026-07-04",100,100],["2026-07-05",100,100],["2026-07-06",100,98],["2026-07-07",100,99],["2026-07-08",100,100],["2026-07-09",100,96],["2026-07-10",100,99],["2026-07-11",100,99],["2026-07-12",100,100],["2026-07-13",100,100],["2026-07-14",100,100],["2026-07-15",100,99],["2026-07-16",100,100],["2026-07-17",100,100],["2026-07-18",100,94],["2026-07-19",100,100],["2026-07-20",100,99],["2026-07-21",100,100],["2026-07-22",100,99],["2026-07-23",100,99],["2026-07-24",100,98],["2026-07-25",100,100],["2026-07-26",100,98],["2026-07-27",100,100],["2026-07-28",100,99],["2026-07-29",100,100],["2026-07-30",100,100],["2026-07-31",100,99],["2026-08-01",100,95],["2026-08-02",100,100],["2026-08-03",100,100],["2026-08-04",100,100],["2026-08-05",100,97],["2026-08-06",100,99],["2026-08-07",100,100],["2026-08-08",100,81],["2026-08-09",100,95],["2026-08-10",100,98],["2026-08-11",100,92],["2026-08-12",100,94],["2026-08-13",100,73],["2026-08-14",100,94],["2026-08-15",100,52],["2026-08-16",100,70],["2026-08-17",100,91],["2026-08-18",100,100],["2026-08-19",100,97],["2026-08-20",100,79],["2026-08-21",100,75],["2026-08-22",100,76],["2026-08-23",100,80],["2026-08-24",100,91],["2026-08-25",100,89],["2026-08-26",100,82],["2026-08-27",100,84],["2026-08-28",100,100],["2026-08-29",100,53],["2026-08-30",100,62],["2026-08-31",100,99],["2026-09-01",100,84],["2026-09-02",100,74],["2026-09-03",100,44],["2026-09-04",100,52],["2026-09-05",100,27],["2026-09-06",100,83],["2026-09-07",100,76],["2026-09-08",100,39],["2026-09-09",100,70],["2026-09-10",100,73],["2026-09-11",100,100],["2026-09-12",100,29],["2026-09-13",100,65],["2026-09-14",100,52],["2026-09-15",100,58],["2026-09-16",100,69],["2026-09-17",100,54],["2026-09-18",100,69],["2026-09-19",100,51],["2026-09-20",100,59],["2026-09-21",100,63],["2026-09-22",100,46],["2026-09-23",100,67],["2026-09-24",100,54],["2026-09-25",100,73],["2026-09-26",100,55],["2026-09-27",100,53],["2026-09-28",100,59],["2026-09-29",100,79],["2026-09-30",100,70]]}</script>
+</body>
+</html>

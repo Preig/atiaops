@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>Season Leak Audit · ATIA Operations Kit</title>
+<meta name="description" content="Put a dollar range on three seasonal leaks: crew hired twice, guests lost to transit and weather, and capped slots left empty. Five minutes, your own numbers, nothing leaves your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='10' width='4' height='5' fill='%235c8727'/%3E%3Crect x='6' y='6' width='4' height='9' fill='%235c8727'/%3E%3Crect x='11' y='1' width='4' height='14' fill='%230d92b4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/kit.css">
+<style>
+.onpage{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:10px 0 0;padding:0;list-style:none}
+.tonight{margin:14px 0 8px}
+.tonight .kicker{color:var(--green-d);margin:0 0 4px}
+.tonight p{margin:.3em 0}
+.tonight .btns{margin:8px 0 0}
+.stat{background:#fff;border:1px solid var(--line);border-radius:4px;padding:12px 14px;min-width:0}
+.stat h3{margin:0 0 4px}
+.stat .score{font-size:30px;margin:2px 0 4px}
+.stat ul{margin:4px 0 0;padding-left:18px;font-size:15px;line-height:1.45}
+.fict{font-size:14px;color:var(--slate-m);margin:10px 0 0}
+.toolbar{display:grid;gap:0 14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));align-items:end}
+.fields{display:grid;gap:0 14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,120px),1fr))}
+.f{display:flex;flex-direction:column;min-width:0}
+.f>label{flex:1 0 auto;margin:12px 0 4px;font-size:14.5px;line-height:1.3}
+.f>label small{display:block}
+.err{color:var(--red);font-size:13.5px;line-height:1.35;margin:3px 0 0;min-height:0}
+.err:empty{display:none}
+input[aria-invalid=true]{border:2px solid var(--red);background:#fffafa}
+.blockhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.blockhead h2{margin:.2em 0 .2em}
+.formula{font-size:15px;color:var(--slate);background:#f4f6f4;border-radius:4px;padding:6px 10px;margin:4px 0 6px;overflow-wrap:anywhere}
+.where{font-size:14px;color:var(--slate-m);margin:2px 0 4px}
+.leak-out{background:var(--teal-t);border-left:5px solid var(--teal);border-radius:4px;padding:12px 14px;margin:16px 0 6px}
+.leak-out p{margin:0}
+.leak-name{font-size:13px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-d)}
+.leak-range{font-size:clamp(22px,6vw,32px);font-weight:bold;color:var(--slate);line-height:1.2;margin:2px 0 4px!important}
+.leak-mid{font-size:15px;color:var(--slate)}
+.leak-wait{font-size:15px;color:var(--slate-m)}
+.minis{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:8px 0 0}
+.minis li{background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:14px}
+.minis li b{color:var(--teal-d)}
+.notes-small{font-size:14px;color:var(--amber);margin:6px 0 0;padding-left:18px}
+.notes-small:empty{display:none}
+.math{font:14.5px/1.55 Consolas,"Courier New",monospace;margin:6px 0;padding-left:18px;overflow-wrap:anywhere}
+.math:empty{display:none}
+details.builder,details.how{background:#fbfcfa}
+.btotal{font-size:16px;margin:12px 0 4px}
+.whatif{border:1px dashed var(--sage);border-radius:4px;padding:4px 14px 12px;margin:16px 0 0;background:#fbfcfa}
+.whatif h3{margin:.6em 0 .2em}
+.whatif-out{font-size:16px;margin:10px 0 0}
+.whatif-out b{color:var(--teal-d)}
+fieldset.part{margin:16px 0 0;padding:6px 14px 12px;background:#fbfcfa}
+fieldset.part legend{font-size:16px}
+.meaning{font-size:14.5px;color:var(--slate);margin:2px 0 4px}
+.part-out{font-size:16px;margin:10px 0 0;padding:6px 10px;background:#fff;border:1px solid var(--line);border-radius:4px}
+.part-out b{color:var(--teal-d)}
+.bind{margin:14px 0 0}
+.bind p{margin:.3em 0}
+.tiles{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));margin:8px 0 14px}
+.tile{background:#fff;border:1px solid var(--line);border-top:4px solid var(--teal);border-radius:4px;padding:10px 14px;min-width:0}
+.tile.total{border-top-color:var(--green-d);background:var(--green-t)}
+.tile-name{margin:0 0 2px;font-weight:bold;color:var(--slate);font-size:15px}
+.tile-range{margin:0;font-size:24px;font-weight:bold;color:var(--slate);line-height:1.2}
+.tile-range .to{font-size:15px;font-weight:normal;color:var(--slate-m)}
+.tile .hint{margin:4px 0 0}
+.copq{font-size:17px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--green);border-radius:4px;padding:10px 14px}
+.rank{list-style:none;padding:0;margin:10px 0;counter-reset:rk}
+.rank>li{counter-increment:rk;position:relative;background:#fff;border:1px solid var(--line);border-radius:4px;padding:10px 14px 8px 58px;margin:0 0 10px}
+.rank>li::before{content:counter(rk);position:absolute;left:12px;top:10px;width:32px;height:32px;border-radius:50%;background:var(--green-d);color:#fff;font-weight:bold;text-align:center;line-height:32px}
+.rank>li.first{border:2px solid var(--teal)}
+.rank h3{margin:.1em 0 .2em}
+.rank p{margin:.25em 0}
+.rank .go{font-weight:bold}
+.table-wrap{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0}
+table.nums td.v{white-space:nowrap;font-weight:bold;color:var(--teal-d)}
+.notes{margin:6px 0;padding-left:20px;font-size:15px}
+.notes:empty{display:none}
+.warnline{color:var(--amber);background:var(--amber-t);border-radius:4px;padding:6px 10px;font-size:15px}
+.warnline:empty{display:none}
+.ailinks a{margin-right:12px;white-space:nowrap}
+button.small{font-size:14px;padding:5px 12px}
+button.secondary.small,button.danger.small{padding:4px 11px}
+table.hist td{white-space:nowrap}
+table.hist td.wrap{white-space:normal}
+.obl{list-style:none;padding:0;margin:8px 0}
+.obl>li{margin:0 0 12px}
+.files li a{white-space:nowrap}
+.print-only{display:none}
+@media(max-width:640px){
+  .rank>li{padding-left:14px}
+  .rank>li::before{position:static;display:inline-block;margin:0 8px 4px 0}
+  table.stack thead{position:absolute;left:-9999px}
+  table.stack,table.stack tbody,table.stack tr,table.stack th,table.stack td{display:block;width:auto}
+  table.stack{background:transparent}
+  table.stack tr{background:#fff;border:1px solid #ccd2c8;border-radius:4px;margin:0 0 8px}
+  table.stack th,table.stack td{border:0;padding:4px 10px;text-align:left;white-space:normal}
+  table.stack th{background:var(--green-t)}
+  table.stack td[data-label]::before{content:attr(data-label) ": ";font-weight:bold;color:var(--slate)}
+}
+@media print{
+  header.kit,main.kit>*:not(#print-summary){display:none!important}
+  .print-only{display:block!important}
+  body{font-size:9.8pt;line-height:1.4}
+  main.kit{padding:0}
+  .ps h2{font-size:15pt;margin:0 0 .15em}
+  .ps h3{font-size:11pt;margin:.55em 0 .15em}
+  .ps p{margin:.2em 0}
+  .ps table{font-size:9pt;margin:3px 0 4px;break-inside:avoid}
+  .ps th,.ps td{padding:2px 6px}
+  .ps ol,.ps ul{margin:2px 0;padding-left:20px}
+  footer.kit{font-size:8pt;padding:4px 0 0}
+  footer.kit p:last-child{display:none}
+}
+</style>
+<script src="../assets/kit.js" defer></script>
+<script src="leak-core.js" defer></script>
+<script src="leak.js" defer></script>
+</head>
+<body data-page="leak">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs">ATIA 2026 Annual Convention · Fairbanks · <a href="../">Operations Kit</a></p>
+  <p class="kicker">Measure step · Pains 1, 2 and 3 · <span class="focus ops">OPS</span></p>
+  <h1>Season Leak Audit</h1>
+  <p class="lede">Put a dollar range on three leaks: crew you hire and train twice, guests lost when transit or weather breaks the plan, and capped slots left empty or sold below their value. Then start with the biggest.</p>
+  <ul class="meta">
+    <li><b>Time</b> about 5 minutes with your numbers at hand (estimate)</li><li><b>Cost</b> free, no AI needed</li><li><b>Who</b> owner or manager</li><li><b>Feeds</b> all four numbers</li>
+  </ul>
+  <div class="callout green tonight">
+    <p class="kicker">In the session</p>
+    <p><strong>Tap Load the fictional example, then type your own numbers over it.</strong> Leave a box blank if you do not know it. Every result is a range, not a promise.</p>
+    <div class="btns"><button type="button" class="secondary" data-leak-example="top">Load the fictional example</button> <a class="button secondary" href="#audit">Go to the audit</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </div>
+  <nav class="tool-nav" data-toolnav="leak" aria-label="All tools"></nav>
+  <ul class="onpage" aria-label="On this page">
+    <li><a href="#why">The pain</a></li><li><a href="#how">How to use it</a></li><li><a href="#audit">The audit</a></li><li><a href="#results">Results</a></li><li><a href="#challenge">Challenge my audit</a></li><li><a href="#saved">Saved audits</a></li><li><a href="#files">Downloads</a></li><li><a href="#measure">Measure</a></li><li><a href="#safe">Before you use it</a></li><li><a href="#next">Next</a></li>
+  </ul>
+</header>
+
+<main class="kit">
+  <noscript><div class="callout amber"><p><strong>This page needs JavaScript</strong> for the calculator. The formulas are listed in <a href="leak-worksheet.csv">leak-worksheet.csv</a> and the challenge prompt is in the <a href="../Prompt-Kit.html">printable prompt kit</a>.</p></div></noscript>
+
+  <section class="card teal" aria-labelledby="why">
+    <h2 id="why">The pain it fixes</h2>
+    <p>Every season leaks money in three places: crew hired and trained twice, guests lost when a ship, a flight, the road or the weather breaks the plan, and capped slots left empty or sold below their value. Each leak is a process that did not work the first time. This audit is the Measure step of DMAIC: a dollar range for each leak, from your own numbers, so the first fix is chosen by size and not by the loudest complaint. Six Sigma calls the total the cost of poor quality.</p>
+    <div class="grid three">
+      <div class="stat"><h3>Crew</h3><p class="score">20 hires</p><ul><li>22 seasonal positions, 6 returning staff (6 of 17 eligible: rehire rate 35.3%)</li><li>4 early quits in the first 30 days (early-quit rate 20.0%)</li><li>About $2,800 per hire, all-in (estimate range $2,100 to $3,500)</li></ul></div>
+      <div class="stat"><h3>Road</h3><p class="score">38 disruptions</p><ul><li>545 guests on disrupted bookings, 191 recovered (35.0%)</li><li>$51,596 net revenue refunded, 127.8 staff hours</li><li>Top cause: ship late or tendering from anchor (14 events)</li></ul></div>
+      <div class="stat"><h3>Cap</h3><p class="score">79.1% used</p><ul><li>12,096 of 15,300 glacier slots used; at or near the cap (5 or fewer slots left) on 66 days</li><li>About 1,936 combo requests turned away: 206 at the cap, 1,730 for seats or timing, but 1,423 of those on capped days with only 65 slots left</li><li>3,139 unused slots on the 87 days below the cap, mostly May, September and Saturdays</li></ul></div>
+    </div>
+    <p class="fict">Fictional teaching business: Channel Light Excursions, Juneau. Season May 1 to September 30, 2026: 12,914 guests, net revenue about $1.97 million. All figures are invented for teaching.</p>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <ol class="steps">
+      <li><strong>Load the fictional example</strong> to see a finished audit. Write down which leak comes out on top and why.</li>
+      <li><strong>Type your own numbers over it,</strong> block by block. Leave a box blank if you do not know it; the audit uses what you have. Write the source of each number beside it on the <a href="leak-worksheet.csv">worksheet</a>.</li>
+      <li><strong>Set the uncertainty.</strong> Plus or minus 30% is the default. Widen it when a number is a guess. Write down your choice and why.</li>
+      <li><strong>Read "Start here".</strong> Start with the largest leak unless its range overlaps the next one. Write down the first tool you will open.</li>
+      <li><strong>Copy "Challenge my audit"</strong> into an AI tool. Write down every assumption it questions and the record that would check it.</li>
+      <li><strong>Save the audit and print the scorecard.</strong> Re-run it after next season and compare the two.</li>
+    </ol>
+  </section>
+
+  <div id="audit" tabindex="-1">
+  <form data-builder="leak" id="leak-form" autocomplete="off" novalidate>
+    <section class="card" aria-labelledby="setup-h">
+      <h2 id="setup-h">Your audit</h2>
+      <p class="hint">Numbers only. No names, emails, phone numbers or booking details: the audit never needs them. Everything stays in this browser.</p>
+      <div class="toolbar">
+        <div class="f"><label for="label">Season or label <small>for example 2026</small></label><input type="text" id="label" name="label" maxlength="60"></div>
+        <div class="f"><label for="u">Uncertainty, plus or minus % <small>default 30</small></label><input type="text" inputmode="decimal" id="u" name="u" value="30" aria-describedby="e-u"><p class="err" id="e-u"></p></div>
+        <div class="f"><label for="netrev">Season net revenue <small>optional, for scale</small></label><input type="text" inputmode="decimal" id="netrev" name="netrev" aria-describedby="e-netrev"><p class="err" id="e-netrev"></p></div>
+      </div>
+      <div class="btns">
+        <button type="button" class="secondary" data-leak-example="main">Load the fictional example</button>
+        <button type="button" class="ghost" id="btn-clear">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+      <p class="callout amber" id="ex-note" hidden></p>
+      <p class="warnline" id="warn" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="card" aria-labelledby="crew-h" id="crew">
+      <div class="blockhead"><h2 id="crew-h">1 · Crew leak</h2><span class="pill">feeds Numbers 1 and 2</span></div>
+      <p class="formula">Crew leak = new hires × all-in cost per hire</p>
+      <p class="where">From payroll or your hiring log: everyone hired for the season, including replacements for people who left.</p>
+      <div class="fields">
+        <div class="f"><label for="c_positions">Seasonal positions</label><input type="text" inputmode="decimal" id="c_positions" name="c_positions" aria-describedby="e-c_positions"><p class="err" id="e-c_positions"></p></div>
+        <div class="f"><label for="c_returning">Returning staff</label><input type="text" inputmode="decimal" id="c_returning" name="c_returning" aria-describedby="e-c_returning"><p class="err" id="e-c_returning"></p></div>
+        <div class="f"><label for="c_eligible">Eligible to return <small>from last season, good standing</small></label><input type="text" inputmode="decimal" id="c_eligible" name="c_eligible" aria-describedby="e-c_eligible"><p class="err" id="e-c_eligible"></p></div>
+        <div class="f"><label for="c_hires">New hires <small>including replacements</small></label><input type="text" inputmode="decimal" id="c_hires" name="c_hires" aria-describedby="e-c_hires"><p class="err" id="e-c_hires"></p></div>
+        <div class="f"><label for="c_quits">Early quits <small>left in the first 30 days</small></label><input type="text" inputmode="decimal" id="c_quits" name="c_quits" aria-describedby="e-c_quits"><p class="err" id="e-c_quits"></p></div>
+        <div class="f"><label for="c_cost">All-in cost per hire, $ <small>or build it below</small></label><input type="text" inputmode="decimal" id="c_cost" name="c_cost" aria-describedby="e-c_cost"><p class="err" id="e-c_cost"></p></div>
+      </div>
+      <details class="builder" id="builder">
+        <summary>Build the cost per hire from its parts</summary>
+        <p class="hint">Average per hire. Skip a part you do not pay. Each part is an estimate.</p>
+        <div class="fields">
+          <div class="f"><label for="b_ads">Ads and job boards, $</label><input type="text" inputmode="decimal" id="b_ads" name="b_ads" aria-describedby="e-b_ads"><p class="err" id="e-b_ads"></p></div>
+          <div class="f"><label for="b_sponsor">Sponsor or agency fees, $ <small>average</small></label><input type="text" inputmode="decimal" id="b_sponsor" name="b_sponsor" aria-describedby="e-b_sponsor"><p class="err" id="e-b_sponsor"></p></div>
+          <div class="f"><label for="b_travel">Travel to the job, $ <small>average</small></label><input type="text" inputmode="decimal" id="b_travel" name="b_travel" aria-describedby="e-b_travel"><p class="err" id="e-b_travel"></p></div>
+          <div class="f"><label for="b_housing">Housing setup share, $</label><input type="text" inputmode="decimal" id="b_housing" name="b_housing" aria-describedby="e-b_housing"><p class="err" id="e-b_housing"></p></div>
+          <div class="f"><label for="b_hire_h">Hiring time, hours</label><input type="text" inputmode="decimal" id="b_hire_h" name="b_hire_h" aria-describedby="e-b_hire_h"><p class="err" id="e-b_hire_h"></p></div>
+          <div class="f"><label for="b_hire_rate">Hiring time, $ per hour</label><input type="text" inputmode="decimal" id="b_hire_rate" name="b_hire_rate" aria-describedby="e-b_hire_rate"><p class="err" id="e-b_hire_rate"></p></div>
+          <div class="f"><label for="b_train_h">Training, paid hours</label><input type="text" inputmode="decimal" id="b_train_h" name="b_train_h" aria-describedby="e-b_train_h"><p class="err" id="e-b_train_h"></p></div>
+          <div class="f"><label for="b_train_wage">Training wage, $ per hour</label><input type="text" inputmode="decimal" id="b_train_wage" name="b_train_wage" aria-describedby="e-b_train_wage"><p class="err" id="e-b_train_wage"></p></div>
+          <div class="f"><label for="b_trainer_h">Trainer time, hours</label><input type="text" inputmode="decimal" id="b_trainer_h" name="b_trainer_h" aria-describedby="e-b_trainer_h"><p class="err" id="e-b_trainer_h"></p></div>
+          <div class="f"><label for="b_trainer_rate">Trainer time, $ per hour</label><input type="text" inputmode="decimal" id="b_trainer_rate" name="b_trainer_rate" aria-describedby="e-b_trainer_rate"><p class="err" id="e-b_trainer_rate"></p></div>
+          <div class="f"><label for="b_ramp">Ramp-up shortfall, $ <small>slower work in the first weeks</small></label><input type="text" inputmode="decimal" id="b_ramp" name="b_ramp" aria-describedby="e-b_ramp"><p class="err" id="e-b_ramp"></p></div>
+        </div>
+        <p class="btotal" id="btotal" role="status" aria-live="polite"></p>
+        <div class="btns"><button type="button" class="secondary" id="btn-use-parts" disabled>Use this total as the cost per hire</button></div>
+        <p class="status" role="status" aria-live="polite"></p>
+      </details>
+      <div class="leak-out" id="crew-out" aria-live="polite"></div>
+      <div class="whatif">
+        <h3>The avoidable part: what if</h3>
+        <p class="hint">A what-if, not a target. Try 10 points each and see how many hires that saves.</p>
+        <div class="fields">
+          <div class="f"><label for="c_x">Rehire rate up by <small>points</small></label><input type="text" inputmode="decimal" id="c_x" name="c_x" aria-describedby="e-c_x"><p class="err" id="e-c_x"></p></div>
+          <div class="f"><label for="c_y">Early-quit rate down by <small>points</small></label><input type="text" inputmode="decimal" id="c_y" name="c_y" aria-describedby="e-c_y"><p class="err" id="e-c_y"></p></div>
+        </div>
+        <p class="whatif-out" id="whatif-out" aria-live="polite"></p>
+        <ul class="notes-small" id="whatif-notes"></ul>
+      </div>
+      <details class="how">
+        <summary>How the crew leak is calculated</summary>
+        <p><b>Crew leak</b> = new hires × all-in cost per hire. It counts every hire, not only the avoidable ones: some hiring is always needed. The what-if above estimates the avoidable part.</p>
+        <p><b>Rehire rate</b> (Number 1) = returning staff ÷ staff eligible to return. <b>Early-quit rate</b> (Number 2) = early quits in the first 30 days ÷ new hires.</p>
+        <p><b>What if:</b> extra returners = eligible × the points you enter (never more than the eligible people who did not return). Early quits avoided = the new hires still needed × the points you enter (never below an early-quit rate of zero). Hires avoided = extra returners + early quits avoided, assuming each early quit was replaced by one new hire. Dollars saved = hires avoided × cost per hire. Results are expected values, so they can be fractions of a person.</p>
+        <p>With your numbers:</p>
+        <ul class="math" id="crew-math"></ul>
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="road-h" id="road">
+      <div class="blockhead"><h2 id="road-h">2 · Road leak</h2><span class="pill">feeds Number 3</span></div>
+      <p class="formula">Road leak = guests on disrupted bookings × average net per guest × (1 - recovery rate) + staff hours × loaded cost per hour</p>
+      <p class="where">From your booking system and disruption log: every booking a late ship, a flight, the road or a weather hold disrupted.</p>
+      <div class="fields">
+        <div class="f"><label for="r_events">Disruption events</label><input type="text" inputmode="decimal" id="r_events" name="r_events" aria-describedby="e-r_events"><p class="err" id="e-r_events"></p></div>
+        <div class="f"><label for="r_guests">Guests on disrupted bookings</label><input type="text" inputmode="decimal" id="r_guests" name="r_guests" aria-describedby="e-r_guests"><p class="err" id="e-r_guests"></p></div>
+        <div class="f"><label for="r_recovered">Guests recovered <small>rebooked, or seat refilled</small></label><input type="text" inputmode="decimal" id="r_recovered" name="r_recovered" aria-describedby="e-r_recovered"><p class="err" id="e-r_recovered"></p></div>
+        <div class="f"><label for="r_net">Average net per guest, $ <small>after channel commissions</small></label><input type="text" inputmode="decimal" id="r_net" name="r_net" aria-describedby="e-r_net"><p class="err" id="e-r_net"></p></div>
+        <div class="f"><label for="r_hours">Staff hours on disruptions</label><input type="text" inputmode="decimal" id="r_hours" name="r_hours" aria-describedby="e-r_hours"><p class="err" id="e-r_hours"></p></div>
+        <div class="f"><label for="r_rate">Loaded cost per staff hour, $ <small>wage plus payroll costs</small></label><input type="text" inputmode="decimal" id="r_rate" name="r_rate" aria-describedby="e-r_rate"><p class="err" id="e-r_rate"></p></div>
+      </div>
+      <div class="leak-out" id="road-out" aria-live="polite"></div>
+      <details class="how">
+        <summary>How the road leak is calculated</summary>
+        <p><b>Road leak</b> = (guests on disrupted bookings - guests recovered) × average net per guest + staff hours × loaded cost per hour. That is the same as guests × average net × (1 - recovery rate), plus staff time.</p>
+        <p><b>Recovery rate</b> (Number 3) = guests recovered ÷ guests on disrupted bookings. A guest counts as recovered when rebooked or when the seat was refilled.</p>
+        <p>The average net per guest is an average, so it will not match your refund ledger exactly. In the fictional data, the ledger shows $51,596 refunded while the average-based estimate gives $53,996, about 5% apart. That gap is one reason the audit shows ranges.</p>
+        <p>With your numbers:</p>
+        <ul class="math" id="road-math"></ul>
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="cap-h" id="cap">
+      <div class="blockhead"><h2 id="cap-h">3 · Cap leak</h2><span class="pill">feeds Number 4</span></div>
+      <p class="formula">Cap leak = (a) empty slots on days below the cap + (b) value gap on days at the cap + (c) seats-and-timing turn-aways on days below the cap</p>
+      <p class="where">From your permit use reports and booking system, split by day: "capped days" are days at or near the cap (for example, 5 or fewer slots left), and the rest are days below it. Three parts, three different constraints, shown separately.</p>
+      <fieldset class="part">
+        <legend>(a) Empty slots on days below the cap</legend>
+        <p class="meaning">Volume you can add without a bigger permit: on these days demand binds, not the cap. Exploit it.</p>
+        <div class="fields">
+          <div class="f"><label for="k_unused">Unused slots <small>on days below the cap</small></label><input type="text" inputmode="decimal" id="k_unused" name="k_unused" aria-describedby="e-k_unused"><p class="err" id="e-k_unused"></p></div>
+          <div class="f"><label for="k_vps">Value per filled slot, $ <small>revenue per allocated slot is a conservative proxy</small></label><input type="text" inputmode="decimal" id="k_vps" name="k_vps" aria-describedby="e-k_vps"><p class="err" id="e-k_vps"></p></div>
+          <div class="f"><label for="k_fill">Realistic fill share, % <small>default 30, your judgment</small></label><input type="text" inputmode="decimal" id="k_fill" name="k_fill" value="30" aria-describedby="e-k_fill"><p class="err" id="e-k_fill"></p></div>
+        </div>
+        <p class="part-out" id="cap-a-out" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="part">
+        <legend>(b) Value gap on days at the cap</legend>
+        <p class="meaning">At the cap the lever is value per slot, not volume: price or product mix. The extra net per slot is your estimate; test it in <a href="../3c/">3.c</a> before you rely on it.</p>
+        <div class="fields">
+          <div class="f"><label for="k_capguests">Combo guests <small>on capped days</small></label><input type="text" inputmode="decimal" id="k_capguests" name="k_capguests" aria-describedby="e-k_capguests"><p class="err" id="e-k_capguests"></p></div>
+          <div class="f"><label for="k_extra">Extra net per slot, $ <small>default 10, your estimate</small></label><input type="text" inputmode="decimal" id="k_extra" name="k_extra" value="10" aria-describedby="e-k_extra"><p class="err" id="e-k_extra"></p></div>
+          <div class="f"><label for="k_capturned">Requests turned away <small>on capped days, optional evidence</small></label><input type="text" inputmode="decimal" id="k_capturned" name="k_capturned" aria-describedby="e-k_capturned"><p class="err" id="e-k_capturned"></p></div>
+        </div>
+        <p class="part-out" id="cap-b-out" aria-live="polite"></p>
+      </fieldset>
+      <fieldset class="part">
+        <legend>(c) Seats-and-timing turn-aways on days below the cap</legend>
+        <p class="meaning">No departure had seats at a time that fit the guest's ship. Unlike the cap, this constraint is yours to elevate: add or move a departure.</p>
+        <div class="fields">
+          <div class="f"><label for="k_seatturned">Requests turned away <small>for seats or timing, days below the cap</small></label><input type="text" inputmode="decimal" id="k_seatturned" name="k_seatturned" aria-describedby="e-k_seatturned"><p class="err" id="e-k_seatturned"></p></div>
+          <div class="f"><label for="k_combonet">Combo net per guest, $ <small>net of the capped product</small></label><input type="text" inputmode="decimal" id="k_combonet" name="k_combonet" aria-describedby="e-k_combonet"><p class="err" id="e-k_combonet"></p></div>
+          <div class="f"><label for="k_recap">Recapture share, % <small>default 25, your judgment</small></label><input type="text" inputmode="decimal" id="k_recap" name="k_recap" value="25" aria-describedby="e-k_recap"><p class="err" id="e-k_recap"></p></div>
+        </div>
+        <p class="part-out" id="cap-c-out" aria-live="polite"></p>
+      </fieldset>
+      <details class="builder">
+        <summary>Season totals for Number 4 (optional)</summary>
+        <p class="hint">Not part of the leak. These give revenue per allocated slot (Number 4) and allocation used %.</p>
+        <div class="fields">
+          <div class="f"><label for="k_alloc">Allocated slots <small>for the season</small></label><input type="text" inputmode="decimal" id="k_alloc" name="k_alloc" aria-describedby="e-k_alloc"><p class="err" id="e-k_alloc"></p></div>
+          <div class="f"><label for="k_used">Slots used <small>for the season</small></label><input type="text" inputmode="decimal" id="k_used" name="k_used" aria-describedby="e-k_used"><p class="err" id="e-k_used"></p></div>
+          <div class="f"><label for="k_rev">Net revenue of the capped product, $</label><input type="text" inputmode="decimal" id="k_rev" name="k_rev" aria-describedby="e-k_rev"><p class="err" id="e-k_rev"></p></div>
+        </div>
+        <p class="part-out" id="cap-ctx-out" aria-live="polite"></p>
+      </details>
+      <div class="leak-out" id="cap-out" aria-live="polite"></div>
+      <div class="callout bind">
+        <p><strong>Identify which constraint actually binds, day by day, before you exploit it.</strong></p>
+        <p id="cap-bind"></p>
+        <p class="hint">In the fictional data, both constraints bound at once on the 66 days at or near the cap (5 or fewer slots left): 1,423 of the 1,730 seats-or-timing turn-aways fell on those days, when only 65 slots were left, so extra seats there would mostly have sold Whale Only ($117.58 average net), not combos. That is why part (c) counts only the 307 turn-aways on days below the cap.</p>
+      </div>
+      <details class="how">
+        <summary>How the cap leak is calculated</summary>
+        <p><b>(a)</b> = unused slots on days below the cap × value per filled slot × realistic fill share. Only a share of light-day slots could really be sold, so the fill share is your judgment; 30% is a starting point, not a finding. Revenue per allocated slot is a conservative value per filled slot: it sits below the average combo net and allows for light-day discounts.</p>
+        <p><b>(b)</b> = combo guests on capped days × extra net per slot. The extra net is what you believe premium pricing or product mix could add per slot on a capped day: your estimate, $10 by default. Requests turned away on capped days are the evidence that demand exceeded the slots; with none, treat (b) as a guess. It is value per slot, not more guests.</p>
+        <p><b>(c)</b> = seats-or-timing turn-aways on days below the cap × combo net per guest × recapture share. The recapture share is the part a new or moved departure would win back: your judgment, 25% by default. Turn-aways on capped days are left out, because there the allocation binds too.</p>
+        <p><b>Revenue per allocated slot</b> (Number 4) = net revenue of the capped product ÷ allocated slots. Also report allocation used % = slots used ÷ allocated slots.</p>
+        <p>With your numbers:</p>
+        <ul class="math" id="cap-math"></ul>
+      </details>
+    </section>
+  </form>
+  </div>
+
+  <section class="card teal" aria-labelledby="results" id="results-card">
+    <h2 id="results" tabindex="-1">Your results</h2>
+    <div class="tiles" id="tiles" aria-live="polite"></div>
+    <p class="copq" id="copq"></p>
+    <h3>Start here</h3>
+    <ol class="rank" id="rank"></ol>
+    <h3>The four numbers, as a baseline</h3>
+    <div class="table-wrap">
+      <table class="nums stack">
+        <caption class="visually-hidden">The four numbers from this audit</caption>
+        <thead><tr><th scope="col">Number</th><th scope="col">Value</th><th scope="col">How it was counted</th></tr></thead>
+        <tbody id="numbers"></tbody>
+      </table>
+    </div>
+    <ul class="notes" id="notes"></ul>
+    <div class="grid two">
+      <div><label for="f-date">Audit date</label><input type="date" id="f-date"></div>
+      <div><label for="f-note">Note <small>optional, no names</small></label><input type="text" id="f-note" maxlength="140" placeholder="For example: before the housing change"></div>
+    </div>
+    <div class="btns">
+      <button type="button" id="btn-save">Save this audit</button>
+      <button type="button" class="secondary" id="btn-copy">Copy the summary</button>
+      <button type="button" class="secondary" id="btn-dl">Save the summary (.txt)</button>
+      <button type="button" class="secondary" id="btn-print">Print the scorecard</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="challenge">
+    <h2 id="challenge">Challenge my audit</h2>
+    <p>An audit you built yourself is easy to believe. Paste this prompt into Claude, ChatGPT or Gemini (a free tier works). It sends numbers only and asks the AI to question every assumption, without inventing data. Then check what it says against your own records.</p>
+    <div class="output"><p class="label">Challenge my audit prompt</p><pre id="challenge-prompt" tabindex="0" aria-label="Challenge my audit prompt"></pre></div>
+    <div class="btns">
+      <button type="button" data-copy="challenge-prompt">Copy the prompt</button>
+      <button type="button" class="secondary" data-download="leak-challenge-prompt.txt" data-from="challenge-prompt">Save as .txt</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+    <p class="ailinks">Paste it into <a href="https://claude.ai/" target="_blank" rel="noopener">Claude</a> <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a> <span class="hint">(plain links; nothing from this page goes with them)</span></p>
+  </section>
+
+  <section class="card note" aria-labelledby="saved">
+    <h2 id="saved" tabindex="-1">Saved audits</h2>
+    <p>Saved audits stay in this browser on this device. Nothing is sent anywhere. Save one audit per season and compare them here. Download a copy to keep them safe.</p>
+    <p class="warnline" id="storage-warn" role="status" aria-live="polite"></p>
+    <p id="compare"></p>
+    <div id="history"></div>
+    <div class="btns">
+      <button type="button" class="secondary" id="btn-export-csv">Download all (.csv)</button>
+      <button type="button" class="secondary" id="btn-export-json">Download all (.json)</button>
+      <button type="button" class="secondary" id="btn-import">Import (.json)</button>
+      <button type="button" class="danger" id="btn-delete-all">Delete all saved audits</button>
+    </div>
+    <input type="file" id="f-import" accept=".json,application/json" class="visually-hidden" tabindex="-1" aria-hidden="true">
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files">Downloads</h2>
+    <ul class="files">
+      <li><a href="leak-worksheet.csv" download>leak-worksheet.csv</a> <span class="hint">Every input, where to find it in your records, the fictional example value and an empty column for yours. Fill it before you sit down with the calculator.</span></li>
+      <li><a href="../Prompt-Kit.html">Printable prompt kit</a> <span class="hint">The "Challenge my audit" prompt with placeholders, beside the nine tool prompts.</span></li>
+      <li><span>Your own files:</span> <span class="hint">"Save the summary (.txt)" under Your results, and "Download all" under Saved audits.</span></li>
+    </ul>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure">How you will know it worked</h2>
+    <p>This audit is the baseline for all four numbers. Save it now, re-run it once a season after the season closes, and compare.</p>
+    <div class="table-wrap">
+      <table class="stack">
+        <thead><tr><th scope="col">Number</th><th scope="col">How to count it</th><th scope="col">Block</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1 · Rehire rate (want up)</th><td data-label="How">Staff who return this season ÷ staff eligible to return from last season</td><td data-label="Block">Crew</td></tr>
+          <tr><th scope="row">2 · Early-quit rate (want down)</th><td data-label="How">New hires who leave in their first 30 days ÷ new hires who started</td><td data-label="Block">Crew</td></tr>
+          <tr><th scope="row">3 · Disruption recovery rate (want up)</th><td data-label="How">Guests on disrupted bookings who were rebooked or whose seat was refilled ÷ all guests on disrupted bookings</td><td data-label="Block">Road</td></tr>
+          <tr><th scope="row">4 · Revenue per allocated slot (want up)</th><td data-label="How">Net revenue of the capped product ÷ allocated slots; also report allocation used %</td><td data-label="Block">Cap</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li><b>No targets.</b> Set them after a season of your own data.</li>
+      <li><b>Compare season to season.</b> A few hundred events a season make month-to-month swings mostly noise.</li>
+      <li><b>A real change</b> is one where this season's range does not overlap last season's. Inside the band, wait for another season. Saved audits shows this for you.</li>
+      <li><b>Small counts move a lot.</b> With 20 new hires, one early quit moves the early-quit rate 5 points.</li>
+    </ul>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe">Before you use it</h2>
+    <p><strong>AI drafts. You approve.</strong> This page only measures. The challenge prompt asks an AI to question your numbers; it decides nothing.</p>
+    <ul class="obl">
+      <li><span class="lbl">Recommendation</span> Type numbers only: no guest or staff names, emails, phone numbers, IDs or booking details, here or in the AI tool. Nothing on this page leaves your browser. Cost of ignoring it: personal data in a chat history you do not control.</li>
+      <li><span class="lbl">Recommendation</span> Treat every result as an estimate, not accounting. Check a number with your bookkeeper before it goes into a loan application, a permit filing or a price decision.</li>
+      <li><span class="lbl">Policy choice</span> The uncertainty, fill share, extra net per slot and recapture share are your judgments. Write down why you chose each one, so next season compares like with like.</li>
+      <li><span class="lbl contract">Contractual</span> How much of your allocation you may use, report or carry over is set by your permit or agreement (USFS, NPS, city). Check your permit before acting on part (a) or (b). This audit assumes no use-it-or-lose-it rule.</li>
+      <li><span class="lbl legal">Legal mandate</span> Vessel passenger limits come from each vessel's Coast Guard certificate of inspection. Adding seats or a departure for part (c) stays inside that certificate. Confirm the current text of yours.</li>
+      <li><span class="lbl legal">Legal mandate</span> If you act on part (b) with a lodge package, the FTC Rule on Unfair or Deceptive Fees, 16 CFR Part 464, requires the total price for short-term lodging. It covers lodging and live-event tickets, not tours generally. Confirm current text.</li>
+      <li><span class="lbl contract">Contractual</span> Rebooking and refunds for guests booked through a cruise line follow that cruise line's terms. Check your contract before you change the road numbers you can act on.</li>
+      <li><span class="lbl legal">Legal mandate</span> If you act on the crew leak by changing who you hire or ask back, federal anti-discrimination law (Title VII, ADA, ADEA) applies to those decisions, whatever tool helps make them. Confirm current text with a qualified person. This page never scores or ranks individual people.</li>
+    </ul>
+  </section>
+
+  <section class="card teal" aria-labelledby="next">
+    <h2 id="next">Next: the three basic rungs</h2>
+    <p>Your "Start here" list puts these in order for your numbers. Each one is a free-tier, no-code tool.</p>
+    <ul>
+      <li><a href="../1a/"><b>1.a Rehire before you recruit</b></a> for the crew leak. October is when it pays most: the crew you want back just left.</li>
+      <li><a href="../2a/"><b>2.a Journey FMEA and disruption playbook</b></a> for the road leak.</li>
+      <li><a href="../3a/"><b>3.a Fill every capped slot</b></a> for the cap leak.</li>
+      <li><a href="../">All nine tools</a>, the four numbers and the 90-day frame.</li>
+    </ul>
+  </section>
+
+  <section id="print-summary" class="print-only ps" aria-hidden="true"></section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+</body>
+</html>

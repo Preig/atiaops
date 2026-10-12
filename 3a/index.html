@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>3.a Fill every capped slot · ATIA Operations Kit</title>
+<meta name="description" content="Map where your capped slots go unused and where the cap binds, check which constraint actually turns guests away, and build a pricing and packaging memo prompt from the summary. Paste or upload daily counts; nothing leaves your browser.">
+<link rel="stylesheet" href="../assets/kit.css">
+<style>
+/* Page-specific styles for tool 3a. Shared styles live in ../assets/kit.css. */
+.onpage{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:12px 0 0;padding:0;list-style:none}
+.onpage a{color:var(--teal-d)}
+.card>h2:first-child{margin-top:0}
+.reminder{font-size:14px;line-height:1.45;color:#5c3d00;background:var(--amber-t);border-left:4px solid #d49a1a;border-radius:4px;padding:7px 11px;margin:6px 0 4px}
+.figs{list-style:none;padding:0;margin:0}
+.figs li{margin:0 0 12px}
+.figs b.n{font-size:28px;color:var(--teal-d);display:block;line-height:1.1}
+.fgrid{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.fgrid>div{min-width:0;display:flex;flex-direction:column;justify-content:flex-end}
+input[type=file]{font-size:15px;max-width:100%;margin:4px 0}
+textarea.mono{font:14px/1.5 Consolas,"Courier New",monospace}
+.notes{list-style:none;padding:0;margin:6px 0;font-size:14px}
+.notes li{padding:5px 0;border-bottom:1px dashed var(--line);overflow-wrap:anywhere}
+.notes li.err::before{content:"Skipped: ";font-weight:bold;color:var(--red)}
+.notes li.warn::before{content:"Check: ";font-weight:bold;color:var(--amber)}
+.kpis{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin:12px 0}
+.kpi{background:#fff;border:1px solid var(--line);border-top:4px solid var(--teal);border-radius:4px;padding:10px 12px;font-size:14px;line-height:1.4;min-width:0}
+.kpi b{display:block;font-size:28px;line-height:1.1;color:var(--teal-d);margin:0 0 4px;overflow-wrap:anywhere}
+.kpi.green{border-top-color:var(--green)}
+.kpi.green b{color:var(--green-d)}
+.facts,.read{margin:6px 0 12px;padding-left:1.2em}
+.facts li,.read li{margin:0 0 6px}
+.myread{font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:var(--slate-m)}
+.heat{display:grid;grid-template-columns:3.4em repeat(7,minmax(0,1fr));gap:3px;margin:10px 0 6px;max-width:640px}
+.heat .row{display:contents}
+.heat .ch{font-size:13px;font-weight:bold;text-align:center;color:var(--slate);padding:2px 0}
+.heat .rh{font-size:14px;font-weight:bold;color:var(--slate);align-self:center;overflow-wrap:anywhere}
+.heat .c{border-radius:3px;text-align:center;font-size:14px;font-weight:bold;padding:12px 1px;line-height:1.2;min-width:0;overflow-wrap:anywhere}
+.lv0{background:#f3f7f8;color:#1e293b;box-shadow:inset 0 0 0 1px #d9e2e5}
+.lv1{background:#d3ebf2;color:#1e293b}
+.lv2{background:#a9d7e5;color:#1e293b}
+.lv3{background:#5fb3cc;color:#1e293b}
+.lv4{background:#176374;color:#fff}
+.amber .lv1{background:#fff4dc}
+.amber .lv2{background:#f6d58a}
+.amber .lv3{background:#e9a23b}
+.amber .lv4{background:#8a5a00;color:#fff}
+.heat .none{background:repeating-linear-gradient(45deg,#fff 0 4px,#eef1ec 4px 8px);color:var(--slate-m);font-weight:normal}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;list-style:none;padding:0;margin:4px 0 10px;font-size:13px;color:var(--slate)}
+.legend li{display:flex;align-items:center;gap:5px}
+.legend i{display:inline-block;width:18px;height:14px;border-radius:2px}
+.legend i.none{background:repeating-linear-gradient(45deg,#fff 0 4px,#eef1ec 4px 8px);border:1px solid #d9e2e5}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0 14px}
+.tablewrap table.wide{min-width:640px}
+td.num{white-space:nowrap}
+th.num{white-space:normal}
+.btns.tight{margin:8px 0}
+button.small{font-size:14px;padding:6px 12px}
+.obl{list-style:none;padding:0;margin:10px 0}
+.obl>li{padding:8px 0;border-top:1px solid var(--line)}
+.permit{list-style:none;padding:0;margin:10px 0;counter-reset:pi}
+.permit>li{counter-increment:pi;padding:10px 0;border-top:1px solid var(--line)}
+.permit .q{display:flex;gap:10px;align-items:flex-start;font-weight:normal;color:var(--ink);font-size:16px;margin:0}
+.permit .q input{width:20px;height:20px;flex:none;margin:3px 0 0}
+.permit .q span::before{content:counter(pi) ". ";font-weight:bold;color:var(--green-d)}
+.permit .n{margin:6px 0 0 30px}
+.permit .n label{font-size:14px;margin:0 0 2px}
+.calc{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.calcout{font-weight:bold;color:var(--teal-d);min-height:1.6em}
+.ailinks a{margin-right:12px;white-space:nowrap}
+.output pre{max-height:30em;overflow:auto}
+.files li{flex-wrap:wrap;gap:4px 12px}
+.empty-note{color:var(--slate-m);font-style:italic}
+@media(max-width:640px){
+  .heat{grid-template-columns:2.9em repeat(7,minmax(0,1fr));gap:2px}
+  .heat .c{font-size:12px;padding:12px 0}
+  .heat .ch{font-size:12px}
+  .heat .rh{font-size:13px}
+  table.stack thead{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  table.stack,table.stack tbody,table.stack tr,table.stack th,table.stack td{display:block;width:auto}
+  table.stack{background:none}
+  table.stack tr{background:#fff;border:1px solid #ccd2c8;border-radius:4px;margin:0 0 8px;padding:0 0 4px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  table.stack tr>th{grid-column:1/-1}
+  table.stack th,table.stack td,table.stack td.num{border:0;padding:3px 10px;text-align:left;white-space:normal}
+  table.stack th{background:var(--green-t)}
+  table.stack td[data-label]::before{content:attr(data-label) ": ";font-weight:bold;color:var(--slate)}
+  .permit .n{margin-left:0}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .kpi{padding:8px 10px;font-size:13.5px}
+  .kpi b{font-size:23px}
+}
+@media print{.reminder,#csv,#csv-file,label[for=csv-file],.ailinks{display:none}}
+</style>
+<script src="../assets/kit.js" defer></script>
+<script src="slots-core.js" defer></script>
+<script src="slots.js" defer></script>
+</head>
+<body data-page="3a">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs">ATIA 2026 Annual Convention · Fairbanks · <a href="../">Operations Kit</a></p>
+  <p class="kicker"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Pain 3 · Basic · <span class="focus ops">OPS</span></p>
+  <h1>3.a Fill every capped slot</h1>
+  <p class="lede">Map where your capped slots went unused and where the cap bound, check which constraint actually turned guests away, then have AI draft pricing and packaging options from the summary. You decide.</p>
+  <ul class="meta">
+    <li><b>Time</b> estimate: 1 to 2 hours</li><li><b>Cost</b> estimate: free tier</li><li><b>Who</b> owner or office lead</li><li><b>Feeds</b> Number 4</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="3a" aria-label="All tools"></nav>
+  <ul class="onpage" aria-label="On this page">
+    <li><a href="#why">The pain</a></li><li><a href="#how">How to use it</a></li><li><a href="#map">Slot-use map</a></li><li><a href="#memo">Memo prompt</a></li><li><a href="#permit">Permit check</a></li><li><a href="#files">Downloads</a></li><li><a href="#measure">Measure</a></li><li><a href="#safe">Before you use it</a></li><li><a href="#next">Next rung</a></li>
+  </ul>
+</header>
+
+<main class="kit">
+  <section class="card teal" aria-labelledby="why">
+    <h2 id="why">The pain it fixes</h2>
+    <p>A capped product sells only as many slots as the permit allows, so the cap sets the pace of the whole product. Theory of Constraints says: identify the constraint, exploit it (get full use out of it), subordinate everything else to it, elevate it if you can, then repeat. Under a cap, an empty slot on a light day and a no-show on a capped day are both lost for good. A regulatory cap is not yours to elevate, so getting full use out of it is the job. But first check which constraint actually binds: guests can be turned away by the cap, or by seats and departure times, and only the second is yours to change.</p>
+    <h3>The fictional example: Channel Light Excursions, Juneau (FICTIONAL TEACHING BUSINESS)</h3>
+    <ul class="figs">
+      <li><b class="n">79.1%</b> of the glacier allocation used: 12,096 of 15,300 slots (100 guest visits a day, May 1 to September 30, 2026).</li>
+      <li><b class="n">66 days</b> at the cap (5 or fewer slots left). July ran at 99%. The empty slots sat in May (56% used), September (62%) and on Saturdays (66%).</li>
+      <li><b class="n">1,936</b> combo requests turned away (estimate): only 206 at the glacier cap, and 1,730 because no departure had seats at a time that fit the guest's ship.</li>
+      <li><b class="n">$115.67</b> revenue per allocated slot (combo net revenue $1,769,688 over 15,300 slots). That is Number 4.</li>
+    </ul>
+    <div class="callout green">
+      <p><b>Teaching point: identify which constraint actually binds, day by day, before you exploit it.</b> In the example, 1,423 of the 1,730 seats-or-timing turn-aways fell on the 66 days the cap was reached, when only 65 glacier slots were left: on those days both constraints bind, and an extra seat sells the uncapped trip (Whale Only), not another glacier combo. Only 307 fell on the 87 days below the cap. That is where checking the departure schedule against the ships' in-port windows, a constraint the owner can elevate, wins back combos.</p>
+      <p><span class="myread">My read</span> On capped days the lever is the value of each slot, not more seats; on days below the cap it is filling empty slots and fitting departures to the ships' hours. Load the example below: the map splits the 1,730 by whether the cap was reached that day.</p>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <ol class="steps">
+      <li><b>Export</b> one row per day from your booking system or permit log: date, allocation, used. Add no-shows and turned-away requests if you track them. Write down where the export came from.</li>
+      <li><b>Paste or upload</b> it below and fix any skipped rows. Write down the season's allocation used % and days at the cap.</li>
+      <li><b>Read the map.</b> Find where slots sat empty and where the cap bound. Write down the two lightest months or weekdays.</li>
+      <li><b>Check which constraint binds.</b> Compare requests turned away at the cap with those turned away for seats or timing. Write down your first move.</li>
+      <li><b>Copy the memo prompt</b> into Claude, ChatGPT or Gemini (a free tier works). Read the options against your summary. Write down the one or two you will test and who decides.</li>
+      <li><b>Work through the permit check</b> with your permit in hand. Write down each answer with its clause.</li>
+      <li><b>Count Number 4</b> at season end and compare it with this season.</li>
+    </ol>
+    <p class="hint">Times are estimates for an operator who can export daily counts. Without an export, typing a season of daily counts into a spreadsheet adds an estimated 1 to 2 hours.</p>
+  </section>
+
+  <section class="card" aria-labelledby="map">
+    <h2 id="map">Slot-use map</h2>
+    <p class="reminder" id="csv-reminder"><b>Counts only.</b> Never paste guest or staff names, emails, phone numbers, payment data, IDs or medical details. This tool needs dates and counts. What you paste or upload is read on this device and stays in this browser.</p>
+    <label for="csv">Daily counts (CSV) <small>one row per day. Columns: date, allocation, used. Optional: no_shows, turned_away, or its two parts turned_away_at_cap and turned_away_seats_or_timing.</small></label>
+    <textarea id="csv" class="tall mono" spellcheck="false" autocomplete="off" aria-describedby="csv-reminder csv-hint" placeholder="date,allocation,used&#10;2026-05-01,100,58&#10;2026-05-02,100,30"></textarea>
+    <p class="hint" id="csv-hint">Paste straight from a spreadsheet (tabs work) or a CSV. Dates as 2026-05-01 or 5/1/2026. On a shared computer, use "Clear everything" at the bottom of the page when you finish.</p>
+    <label for="csv-file">Or upload a CSV file <small>(read on this device; it does not upload anywhere)</small></label>
+    <input type="file" id="csv-file" accept=".csv,.txt,.tsv,text/csv,text/plain">
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="loadDemo">Load the fictional example (2026 allocation)</button>
+        <button type="button" class="ghost" id="loadMessy">Try a messy CSV</button>
+        <button type="button" class="ghost" id="csvClear">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <p id="parse-status" role="status" aria-live="polite">No data yet. Load the fictional example or paste your own daily counts.</p>
+    <details id="parse-details" hidden>
+      <summary id="parse-summary">Rows the page skipped or wants you to check</summary>
+      <ul class="notes" id="parse-notes"></ul>
+    </details>
+
+    <fieldset>
+      <legend>Settings</legend>
+      <div class="fgrid">
+        <div><label for="rps">Value of one slot ($) <small>default: the fictional revenue per allocated slot</small></label><input type="text" id="rps" inputmode="decimal" autocomplete="off" value="115.67"></div>
+        <div><label for="thr">Day at the cap: slots left <small>this many or fewer</small></label><input type="number" id="thr" min="0" step="1" inputmode="numeric" value="5"></div>
+        <div><label for="fill">Share of unused slots you could realistically fill (%) <small>an assumption</small></label><input type="text" id="fill" inputmode="decimal" autocomplete="off" value="30"></div>
+      </div>
+      <p class="status" id="settings-status" role="status" aria-live="polite"></p>
+      <details>
+        <summary>Why these defaults</summary>
+        <p><b>Value of one slot.</b> $115.67 is the fictional revenue per allocated slot (Number 4): net revenue of the capped product divided by every allocated slot, used or not. It is lower than the net revenue from a guest who actually used a slot, so it values an empty slot cautiously. Use your own Number 4, or your average net per guest on the capped product.</p>
+        <p><b>At the cap.</b> A day with 5 or fewer slots left counts as at the cap, because a leftover smaller than a typical party rarely sells. Change it to match your party sizes. <span class="lbl">Policy choice</span></p>
+        <p><b>Fill share.</b> Not every empty slot can be sold. 30% is the same planning assumption the Season Leak Audit uses; it is not a forecast. Write down your own reason for the number you pick.</p>
+      </details>
+    </fieldset>
+
+    <div id="results" hidden>
+      <h3>Season at a glance</h3>
+      <div class="kpis" id="kpis"></div>
+      <h3>What the numbers say</h3>
+      <ul class="facts" id="facts"></ul>
+      <h3><span class="myread">My read</span> What it means <span class="hint">(rule-based reading of your numbers, not advice)</span></h3>
+      <ul class="read" id="read"></ul>
+
+      <h3 id="heat-h">Month by weekday</h3>
+      <label for="metric">Show</label>
+      <select id="metric">
+        <option value="used">Allocation used %</option>
+        <option value="unused">Unused slots</option>
+        <option value="cap">Days at the cap</option>
+      </select>
+      <ul class="legend" id="legend" aria-label="Color key"></ul>
+      <div class="heat" id="heat" role="table" aria-labelledby="heat-h" aria-describedby="heat-note"></div>
+      <p class="hint" id="heat-note">Each cell holds all days of that weekday in that month. The number in the cell is the value; color repeats it. Striped cells have no days in your file.</p>
+      <details>
+        <summary>The same numbers as a table</summary>
+        <div class="tablewrap"><table class="wide" id="heat-table"></table></div>
+      </details>
+
+      <h3>By month</h3>
+      <div class="tablewrap"><table class="stack" id="t-month"></table></div>
+      <h3>By weekday</h3>
+      <div class="tablewrap"><table class="stack" id="t-week"></table></div>
+      <div>
+        <div class="btns"><button type="button" class="secondary" id="dlSummary">Save the summary (.csv)</button></div>
+        <p class="status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="memo">
+    <h2 id="memo">Pricing and packaging memo prompt</h2>
+    <p>Built from the computed summary only: totals, months, weekdays and the turned-away split. Your daily rows never go into it. The AI drafts options; the owner decides. Nothing changes a price.</p>
+    <label for="capName">What the cap limits <small>(one line)</small></label>
+    <input type="text" id="capName" autocomplete="off" placeholder="For example: glacier stop, commercial-use allocation of 100 guest visits per day">
+    <label for="facts-in">Your approved product and price facts <small>(optional, recommended)</small></label>
+    <p class="reminder" id="facts-reminder">Facts about your business only: products, prices, channels, policies. No guest or staff details.</p>
+    <textarea id="facts-in" aria-describedby="facts-reminder"></textarea>
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="loadFacts">Load the fictional facts</button>
+        <button type="button" class="ghost" id="factsClear">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <div class="output">
+      <p class="label">Memo prompt</p>
+      <pre id="out-memo" tabindex="0" aria-label="Memo prompt"></pre>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" data-copy="out-memo">Copy prompt</button>
+        <button type="button" class="secondary" data-download="3a-memo-prompt.txt" data-from="out-memo">Save as .txt</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <p class="ailinks">Paste it into <a href="https://claude.ai/" target="_blank" rel="noopener">Claude</a> <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a> <span class="hint">(opens a new tab; the prompt is never put in the link)</span></p>
+    <details>
+      <summary>Check the answer before you act on it</summary>
+      <ul>
+        <li>Every number in the answer appears in your summary. Anything else is invented: strike it.</li>
+        <li>No option uses more slots than the allocation, or works around the permit.</li>
+        <li>Each price idea is an option with a risk next to it, not a decision. The owner decides; nothing changes automatically.</li>
+        <li>Every [FILL] is answered by the owner before anything is tested.</li>
+        <li>The answer is marked DRAFT - PENDING OWNER REVIEW.</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="permit">
+    <h2 id="permit">Permit check <span class="lbl contract">Contractual</span></h2>
+    <p>Commercial-use permits and allocations (USFS, NPS, city agreements) vary. Every answer below comes from your permit or agreement, not from this kit: check your permit and quote the clause. Ticks and notes stay in this browser.</p>
+    <ol class="permit" id="permit-list"></ol>
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="dlPermit">Save the permit check (.md)</button>
+        <button type="button" class="ghost" id="permitClear">Clear ticks and notes</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files">Downloads</h2>
+    <ul class="files">
+      <li><a href="allocation-template.csv" download>allocation-template.csv</a> <span class="hint">Column headers and three made-up rows that show the format. Replace them with one row per day from your booking system or permit log; drop the optional columns you do not track.</span></li>
+      <li><a href="../data/allocation_2026.csv" download>allocation_2026.csv</a> <span class="hint">The fictional season (Channel Light Excursions, FICTIONAL), 153 days. Its combo_guests column is read as "used".</span></li>
+      <li><button type="button" class="ghost small" id="dlSummary2">slot-use-summary.csv</button> <span class="hint">Season, month and weekday totals from what is loaded above.</span></li>
+      <li><button type="button" class="ghost small" data-download="3a-memo-prompt.txt" data-from="out-memo">3a-memo-prompt.txt</button> <span class="hint">The memo prompt as it stands.</span></li>
+      <li><button type="button" class="ghost small" id="dlPermit2">permit-check.md</button> <span class="hint">The permit questions with your ticks and notes.</span></li>
+    </ul>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure">How you will know it worked</h2>
+    <ul>
+      <li><b>Number 4, revenue per allocated slot:</b> net revenue of the capped product divided by allocated slots for the season. Count it at season end. The fictional 2026 baseline is $115.67.</li>
+      <li><b>Allocation used %:</b> slots used divided by slots allocated. Watch it monthly in season to act; judge it season to season.</li>
+      <li><b>Turned away, in two parts:</b> at the cap, and for seats or timing. If you change the departure schedule, the seats-or-timing count is the one that should fall.</li>
+    </ul>
+    <p>Daily use moves with ships in port and weather. Compare the same months season to season, and look at passengers in port alongside: if ships brought fewer passengers and your use held, that is your doing. Do not credit a change to one tool.</p>
+    <h3>Number 4 calculator <span class="hint">(saved in this browser only)</span></h3>
+    <div class="calc">
+      <div><label for="n4net">Net revenue of the capped product ($)</label><input type="text" id="n4net" inputmode="decimal" autocomplete="off"></div>
+      <div><label for="n4slots">Allocated slots for the season</label><input type="text" id="n4slots" inputmode="numeric" autocomplete="off"></div>
+      <div><label for="n4used">Slots used <small>(optional)</small></label><input type="text" id="n4used" inputmode="numeric" autocomplete="off"></div>
+    </div>
+    <p class="calcout" id="n4out" role="status" aria-live="polite"></p>
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="n4demo">Load the fictional numbers</button>
+        <button type="button" class="ghost" id="n4use">Use this as the value of one slot above</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe">Before you use it</h2>
+    <p><strong>AI drafts. You approve.</strong> The memo is a list of options marked DRAFT - PENDING OWNER REVIEW. Price, deposit and schedule decisions stay with the owner.</p>
+    <ul class="obl">
+      <li><span class="lbl contract">Contractual</span> <b>Permit terms.</b> How use is counted, actual-use reporting, renewal and transfers are set by your permit or agreement (USFS, NPS, city). Check your permit. This kit makes no claim about how use affects future allocation.</li>
+      <li><span class="lbl legal">Legal mandate</span> <b>Seats are set by the vessel.</b> If you add seats or departures to fix a seats-or-timing constraint, the passenger limit comes from each vessel's Coast Guard certificate of inspection. Vessel-specific: confirm the current certificate.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Channel contracts.</b> Cruise line and OTA agreements can set rate parity, allotments and cancellation terms. Check your contracts before any price, deposit or cutoff change.</li>
+      <li><span class="lbl legal">Legal mandate</span> <b>Lodge packages show the total price.</b> The FTC Rule on Unfair or Deceptive Fees, 16 CFR Part 464, covers short-term lodging and live-event tickets, so a package that includes a lodge night shows the total price, with every fee the guest cannot avoid. Tours sold alone are not covered by that rule. Confirm current text.</li>
+      <li><span class="lbl legal">Legal mandate</span> <b>No fake reviews.</b> The FTC Consumer Review Rule, 16 CFR Part 465, bans fake or AI-invented reviews and testimonials. Light-day marketing uses none. Confirm current text.</li>
+      <li><span class="lbl">Recommendation</span> <b>No automatic price changes.</b> A person decides every price. Reason: a price set by a tool can break a channel contract or a published total price. The cost of ignoring it: guest trust and contract disputes.</li>
+      <li><span class="lbl">Policy choice</span> <b>Deposits, waitlists and cutoffs on capped days</b> are the owner's decisions. Write them down and publish them before you sell under them.</li>
+      <li><span class="lbl">Recommendation</span> <b>Counts only.</b> This tool needs dates and counts, never guest data. Reason: guest data in a spreadsheet or AI chat is a breach risk. Alaska's Personal Information Protection Act, AS 45.48, sets breach-notification duties for certain personal information you hold. <span class="lbl legal">Legal mandate</span></li>
+    </ul>
+  </section>
+
+  <section class="card teal" aria-labelledby="next">
+    <h2 id="next">Next rung</h2>
+    <p><a href="../3b/"><b>3.b Off-cap product lab</b></a>: once the cap is fully used, grow where it does not bind. Find the light days in next season's port schedule and design products that use no capped slot.</p>
+    <p>Measure first? The <a href="../leak/">Season Leak Audit</a> puts a dollar range on the cap leak. Later: <a href="../3c/">3.c Revenue-per-slot optimizer</a> tests product mix and prices under ranges.</p>
+    <div class="btns no-print">
+      <button type="button" class="ghost" id="forget">Clear everything this page saved in this browser</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+<script type="application/json" id="alloc-2026">{"note":"FICTIONAL TEACHING DATA: Channel Light Excursions, Juneau (fictional). Generated by 3a/dev/make_embed.py from data/allocation_2026.csv. Do not edit by hand.","source":"data/allocation_2026.csv (column combo_guests read as used)","columns":["date","allocation","used","turned_away_at_cap","turned_away_seats_or_timing"],"rows":[["2026-05-01",100,58,0,0],["2026-05-02",100,30,0,0],["2026-05-03",100,56,0,0],["2026-05-04",100,53,0,0],["2026-05-05",100,62,0,9],["2026-05-06",100,55,0,4],["2026-05-07",100,54,0,4],["2026-05-08",100,31,0,0],["2026-05-09",100,39,0,0],["2026-05-10",100,54,0,0],["2026-05-11",100,68,0,5],["2026-05-12",100,56,0,6],["2026-05-13",100,22,0,0],["2026-05-14",100,47,0,0],["2026-05-15",100,78,0,12],["2026-05-16",100,36,0,0],["2026-05-17",100,60,0,0],["2026-05-18",100,84,0,2],["2026-05-19",100,37,0,0],["2026-05-20",100,55,0,0],["2026-05-21",100,68,0,0],["2026-05-22",100,42,0,0],["2026-05-23",100,37,0,0],["2026-05-24",100,80,0,4],["2026-05-25",100,54,0,0],["2026-05-26",100,79,0,0],["2026-05-27",100,75,0,9],["2026-05-28",100,96,0,9],["2026-05-29",100,42,0,0],["2026-05-30",100,55,0,6],["2026-05-31",100,65,0,0],["2026-06-01",100,75,0,8],["2026-06-02",100,58,0,0],["2026-06-03",100,97,0,0],["2026-06-04",100,99,0,18],["2026-06-05",100,48,0,0],["2026-06-06",100,79,0,11],["2026-06-07",100,100,9,12],["2026-06-08",100,76,0,0],["2026-06-09",100,95,0,4],["2026-06-10",100,100,4,4],["2026-06-11",100,99,3,8],["2026-06-12",100,98,9,10],["2026-06-13",100,82,0,8],["2026-06-14",100,99,0,0],["2026-06-15",100,78,0,4],["2026-06-16",100,100,4,17],["2026-06-17",100,97,0,2],["2026-06-18",100,100,1,26],["2026-06-19",100,100,0,0],["2026-06-20",100,80,0,8],["2026-06-21",100,100,9,14],["2026-06-22",100,99,0,26],["2026-06-23",100,99,4,11],["2026-06-24",100,100,4,9],["2026-06-25",100,100,4,12],["2026-06-26",100,100,0,30],["2026-06-27",100,98,4,10],["2026-06-28",100,94,0,24],["2026-06-29",100,99,0,20],["2026-06-30",100,99,4,34],["2026-07-01",100,100,13,6],["2026-07-02",100,100,13,27],["2026-07-03",100,100,2,48],["2026-07-04",100,100,7,15],["2026-07-05",100,100,6,51],["2026-07-06",100,98,0,31],["2026-07-07",100,99,9,33],["2026-07-08",100,100,7,31],["2026-07-09",100,96,0,23],["2026-07-10",100,99,7,17],["2026-07-11",100,99,3,31],["2026-07-12",100,100,2,26],["2026-07-13",100,100,2,23],["2026-07-14",100,100,0,46],["2026-07-15",100,99,0,46],["2026-07-16",100,100,0,58],["2026-07-17",100,100,0,18],["2026-07-18",100,94,0,12],["2026-07-19",100,100,21,23],["2026-07-20",100,99,2,38],["2026-07-21",100,100,5,34],["2026-07-22",100,99,0,24],["2026-07-23",100,99,0,29],["2026-07-24",100,98,9,37],["2026-07-25",100,100,8,8],["2026-07-26",100,98,0,36],["2026-07-27",100,100,0,27],["2026-07-28",100,99,0,9],["2026-07-29",100,100,2,28],["2026-07-30",100,100,10,41],["2026-07-31",100,99,0,49],["2026-08-01",100,95,0,30],["2026-08-02",100,100,0,25],["2026-08-03",100,100,0,18],["2026-08-04",100,100,16,8],["2026-08-05",100,97,0,16],["2026-08-06",100,99,0,35],["2026-08-07",100,100,3,29],["2026-08-08",100,81,0,7],["2026-08-09",100,95,0,10],["2026-08-10",100,98,0,18],["2026-08-11",100,92,0,14],["2026-08-12",100,94,0,29],["2026-08-13",100,73,0,4],["2026-08-14",100,94,0,9],["2026-08-15",100,52,0,0],["2026-08-16",100,70,0,6],["2026-08-17",100,91,0,25],["2026-08-18",100,100,0,17],["2026-08-19",100,97,0,6],["2026-08-20",100,79,0,0],["2026-08-21",100,75,0,8],["2026-08-22",100,76,0,3],["2026-08-23",100,80,0,0],["2026-08-24",100,91,0,0],["2026-08-25",100,89,0,9],["2026-08-26",100,82,0,0],["2026-08-27",100,84,0,6],["2026-08-28",100,100,0,16],["2026-08-29",100,53,0,8],["2026-08-30",100,62,0,0],["2026-08-31",100,99,0,2],["2026-09-01",100,84,0,0],["2026-09-02",100,74,0,0],["2026-09-03",100,44,0,0],["2026-09-04",100,52,0,0],["2026-09-05",100,27,0,5],["2026-09-06",100,83,0,4],["2026-09-07",100,76,0,2],["2026-09-08",100,39,0,0],["2026-09-09",100,70,0,0],["2026-09-10",100,73,0,6],["2026-09-11",100,100,0,4],["2026-09-12",100,29,0,2],["2026-09-13",100,65,0,0],["2026-09-14",100,52,0,3],["2026-09-15",100,58,0,0],["2026-09-16",100,69,0,4],["2026-09-17",100,54,0,0],["2026-09-18",100,69,0,9],["2026-09-19",100,51,0,0],["2026-09-20",100,59,0,0],["2026-09-21",100,63,0,0],["2026-09-22",100,46,0,0],["2026-09-23",100,67,0,0],["2026-09-24",100,54,0,0],["2026-09-25",100,73,0,8],["2026-09-26",100,55,0,0],["2026-09-27",100,53,0,0],["2026-09-28",100,59,0,0],["2026-09-29",100,79,0,0],["2026-09-30",100,70,0,0]]}</script>
+</body>
+</html>

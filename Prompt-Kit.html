@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>Printable prompt kit · ATIA Operations Kit</title>
+<meta name="description" content="Every core prompt from the ATIA Operations Kit on one printable page: staff turnover, transit bottlenecks, capacity caps.">
+<link rel="stylesheet" href="assets/kit.css">
+<script src="assets/kit.js" defer></script>
+<style>
+.pk h2{margin-top:.2em}
+.toc{columns:2 240px;padding-left:1.2em;margin:6px 0 0}
+.pk .output pre{font-size:14px}
+@media print{.pk{break-inside:avoid;page-break-inside:avoid}.output{border:1px solid #999}a[href]::after{content:""}}
+</style>
+</head>
+<body data-page="promptkit">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs"><a href="./">ATIA Operations Kit</a> › Printable prompt kit</p>
+  <p class="kicker">ATIA 2026 · Take-home kit</p>
+  <h1>Every core prompt, on one page</h1>
+  <p class="lede">The most important prompt from each tool, ready to copy or print. Each one works on a free tier of Claude, ChatGPT or Gemini. Replace every [PLACEHOLDER] with your own approved facts.</p>
+  <ul class="meta"><li><b>10</b> prompts</li><li><b>Rule</b> AI drafts. You approve.</li><li><b>Checked</b> 11 Oct 2026</li></ul>
+</header>
+<main class="kit">
+  <section class="callout" aria-label="Before you paste">
+    <p><strong>Before you paste:</strong> no guest or staff names, emails, phone numbers, payment details or medical details. Dates, counts, roles and IDs are enough. Every prompt asks for a result marked DRAFT - PENDING OWNER REVIEW; a person checks it against your own facts before it goes anywhere.</p>
+    <ol class="toc"><li><a href="#sleak">Measure: Season Leak Audit</a></li><li><a href="#s1a">1.a Rehire before you recruit</a></li><li><a href="#s1b">1.b Standard work and crew coach</a></li><li><a href="#s1c">1.c Season staffing model</a></li><li><a href="#s2a">2.a Journey FMEA and playbook</a></li><li><a href="#s2b">2.b Arrival watch and backfill</a></li><li><a href="#s2c">2.c Re-planner and loss ledger</a></li><li><a href="#s3a">3.a Fill every capped slot</a></li><li><a href="#s3b">3.b Off-cap product lab</a></li><li><a href="#s3c">3.c Revenue-per-slot optimizer</a></li></ol>
+  </section>
+  <section class="card pk" id="sleak" aria-labelledby="sleak-h">
+    <p class="kicker">Measure · <span class="focus ops">OPS</span></p>
+    <h2 id="sleak-h">Season Leak Audit</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-leak">I run a seasonal tourism business in Alaska. Below is my Season Leak Audit for [SEASON]: estimates of money spent or lost because a process did not work right the first time. Every number is mine, or arithmetic on mine, with plus or minus [UNCERTAINTY]% applied. Your job is to challenge it, not to agree with it.
+
+1. Crew leak: [NEW HIRES] new hires x [ALL-IN COST PER HIRE] = [CREW LOW] to [CREW HIGH]. Rehire rate [RETURNED] of [ELIGIBLE]; early-quit rate [EARLY QUITS] of [NEW HIRES].
+2. Road leak: ([GUESTS ON DISRUPTED BOOKINGS] minus [GUESTS RECOVERED]) x [AVERAGE NET PER GUEST] + [STAFF HOURS] hours x [COST PER HOUR] = [ROAD LOW] to [ROAD HIGH].
+3. Cap leak, three separate parts:
+   (a) Empty slots on days below the cap: [UNUSED SLOTS BELOW THE CAP] unused slots x [VALUE PER FILLED SLOT] value per filled slot x [FILL SHARE]% realistic fill share = [PART A]. Volume I could add without a bigger permit.
+   (b) Value gap on days at the cap: [COMBO GUESTS ON CAPPED DAYS] combo guests on capped days x [EXTRA NET PER SLOT] extra net per slot (my estimate of what premium pricing or mix could capture) = [PART B]. At the cap the lever is value per slot, not volume. Requests turned away on capped days: [TURNED AWAY ON CAPPED DAYS].
+   (c) Seats-and-timing turn-aways on days below the cap: [TURN-AWAYS BELOW THE CAP] requests x [COMBO NET PER GUEST] combo net per guest x [RECAPTURE SHARE]% recapture share = [PART C]. A constraint I can elevate by adding or moving a departure.
+Total: [TOTAL LOW] to [TOTAL HIGH].
+
+Do this:
+1. For each leak, list every assumption behind it, including the hidden ones (for example: every early quit was replaced by one new hire; the average net per guest applies to the guests who were not recovered; a share of unused slots could really be sold on light days; the extra net per slot on capped days would hold without losing guests; a turned-away guest would have paid the average combo net).
+2. For each assumption, say whether it more likely overstates or understates the leak, and why, in one or two sentences. Say &quot;I cannot tell&quot; when you cannot.
+3. Name the record that would check each assumption (for example: payroll, the booking system export, the permit use report, the shuttle log).
+4. Do not invent numbers, benchmarks, industry averages or statistics. If a comparison needs a number I have not given, write [FILL: what is needed] instead.
+5. Say whether the order of the leaks would change under the most plausible corrections, and which estimate is least certain.
+6. For the cap leak, say which constraint my numbers suggest binds on which days: demand, the regulatory cap, or my own seats and departure times. Do not assume the cap can be raised.
+7. Do not recommend decisions about any individual employee. List any price change only as an option for me to evaluate.
+
+Mark the whole answer DRAFT - PENDING OWNER REVIEW.</pre></div>
+    <div class="btns"><button type="button" data-copy="p-leak">Copy prompt</button> <a class="button secondary" href="leak/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="card pk" id="s1a" aria-labelledby="s1a-h">
+    <p class="kicker"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Pain 1 · Basic · <span class="focus ops">OPS</span></p>
+    <h2 id="s1a-h">1.a Rehire before you recruit</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-1a">Below are [NUMBER] de-identified season-end notes from our seasonal crew. No names, contact details or health information. Each line: note ID | role | would they return (yes, maybe, no or blank) | note.
+
+[PASTE DE-IDENTIFIED NOTES, ONE PER LINE, for example: N01 | Deckhand | maybe | Schedule came out too late to plan days off.]
+
+A keyword count made on my device, as a cross-check only (one note can carry two themes, and a keyword is not a complaint):
+[THEME COUNTS WITH NOTE IDS, or &quot;none&quot;]
+
+Do this:
+1. Sort every note into reasons to leave (or not return) and reasons to stay. A note can be both.
+2. Group the reasons to leave into causes. For each cause give the number of notes and the note IDs, and quote the supporting words exactly, in double quotes. Never paraphrase inside quotes.
+3. Rank the causes by number of notes (a Pareto). Mark each one: fixable by us before next season, partly fixable, or outside our control (for example, life events).
+4. Propose the top two fixable causes. For each, give two or three concrete fixes and what each would take: owner time, cost as [FILL], who decides. Do not invent costs, benchmarks or statistics.
+5. Say where the notes are too few or too vague to support a conclusion. With a few dozen notes, treat the ranking as a hint, not a finding.
+6. Do not identify, guess at, rank or comment on any individual person, and do not suggest who to rehire. Rehire offers follow a written rule applied to everyone.
+
+Mark the whole answer DRAFT - PENDING OWNER REVIEW.</pre></div>
+    <div class="btns"><button type="button" data-copy="p-1a">Copy prompt</button> <a class="button secondary" href="1a/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="card pk" id="s1b" aria-labelledby="s1b-h">
+    <p class="kicker"><span class="rung r2" aria-hidden="true"><i></i><i></i><i></i></span>Pain 1 · Intermediate · <span class="focus ops">OPS</span> <span class="focus cx">CX</span></p>
+    <h2 id="s1b-h">1.b Standard work and crew coach</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-1b">You are helping me write standard work for [BUSINESS NAME]: one job, written down so a new seasonal hire does it the way our best veteran does.
+
+The job: [THE JOB, for example &quot;ship late or tendering from anchor&quot;]
+Done by: [ROLE THAT DOES IT]
+Starts when: [WHAT STARTS THE JOB]
+Ask for help: [LEAD ROLE]
+Safety lines are checked by: [QUALIFIED ROLE, for example the lead captain]
+
+How our veteran explains it today (rough notes or a transcript, names removed):
+[PASTE THE VETERAN&#x27;S EXPLANATION, OR WRITE &quot;NONE YET&quot; AND INTERVIEW ME]
+
+Step 1. Interview first. Ask me up to 8 short questions, one at a time, about what the notes leave out: what starts and ends the job, the steps in the real order, what the veteran checks, what goes wrong and what they do then, what they never do, and who decides what. Wait for each answer. If the notes already answer everything, say so and go to Step 2.
+
+Step 2. Write the procedure as a Markdown file named after the job, for example ship-late-tendering.md:
+- First line: DRAFT - PENDING OWNER REVIEW
+- Then the title, and: Procedure owner: [ROLE] / Last checked: [FILL: date]. Used by. Ask for help.
+- Short headings in the order the job happens. Under them, numbered lines, one instruction per line, numbered 1, 2, 3 straight through the whole file. Do not restart the numbers at each heading: a crew coach will cite them.
+- End every line with one tag: [POLICY] for our own choices; [PERMIT] for a term of a permit, contract or agreement (I check the document); [LAW] only when I named the law and its citation, otherwise [VERIFY WITH OWNER]. Add [SAFETY: verify with a qualified person] to every line that touches boats, water, wildlife, weather, vehicles, first aid or a lost guest.
+- Where a safety detail is missing (a distance, a limit, a wind or sea condition, a piece of equipment), write [QUALIFIED PERSON TO SUPPLY]. Never invent it.
+- Where any other fact is missing, write [FILL: what is missing]. Do not guess times, counts, prices or names.
+- Roles only, never names. No guest or staff personal details.
+- Plain words a third-day seasonal hire understands. One page.
+- After the lines, a table: Three things that go wrong | What to do | When to stop and ask.
+
+Step 3. Write a 10-line card for the van visor or the dock table: exactly 10 numbered short lines, keeping every [SAFETY: verify with a qualified person] mark. The card does not replace the procedure.
+
+Step 4. List every [FILL], [VERIFY WITH OWNER] and [QUALIFIED PERSON TO SUPPLY] as a question for me, with the line number it belongs to.
+
+Do not state any law, permit term or safety limit as fact unless I gave it to you. Do not mark anything approved: the owner approves, and the qualified person checks the safety lines.</pre></div>
+    <div class="btns"><button type="button" data-copy="p-1b">Copy prompt</button> <a class="button secondary" href="1b/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="card pk" id="s1c" aria-labelledby="s1c-h">
+    <p class="kicker"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>Pain 1 · Advanced · <span class="focus ops">OPS</span></p>
+    <h2 id="s1c-h">1.c Season staffing model</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-1c">I run [BUSINESS: name, type of operation, town], a seasonal business in Alaska. Below is the report from our season staffing model: counts, dates and ranges only, no staff names.
+
+[PASTE report.md OR summary.json FROM THE MODEL&#x27;S OUTPUT FOLDER]
+
+Using only the numbers and dates in that report, write a one-page staffing plan for me:
+1. The recruiting calendar for this winter: each channel, how many people, and the latest date to start. Put anything marked LATE or SOON first, and say what to do about it.
+2. Hires and recruiting cost for each scenario, as ranges (P10 to P90), and what moving our rehire rate from [CURRENT REHIRE RATE] to [TARGET REHIRE RATE] is worth in hires and dollars.
+3. The standby list for replacements: how many names, by when, from which channels.
+4. The workload check: each &quot;schedule a check-in&quot; item, with the weeks it covers and [MANAGER ROLE] as the owner. List the overtime reminders as questions for [WAGE AND HOUR CONTACT].
+5. How sure we are: what the early-quit interval means in people, in plain words.
+6. Three questions I should answer before I commit money.
+
+Rules: mark the plan DRAFT - PENDING OWNER REVIEW. Use only numbers from the report and write [FILL] where something is missing instead of guessing. Do not name, rank or score any staff member, and do not predict who will quit. Treat overtime, J-1 or H-2B and vessel crew questions as questions for [WAGE AND HOUR CONTACT], [SPONSOR] and our vessel&#x27;s Coast Guard certificate of inspection, not as legal advice. Plain words, short sentences, no hype.</pre></div>
+    <div class="btns"><button type="button" data-copy="p-1c">Copy prompt</button> <a class="button secondary" href="1c/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="card pk" id="s2a" aria-labelledby="s2a-h">
+    <p class="kicker"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Pain 2 · Basic · <span class="focus cx">CX</span> <span class="focus ops">OPS</span></p>
+    <h2 id="s2a-h">2.a Journey FMEA and playbook</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-2a">2a Journey FMEA and disruption playbook: core prompt (message pack, one scenario at a time)
+ATIA Operations Kit. Fill the [CAPITALS] from your FMEA row and your policy sheet. The page builds this for you: https://preig.github.io/atiaops/2a/
+No guest names, emails or phone numbers. AI drafts; a person approves.
+
+Act as the disruption message drafter for [BUSINESS NAME]. You draft; a person approves every message before anything is sent. Nothing you write is sent automatically.
+
+SCENARIO (from our journey FMEA):
+Failure: [FAILURE MODE] ([JOURNEY STEP])
+Effect on the guest: [EFFECT ON THE GUEST]
+Usual causes: [USUAL CAUSES]
+Our countermeasure: [YOUR COUNTERMEASURE]
+Severity [S] of 10. (If 9 or 10: a safety or stranding risk. Keep every word factual and plain.)
+
+OUR DISRUPTION POLICIES (use only these; a line marked [FILL] is not decided, so do not guess it):
+[PASTE YOUR DISRUPTION POLICY SHEET FROM 2A, ONE DECISION PER LINE]
+
+TASK
+Draft four items for this scenario. They are templates we reuse, not messages for one guest.
+1. FIRST NOTICE, sent within [FIRST-NOTICE TARGET, IN MINUTES] of the first alert: what we know, what we do not know yet, and when we will update. Under 70 words.
+2. OPTIONS MESSAGE: only the choices our policies allow, in the order the policies give. Use [NEW DEPARTURE TIME], [SEATS] and [REPLY BY] where the duty lead fills in the day&#x27;s facts. Under 110 words.
+3. CONFIRMATION, after the guest chooses. Under 60 words.
+4. STAFF DECISION CARD: who decides, by when, the checklist in order, and what to record (time of first alert, time of first message, guests rebooked, seats refilled). Safety calls stay with [WHO MAKES THE WEATHER AND VESSEL SAFETY CALL].
+
+Rules:
+- Use only the scenario and the policies above. Do not add times, prices, refunds, credits, compensation or waiting promises that are not written above.
+- Do not promise weather, wildlife, or that a ship, flight, shuttle or boat will wait.
+- Cruise-line guests: address the options message to the ship&#x27;s shore excursion desk and follow our cruise-line policy line. OTA guests: write it for the OTA&#x27;s messaging and follow our OTA policy line.
+- Use the placeholders [GUEST FIRST NAME], [BOOKING REF], [PARTY SIZE] and [BOOKED DEPARTURE]. Names and contact details are merged in our booking system, never in this chat.
+- Plain words, short sentences, no exclamation marks.
+- Where something is missing, write [FILL: what is missing] and list it at the end under QUESTIONS FOR THE OWNER.
+- Put this on the first line of each item: DRAFT - PENDING OWNER REVIEW</pre></div>
+    <div class="btns"><button type="button" data-copy="p-2a">Copy prompt</button> <a class="button secondary" href="2a/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="card pk" id="s2b" aria-labelledby="s2b-h">
+    <p class="kicker"><span class="rung r2" aria-hidden="true"><i></i><i></i><i></i></span>Pain 2 · Intermediate · <span class="focus ops">OPS</span></p>
+    <h2 id="s2b-h">2.b Arrival watch and backfill</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-2b">2b Arrival watch and backfill: core prompt (the AI step in the Zapier or Make watch)
+ATIA Operations Kit. The automation maps the [CAPITALS] from your sheets. Page and recipes: https://preig.github.io/atiaops/2b/
+No guest names, emails or phone numbers reach this step. AI drafts; a person approves. Nothing is sent automatically.
+
+You draft the first notice about a disruption for [BUSINESS NAME]. A person approves every message before anyone sends it. You never send anything, and you do not decide rebooking options.
+
+EVENT (from our watch sheet):
+[EVENT: what changed, and the time we first knew]
+
+AFFECTED BOOKINGS (IDs and counts only; no names or contact details):
+[ROWS: booking_ref, channel, guests, booked departure, ship]
+
+OUR APPROVED POLICIES (use only these; a line marked [FILL] is not decided, so do not guess it):
+[POLICY SHEET FROM 2A]
+
+OUR APPROVED FIRST-NOTICE TEXTS (start from these):
+[FIRST NOTICES FROM THE 2A MESSAGE PACK]
+
+TASK
+Draft the first notice for this event:
+- Cruise-line bookings: one message per ship, to that ship&#x27;s shore excursion desk, listing the booking references and party sizes.
+- OTA bookings: one message per booking, written for the OTA&#x27;s messaging tool.
+- Direct bookings: one message per booking, to the guest.
+Each first notice says what we know, what we do not know yet, and when we will update. Under 80 words each.
+
+Rules:
+- Use only the event, the rows, the policies and the approved texts. Do not add times, prices, refunds, credits, compensation or waiting promises that are not written above.
+- Do not offer or suggest a new departure. The duty lead sends the options after working out seats and the all-aboard buffer.
+- Do not promise weather, wildlife, or that a ship, flight, shuttle or boat will wait. Do not make or hint at a weather or safety call; the captain makes it.
+- Use [GUEST FIRST NAME] where a name goes. Names and contact details are merged in our booking system, never here.
+- Where something is missing, write [FILL: what is missing].
+- Start each message with three lines: DRAFT - PENDING OWNER REVIEW, then TO: the recipient&#x27;s role (for example Ship B shore excursion desk), then ABOUT: the booking references.
+- After the last message, list every [FILL] under QUESTIONS FOR THE DUTY LEAD.</pre></div>
+    <div class="btns"><button type="button" data-copy="p-2b">Copy prompt</button> <a class="button secondary" href="2b/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="card pk" id="s2c" aria-labelledby="s2c-h">
+    <p class="kicker"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>Pain 2 · Advanced · <span class="focus ops">OPS</span></p>
+    <h2 id="s2c-h">2.c Re-planner and loss ledger</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-2c">You are helping [BUSINESS NAME], a [TYPE OF OPERATION] in [PORT], write a one-page memo for [AUDIENCE: owner / insurer / city or port / our association] about what transit and weather disruptions cost us last season.
+
+Use ONLY the ledger summary pasted below. Do not add numbers, causes, benchmarks or industry figures that are not in it. Where the memo needs a fact the ledger does not have, write [FILL: what is missing] instead of guessing.
+
+Write:
+1. Two sentences: the season&#x27;s disruption recovery rate (guests rebooked or refilled / guests affected) with its uncertainty range, and the partial cost of poor quality (refunds plus staff time), saying it leaves out goodwill, reviews and partner fees.
+2. A short table of the causes in order of cost, with events, guests, recovery rate and cost.
+3. For the top two causes: what is in our control, what is not, and one question to ask [AUDIENCE] about each.
+4. One request we are making of [AUDIENCE], tied to a number from the ledger.
+5. A line on what the numbers cannot show (small counts per month are mostly noise; compare season to season).
+
+Plain words, short sentences, no hype. Label any interpretation &quot;my read&quot;. Start the memo with DRAFT - PENDING OWNER REVIEW.
+
+Ledger summary:
+[PASTE ledger_summary.md HERE]</pre></div>
+    <div class="btns"><button type="button" data-copy="p-2c">Copy prompt</button> <a class="button secondary" href="2c/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="card pk" id="s3a" aria-labelledby="s3a-h">
+    <p class="kicker"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Pain 3 · Basic · <span class="focus ops">OPS</span></p>
+    <h2 id="s3a-h">3.a Fill every capped slot</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-3a">I run a small Alaska tour business with a capacity cap. Help me think through pricing and packaging options. Work only from the summary below: it was computed on my device from daily counts and holds no guest data.
+
+What the cap limits: [WHAT THE CAP LIMITS, for example guest visits per day at a permitted site]
+
+My approved facts (products, prices, channels):
+[PASTE YOUR APPROVED PRODUCT, PRICE AND CHANNEL FACTS. No guest or staff data.]
+
+Slot-use summary:
+[PASTE THE SLOT-USE SUMMARY FROM TOOL 3a: period, allocation, used %, days at the cap, by month, by weekday, requests turned away at the cap and for seats or timing, no-shows. Summary only, never daily rows.]
+
+Frame: Theory of Constraints, five steps. 1 Identify the constraint that actually binds: the regulatory cap, or seats and departure timing. 2 Exploit it: get full use out of it (for the cap: no wasted slot, and the highest-value use of each slot). 3 Subordinate everything else (sales, schedule, staffing, pricing) to it. 4 Elevate: only what is mine to elevate. Departures and seats can be added or moved within each vessel&#x27;s certificate limit; the regulatory allocation is the land manager&#x27;s decision under the permit, not mine. 5 Repeat.
+
+Do this:
+1. In two or three sentences, say which constraint the numbers show binding, and on which days. Use only the numbers above.
+2. Options where requests were turned away for seats or timing (if the summary shows any): checking departure times against ship windows, adding or moving a departure, other ways to add seats within the certificate limit.
+3. Options where demand exceeds the cap: premium or small-group departures, an earlier booking cutoff, deposits on capped days, a waitlist to refill no-shows and late cancellations, offering the uncapped product when the day&#x27;s allocation is used.
+4. Options where slots go unused: independent travelers, locals, partner packages, light-day offers.
+5. For every option give: the days it targets, what changes, the risks (channel and cruise line contracts, rate parity, guest trust, permit terms, crew hours), the cheapest test, and how I would measure it (revenue per allocated slot and allocation used %). Give any expected effect as a range with its assumption stated, or write [FILL: owner estimate].
+6. End with &quot;Questions for the owner&quot; listing every [FILL].
+
+Rules:
+- Use only the numbers in this summary and my facts. Do not invent market data, competitor prices, demand response or statistics.
+- Never propose using more slots than the allocation, or any way around the permit. For anything about permit terms, write [CHECK YOUR PERMIT].
+- Do not set prices. Price ideas are options for me to decide. Nothing changes automatically.
+- No fake urgency or invented scarcity. Show total prices, with every fee the guest cannot avoid. If an option packages a lodge night, note that the FTC fee rule (16 CFR Part 464) covers short-term lodging and requires the total price.
+- No invented reviews or testimonials (FTC rule, 16 CFR Part 465).
+- Mark the whole answer DRAFT - PENDING OWNER REVIEW.</pre></div>
+    <div class="btns"><button type="button" data-copy="p-3a">Copy prompt</button> <a class="button secondary" href="3a/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="card pk" id="s3b" aria-labelledby="s3b-h">
+    <p class="kicker"><span class="rung r2" aria-hidden="true"><i></i><i></i><i></i></span>Pain 3 · Intermediate · <span class="focus product">PRODUCT</span></p>
+    <h2 id="s3b-h">3.b Off-cap product lab</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-3b">I run a small Alaska tour business. One product is limited by a regulatory cap. Help me design up to 5 new product concepts that grow the business where the cap does not bind: on light days, with resources the cap does not touch, and for guests I do not serve well today.
+
+My approved facts:
+[PASTE YOUR APPROVED FACTS: products, prices, boats, crew roles, partners. No guest or staff data.]
+
+Resources the cap does not touch:
+[LIST WHAT THE CAP DOES NOT TOUCH: boats, crew, partners and products, and when they sit idle]
+
+Guest groups to consider:
+[LIST GUEST GROUPS YOU DO NOT SERVE WELL TODAY]
+
+Light days next season (computed on my device from a port schedule; no guest data):
+[PASTE THE LIGHT-DAY LIST FROM TOOL 3b: light, medium and heavy counts, the rule, light days by month and by weekday]
+
+Frame: Theory of Constraints, step 5 (repeat): go back to step 1 where the cap does not bind. There the constraint is demand: there is no product those guests want yet. Do not let inertia, selling only the capped product, become the constraint. Do not plan on more allocation: elevating a regulatory cap is the land manager&#x27;s decision, not mine.
+
+For each concept, fill this card:
+- Concept name:
+- Who it is for:
+- Resource it uses:
+- Which cap it avoids, and how:
+- When it runs:
+- Total price the guest sees:
+- Capacity:
+- Staff needed:
+- Partner needed:
+- Risks:
+- Cheapest test, and what result kills it:
+
+Rules:
+- Every concept uses no capped slot on capped days. Say how in &quot;Which cap it avoids, and how&quot;.
+- Use only my facts. Do not invent prices, demand, market sizes, competitor offers or statistics. Where a number is needed, write [FILL: what is needed].
+- Prices are shown as the total the guest pays, with every fee the guest cannot avoid. Any concept that includes a lodge night falls under the FTC fee rule for short-term lodging (16 CFR Part 464): total price shown.
+- Capacity never goes above the vessel&#x27;s Coast Guard certificate limit. Whale viewing keeps the legal approach distance (100 yards for humpbacks in Alaska); never promise closer viewing or a sighting.
+- No invented reviews or testimonials (FTC rule, 16 CFR Part 465).
+- For each concept, name the cheapest test and the result that would kill it.
+- After the 5 cards, list &quot;Questions for the owner&quot; with every [FILL].
+- Mark the whole answer DRAFT - PENDING OWNER REVIEW.</pre></div>
+    <div class="btns"><button type="button" data-copy="p-3b">Copy prompt</button> <a class="button secondary" href="3b/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="card pk" id="s3c" aria-labelledby="s3c-h">
+    <p class="kicker"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>Pain 3 · Advanced · <span class="focus ops">OPS</span></p>
+    <h2 id="s3c-h">3.c Revenue-per-slot optimizer</h2>
+    <div class="output"><p class="label">Prompt</p><pre id="p-3c">You are helping the owner of [BUSINESS NAME] decide next season&#x27;s prices and seat rules for a tour that is limited by a permit allocation. Below is a report from a revenue-per-slot model. Turn it into a one-page decision memo for the owner.
+
+Rules:
+1. Start with this exact line: DRAFT - PENDING OWNER REVIEW
+2. Use only numbers that appear in the report. Do not calculate new totals or invent figures. If the owner needs a number the report does not have, write [FILL: what is missing].
+3. Keep every range as a range (P10 to P90). Never present a median as a sure result.
+4. Label every obligation: Legal mandate (cite it and add &quot;confirm current text&quot;), Contractual (name the agreement to check: permit, cruise line or OTA contract), Policy choice (the owner&#x27;s call), or Recommendation (give the reason and the cost of ignoring it). Do not write &quot;must&quot; or &quot;required&quot; unless it is a cited legal mandate.
+5. Do not decide or change any price. Present options. The owner decides.
+6. No names, emails, phone numbers or booking references.
+
+Structure:
+- Decision needed by [DECISION DATE]. Approver: [OWNER OR MANAGER ROLE].
+- The binding constraint in two sentences: which limit actually stopped guests, by day type.
+- Two or three options. For each: what changes, revenue per allocated slot (range), season net revenue (range), allocation used, and the main risk.
+- What to test first, how we will know it worked (which number, how often), and what result would make us stop.
+- What to check before acting (permit, contracts), each with its label.
+- Questions for the owner: every [FILL] and every open question in the report.
+
+Keep it under 400 words. Plain language, short sentences, no hype.
+
+Report:
+[PASTE REPORT.MD HERE]</pre></div>
+    <div class="btns"><button type="button" data-copy="p-3c">Copy prompt</button> <a class="button secondary" href="3c/">Open the full tool</a></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+</main>
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Not legal advice.</p>
+  <p><a href="./">All nine tools</a> · <a href="leak/">Season Leak Audit</a></p>
+  <p>Facts last checked 11 October 2026.</p>
+</footer>
+</body>
+</html>

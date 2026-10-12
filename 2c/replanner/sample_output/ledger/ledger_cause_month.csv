@@ -1,0 +1,19 @@
+month,cause_code,cause,events,guests_affected,guests_rebooked,guests_refilled,guests_refunded,net_lost,net_recovered,staff_hours
+2026-05,FLIGHT_OR_FOG,Flight delay or fog (independent guests),2,20,8,4,8,1515.14,1686.30,9.3
+2026-05,MARINE_WEATHER,Marine weather hold,1,10,0,0,10,1412.21,0.00,3.8
+2026-05,ROAD_DELAY,Road or traffic delay on the shuttle route,3,21,0,0,21,3020.07,0.00,8.7
+2026-05,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,2,30,8,5,17,1855.66,1672.14,6.4
+2026-06,FLIGHT_OR_FOG,Flight delay or fog (independent guests),2,23,0,0,23,4009.85,0.00,3.9
+2026-06,MARINE_WEATHER,Marine weather hold,1,30,7,5,18,2880.84,1915.66,3.7
+2026-06,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,4,32,14,0,18,2251.84,1838.92,11.9
+2026-06,SHIP_SCHEDULE_CHANGE,Ship schedule change or skipped call,1,18,0,7,11,1431.58,950.46,2.2
+2026-07,FLIGHT_OR_FOG,Flight delay or fog (independent guests),1,15,7,0,8,1324.68,1267.47,5.2
+2026-07,MARINE_WEATHER,Marine weather hold,4,107,25,12,70,10172.44,5278.71,15.4
+2026-07,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,2,23,11,0,12,1598.36,1493.58,8.1
+2026-07,SHIP_SCHEDULE_CHANGE,Ship schedule change or skipped call,2,22,2,3,17,2085.06,567.30,6.2
+2026-08,FLIGHT_OR_FOG,Flight delay or fog (independent guests),1,19,5,2,12,1904.96,950.46,2.6
+2026-08,MARINE_WEATHER,Marine weather hold,3,58,13,7,38,6721.72,4044.90,9.3
+2026-08,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,3,41,12,8,21,2696.38,2560.60,10.6
+2026-09,FLIGHT_OR_FOG,Flight delay or fog (independent guests),1,4,0,0,4,549.34,0.00,2.6
+2026-09,ROAD_DELAY,Road or traffic delay on the shuttle route,2,18,2,4,12,1964.97,1092.22,6.0
+2026-09,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,3,54,13,7,34,4201.12,2591.60,11.9

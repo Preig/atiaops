@@ -1,0 +1,127 @@
+queue_id,status,booking_ref,action,channel,send_through,guests,from_departure,to_departure,net_at_stake,draft_source,draft_check,approved_by,approved_at,draft
+Q001,PENDING,CL-26-04575,MOVE,CRUISE,Cruise line shore-excursion desk (Contractual: check your cruise line agreement on who contacts guests),4,08:00,10:30,543.12,template,template text,,,"DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04575 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. Your 8:00 (8 am) departure no longer works for your party.
+
+We are holding 4 seats for you on the 10:30 (10:30 am) departure the same day. It is planned to be back at the meeting point by 15:00 (3 pm). That leaves 120 minutes before your ship's all-aboard time of 17:00 (5 pm).
+
+Please reply by [FILL: reply-by time] to confirm. If the new time does not suit you, here are your options: [FILL: your rebook or refund terms].
+
+Meeting point: [FILL: meeting point, from your approved facts]
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team
+"
+Q002,PENDING,CL-26-04583,MOVE,CRUISE,Cruise line shore-excursion desk (Contractual: check your cruise line agreement on who contacts guests),4,08:00,10:30,543.12,template,template text,,,"DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04583 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. Your 8:00 (8 am) departure no longer works for your party.
+
+We are holding 4 seats for you on the 10:30 (10:30 am) departure the same day. It is planned to be back at the meeting point by 15:00 (3 pm). That leaves 120 minutes before your ship's all-aboard time of 17:00 (5 pm).
+
+Please reply by [FILL: reply-by time] to confirm. If the new time does not suit you, here are your options: [FILL: your rebook or refund terms].
+
+Meeting point: [FILL: meeting point, from your approved facts]
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team
+"
+Q003,PENDING,CL-26-04591,MOVE,CRUISE,Cruise line shore-excursion desk (Contractual: check your cruise line agreement on who contacts guests),4,08:00,10:30,512.12,template,template text,,,"DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04591 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. Your 8:00 (8 am) departure no longer works for your party.
+
+We are holding 4 seats for you on the 10:30 (10:30 am) departure the same day. It is planned to be back at the meeting point by 15:00 (3 pm). That leaves 120 minutes before your ship's all-aboard time of 17:00 (5 pm).
+
+Please reply by [FILL: reply-by time] to confirm. If the new time does not suit you, here are your options: [FILL: your rebook or refund terms].
+
+Meeting point: [FILL: meeting point, from your approved facts]
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team
+"
+Q004,PENDING,CL-26-04577,MOVE,CRUISE,Cruise line shore-excursion desk (Contractual: check your cruise line agreement on who contacts guests),4,08:00,13:00,394.32,template,template text,,,"DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04577 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. Your 8:00 (8 am) departure no longer works for your party.
+
+We are holding 4 seats for you on the 13:00 (1 pm) departure the same day. It is planned to be back at the meeting point by 16:00 (4 pm). That leaves 60 minutes before your ship's all-aboard time of 17:00 (5 pm).
+
+Please reply by [FILL: reply-by time] to confirm. If the new time does not suit you, here are your options: [FILL: your rebook or refund terms].
+
+Meeting point: [FILL: meeting point, from your approved facts]
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team
+"
+Q005,PENDING,CL-26-04590,NO_SAME_DAY,CRUISE,Cruise line shore-excursion desk (Contractual: check your cruise line agreement on who contacts guests),2,08:00,,271.56,template,template text,,,"DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04590 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. We are sorry: your 8:00 (8 am) departure no longer works, and the departures that would work for your party today are full. For bookings made through your cruise line, the cruise line's terms apply.
+
+Your options: [FILL: another day with open seats, or a refund under your terms].
+
+Please reply by [FILL: reply-by time] so we can hold your choice.
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team
+"
+Q006,PENDING,CL-26-04566,STAY,CRUISE,Cruise line shore-excursion desk (Contractual: check your cruise line agreement on who contacts guests),4,10:30,10:30,543.12,template,template text,,,"DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04566 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. Your 10:30 (10:30 am) departure still works, and your seats are held. It is planned to be back at the meeting point by 15:00 (3 pm). That leaves 120 minutes before your ship's all-aboard time of 17:00 (5 pm).
+
+Please come to the meeting point as soon as you can after you are ashore: [FILL: meeting point, from your approved facts].
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team
+"
+Q007,PENDING,CL-26-04567,STAY,CRUISE,Cruise line shore-excursion desk (Contractual: check your cruise line agreement on who contacts guests),2,10:30,10:30,271.56,template,template text,,,"DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04567 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. Your 10:30 (10:30 am) departure still works, and your seats are held. It is planned to be back at the meeting point by 15:00 (3 pm). That leaves 120 minutes before your ship's all-aboard time of 17:00 (5 pm).
+
+Please come to the meeting point as soon as you can after you are ashore: [FILL: meeting point, from your approved facts].
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team
+"
+Q008,PENDING,CL-26-04586,STAY,CRUISE,Cruise line shore-excursion desk (Contractual: check your cruise line agreement on who contacts guests),2,10:30,10:30,240.56,template,template text,,,"DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04586 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. Your 10:30 (10:30 am) departure still works, and your seats are held. It is planned to be back at the meeting point by 15:00 (3 pm). That leaves 120 minutes before your ship's all-aboard time of 17:00 (5 pm).
+
+Please come to the meeting point as soon as you can after you are ashore: [FILL: meeting point, from your approved facts].
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team
+"
+Q009,PENDING,CL-26-04588,STAY,CRUISE,Cruise line shore-excursion desk (Contractual: check your cruise line agreement on who contacts guests),1,10:30,10:30,135.78,template,template text,,,"DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04588 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. Your 10:30 (10:30 am) departure still works, and your seats are held. It is planned to be back at the meeting point by 15:00 (3 pm). That leaves 120 minutes before your ship's all-aboard time of 17:00 (5 pm).
+
+Please come to the meeting point as soon as you can after you are ashore: [FILL: meeting point, from your approved facts].
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team
+"

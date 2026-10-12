@@ -1,0 +1,98 @@
+{
+  "_about": "FICTIONAL TEACHING CONFIG for Channel Light Excursions, Juneau, a fictional teaching business. Every value is invented for teaching or derived by arithmetic from the kit's fictional numbers. Replace each one with your own. Keys that start with an underscore are notes; the program ignores them. Every value here is a Policy choice unless its note says otherwise.",
+
+  "as_of": "2026-10-11",
+  "_as_of": "The day the plan is made. Latest start-recruiting dates before it are marked LATE, within 28 days SOON. Leave it empty (\"\") to use today's date. The demo fixes it so the sample output never changes.",
+
+  "season": {
+    "start": "2027-05-01",
+    "end": "2027-09-30",
+    "baseline_shift_days": 364,
+    "_baseline_shift_days": "Last season's bookings move forward by this many days (52 weeks), so a Saturday stays a Saturday. Ignored when you give a forecast CSV with --demand."
+  },
+
+  "demand": {
+    "growth_share": 0.0,
+    "_growth_share": "0.05 means plan for 5% more guests per departure than last season (capped at the seats). Departures stay as they ran. An estimate: set it from your own bookings on the books.",
+    "seats_per_departure": 30,
+    "_seats_per_departure": "Fictional. Your passenger limit comes from the vessel's Coast Guard certificate of inspection (Legal mandate, vessel-specific).",
+    "exclude_statuses": ["CANCELLED_GUEST"]
+  },
+
+  "roles": {
+    "_roles": "FICTIONAL ratios. basis per_departure: people per departure = max(min_per_departure, guests / guests_per_person rounded up); one person covers departures_per_shift departures in a shift. basis per_ship_call: shifts a day = ship calls x people_per_ship_call rounded up, at least min_per_day on days you operate. basis fixed: shifts_per_day every operating day. Crew ratios can never go below the minimum crew on your vessel's Coast Guard certificate of inspection (Legal mandate, vessel-specific: check your COI).",
+    "Captain": {"basis": "per_departure", "min_per_departure": 1, "guests_per_person": null, "departures_per_shift": 2, "shift_hours": 7.0},
+    "Deckhand": {"basis": "per_departure", "min_per_departure": 1, "guests_per_person": 24, "departures_per_shift": 2, "shift_hours": 7.0},
+    "Naturalist guide": {"basis": "per_departure", "min_per_departure": 1, "guests_per_person": 16, "departures_per_shift": 2, "shift_hours": 9.5},
+    "Dock coordinator": {"basis": "per_ship_call", "people_per_ship_call": 0.5, "min_per_day": 1, "shift_hours": 8.0},
+    "Reservations": {"basis": "fixed", "shifts_per_day": 2, "shift_hours": 8.0}
+  },
+
+  "scheduling": {
+    "days_per_person_per_week": 5,
+    "_days_per_person_per_week": "Shifts one person works in a week. 5 means two days off.",
+    "buffer_share": 0.10,
+    "_buffer_share": "Extra people above the weekly need, for days off, sickness and the gap while a replacement arrives. The buffer adds a whole person only when it amounts to at least half a person.",
+    "onboarding_days": 14,
+    "_onboarding_days": "Days from a new hire's first day to working alone (the 14-day plan in tool 1b)."
+  },
+
+  "rehire": {
+    "eligible_count": null,
+    "_eligible_count": "Leave null to count eligible_rehire = Y in the staff file (20 in the fictional 2026 file). Type a number if your staff file has no eligible_rehire column.",
+    "scenarios": [
+      {"name": "Rehire 35%", "rehire_rate": 0.35, "_note": "About last season's fictional rate: 6 returning of 17 eligible = 35.3%."},
+      {"name": "Rehire 50%", "rehire_rate": 0.50, "_note": "A what-if after tool 1a. Not a prediction."}
+    ]
+  },
+
+  "attrition": {
+    "early_quit_days": 30,
+    "_early_quit_days": "Number 2 in the kit: new hires who leave within their first 30 days / new hires who started.",
+    "replacement_start_after_quit_days": 14,
+    "_replacement_start_after_quit_days": "Days from a departure to the replacement's first day. Fictional 2026: 8 to 16 days (4 replacements).",
+    "min_weeks_left_to_replace": 4,
+    "_min_weeks_left_to_replace": "A departure is replaced only if the replacement would work alone for at least this many weeks and the role would fall below target.",
+    "bootstrap_reps": 2000,
+    "interval_level": 0.95
+  },
+
+  "channels": {
+    "_channels": "FICTIONAL lead times (weeks from starting to recruit to the hire's first day, low and high) and cost per hire (low, mid, high). The plan uses the HIGH lead time for the latest start-recruiting date. Cost mid values split the kit's fictional cost-per-hire builder (about $2,800 per hire) by which channel incurs which item; low and high are mid x 0.75 and x 1.25, the same plus or minus 25% as the kit's $2,100 to $3,500 range. At the 2026 hire mix (7 job board, 5 J-1, 4 referral, 4 local) they average $2,795.",
+    "_cost_split": "Every hire: hiring time 5 h x $45 + training 32 h x $21 + trainer 12 h x $34 + ramp-up $200 = $1,505. Ads ($120 x 20 hires = $2,400) spread over the 11 job board and local hires = $218 each. Sponsor fees ($350 x 20 = $7,000) over the 5 J-1 hires = $1,400 each. Travel ($520 x 20 = $10,400) and housing setup ($300 x 20 = $6,000) over the 16 hires from outside Juneau (job board, J-1, referral) = $650 and $375 each.",
+    "RETURNING": {"label": "Returning staff (rehire letter, tool 1a)", "lead_weeks": [4, 8], "cost_per_hire": [0, 0, 0]},
+    "J1_SPONSOR": {"label": "J-1 sponsor", "lead_weeks": [16, 24], "cost_per_hire": [2948, 3930, 4913]},
+    "JOB_BOARD": {"label": "Job boards and ads", "lead_weeks": [6, 10], "cost_per_hire": [2061, 2748, 3435]},
+    "REFERRAL": {"label": "Staff referral", "lead_weeks": [4, 8], "cost_per_hire": [1898, 2530, 3163]},
+    "LOCAL": {"label": "Local hire (lives in Juneau)", "lead_weeks": [3, 6], "cost_per_hire": [1292, 1723, 2154]}
+  },
+
+  "channel_mix": {
+    "_channel_mix": "Share of new hires (not returning staff) by channel. default is the fictional 2026 new-hire mix: 7 job board, 5 J-1, 4 referral, 4 local of 20. A role listed by name overrides the default.",
+    "default": {"J1_SPONSOR": 0.25, "JOB_BOARD": 0.35, "REFERRAL": 0.20, "LOCAL": 0.20},
+    "Captain": {"REFERRAL": 0.5, "JOB_BOARD": 0.5}
+  },
+
+  "replacement_mix": {
+    "_replacement_mix": "Channels for replacements after a departure: short lead times only. Fictional 2026 replacements: 2 job board, 1 referral, 1 local.",
+    "JOB_BOARD": 0.5, "REFERRAL": 0.25, "LOCAL": 0.25
+  },
+
+  "returning_cost_per_person": 0,
+  "_returning_cost_per_person": "Recruiting cost of a returning person. 0 matches the Season Leak Audit, which counts hires only. Add a returning bonus here if you pay one (Policy choice).",
+
+  "workload": {
+    "_workload": "Owner-set thresholds (Policy choice). The check never looks at a person, only at schedules, and its output is 'schedule a check-in'. The overtime thresholds restate AS 23.10.060 (Legal mandate: confirm with Alaska DOLWD Wage and Hour).",
+    "max_weekly_hours": 50,
+    "min_days_off_per_week": 1,
+    "max_consecutive_days": 7,
+    "overtime_daily_hours": 8,
+    "overtime_weekly_hours": 40
+  },
+
+  "simulation": {
+    "runs": 2000,
+    "seed": 20270501,
+    "_simulation": "Seeded: the same inputs always give the same ranges. P10 to P90 means 8 of 10 simulated seasons fall inside."
+  }
+}

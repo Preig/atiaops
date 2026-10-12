@@ -1,0 +1,37 @@
+{
+  "_about": "Channel Light Excursions, Juneau: FICTIONAL TEACHING BUSINESS. Replace every value with your own. Keys starting with _ are notes and are ignored.",
+  "business": "Channel Light Excursions, Juneau (FICTIONAL TEACHING BUSINESS)",
+
+  "departures": ["08:00", "10:30", "13:00", "15:30"],
+  "_departures": "Times the tour leaves your meeting point (here the downtown cruise docks, where the shuttle picks up).",
+
+  "boat_seats_per_departure": 30,
+  "_boat_seats": "Legal mandate: never above the passenger limit on the vessel's Coast Guard certificate of inspection. A number, or a map like {\"08:00\": 30, \"10:30\": 24}.",
+
+  "shuttle_seats_per_run": 38,
+  "_shuttle_seats": "Fictional: Kestrel Shuttle sends one 24-seat bus and one 14-seat van per run. Every guest rides the shuttle, so the seats that bind are the smaller of boat and shuttle seats. Contractual: check your transport agreement.",
+
+  "tour_minutes_dock_to_dock": {"COMBO": 270, "WHALE": 180},
+  "_tour_minutes": "Minutes from leaving the meeting point to being back at it, by product code in the manifest. Estimates from your own trip logs.",
+
+  "minutes_from_arrival_to_meeting_point": {"DOCK": 0, "ANCHOR": 0},
+  "_minutes_from_arrival": "Walk-off or tender time after the scheduled arrival. 0 here because the fictional port schedule already lists the time the first guests are ashore. If your schedule lists the ship's arrival, set your own measured times. A ship that tenders unexpectedly is an event (ship_delay).",
+
+  "buffer_minutes_before_all_aboard": 60,
+  "_buffer": "Policy choice: plan cruise guests back at the meeting point at least this long before all-aboard. Contractual: check what your cruise line agreement says.",
+
+  "min_notice_minutes": 30,
+  "_min_notice": "Policy choice: do not move a party onto a departure that leaves sooner than this after the alert.",
+
+  "independents_may_move_earlier": false,
+  "_independents": "Policy choice: false means independent guests are only offered their own departure or a later one.",
+
+  "message_sign_off": "The Channel Light Excursions team",
+  "_sign_off": "Last line of every guest message draft.",
+
+  "protect_workable_bookings": true,
+  "_protect": "Policy choice: true means a booking whose own departure still works keeps its seat; only bookings that cannot stay compete for the open seats. false lets the plan take seats from them when that keeps more revenue. The staff summary shows what the choice cost on the day.",
+
+  "staff_hourly_cost_usd": 32,
+  "_staff_cost": "Fictional loaded hourly cost of staff time spent handling disruptions (ledger only)."
+}

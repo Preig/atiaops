@@ -1,0 +1,41 @@
+period,day_type,departure,avg_seats_sold,days_sold_out_2_or_fewer_left
+2026 actual,heavy,8:00,28.2,55
+2026 actual,heavy,10:30,29.2,59
+2026 actual,heavy,13:00,28.9,57
+2026 actual,heavy,15:30,27.6,48
+2026 actual,medium,8:00,20.4,14
+2026 actual,medium,10:30,24.1,26
+2026 actual,medium,13:00,22.9,21
+2026 actual,medium,15:30,19.8,16
+2026 actual,light,8:00,13.0,3
+2026 actual,light,10:30,14.8,3
+2026 actual,light,13:00,17.5,8
+2026 actual,light,15:30,12.3,2
+2026 actual,season,8:00,21.9,72
+2026 actual,season,10:30,24.0,88
+2026 actual,season,13:00,24.1,86
+2026 actual,season,15:30,21.3,66
+2027 if nothing changes (middle values),heavy,8:00,26.1,33
+2027 if nothing changes (middle values),heavy,10:30,27.6,42
+2027 if nothing changes (middle values),heavy,13:00,28.5,52
+2027 if nothing changes (middle values),heavy,15:30,26.1,35
+2027 if nothing changes (middle values),medium,8:00,20.8,8
+2027 if nothing changes (middle values),medium,10:30,24.5,18
+2027 if nothing changes (middle values),medium,13:00,24.0,19
+2027 if nothing changes (middle values),medium,15:30,20.5,13
+2027 if nothing changes (middle values),light,8:00,11.3,0
+2027 if nothing changes (middle values),light,10:30,15.3,1
+2027 if nothing changes (middle values),light,13:00,16.3,2
+2027 if nothing changes (middle values),light,15:30,13.2,0
+2027 recommended plan (middle values),heavy,8:00,26.4,28
+2027 recommended plan (middle values),heavy,10:30,24.4,26
+2027 recommended plan (middle values),heavy,13:00,26.0,31
+2027 recommended plan (middle values),heavy,15:30,25.9,34
+2027 recommended plan (middle values),medium,8:00,24.1,17
+2027 recommended plan (middle values),medium,10:30,23.4,9
+2027 recommended plan (middle values),medium,13:00,23.5,15
+2027 recommended plan (middle values),medium,15:30,21.0,13
+2027 recommended plan (middle values),light,8:00,16.8,0
+2027 recommended plan (middle values),light,10:30,13.3,1
+2027 recommended plan (middle values),light,13:00,14.5,1
+2027 recommended plan (middle values),light,15:30,12.0,0

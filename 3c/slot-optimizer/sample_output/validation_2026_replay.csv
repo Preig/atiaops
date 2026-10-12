@@ -1,0 +1,10 @@
+measure,files_2026,replay_actual_requests_mean,min,max,replay_fitted_line_mean,min,max
+Combo guests,12096,11960.8,11769,12124,11989.4,11840,12284
+Allocation used %,79.06,78.18,76.92,79.24,78.36,77.39,80.29
+Revenue per allocated slot,115.67,115.23,113.07,116.56,115.53,113.28,117.94
+Whale-only guests,1881,1831.6,1741,1941,1832.9,1778,1906
+Turned away for seats or timing,1730,1711.4,1497,1823,1690.3,1530,1898
+Turned away at the cap,206,273.0,208,317,272.8,224,314
+Days at or near the cap (5 or fewer slots left),66,59.3,56,64,60.2,58,63
+Seats-or-timing turnaways on days at or near the cap,1423,1311.3,1102,1507,1321.8,1117,1452
+Seats-or-timing turnaways on below-cap days,307,400.1,233,499,368.5,295,503

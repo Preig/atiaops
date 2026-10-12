@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>For your team · ATIA Operations Kit</title>
+<meta name="description" content="A 12-line context block, a never-paste list for guest and staff data, and three ready-to-paste assistants for an Alaska tourism team: Crew Coach, Disruption Desk and Slot Planner. Draft instructions, not yet tested in a live account. Nothing you type leaves this browser.">
+<link rel="stylesheet" href="../assets/kit.css">
+<style>
+  .toc{display:flex;flex-wrap:wrap;gap:4px 16px;list-style:none;padding:0;margin:4px 0 0;font-size:15px}
+  .reminder{font-size:14px;line-height:1.45;color:#5c3d00;background:var(--amber-t);border-left:4px solid #d49a1a;border-radius:4px;padding:7px 11px;margin:6px 0 4px}
+  .pii-warn{font-size:14px;color:var(--red);font-weight:bold;margin:4px 0}
+  .pii-warn:empty{display:none}
+  .obl{list-style:none;padding:0;margin:8px 0}
+  .obl>li{margin:0 0 12px}
+  .obl .lbl{margin:0 6px 0 0}
+  .src{font-size:14px;color:var(--slate-m)}
+  .overview .grid>a{display:block;background:#fff;border:1px solid var(--line);border-top:4px solid var(--green);border-radius:4px;padding:14px 16px;text-decoration:none;color:var(--ink)}
+  .overview .grid>a:hover,.overview .grid>a:focus-visible{border-color:var(--teal)}
+  .overview .grid>a b{display:block;color:var(--green-d);font-size:17px;margin-bottom:4px}
+  .overview .grid>a span{display:block;font-size:15px;line-height:1.45}
+  .overview .grid>a em{display:block;font-style:normal;color:var(--teal-d);font-weight:bold;font-size:14px;margin-top:6px}
+  .ctxform{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:0 18px}
+  .ctxform .full{grid-column:1/-1}
+  .ctxform textarea{min-height:76px}
+  .output pre.long{max-height:24em;overflow:auto}
+  pre.asst{white-space:pre-wrap;overflow-wrap:anywhere;font:14.5px/1.55 Consolas,"Courier New",monospace;margin:0;color:#222;max-height:30em;overflow:auto}
+  .asst-card h2{margin-top:0}
+  .asst-card .pills{margin:0 0 6px}
+  .asst-card .pills .pill{margin:0 6px 4px 0}
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px;margin:10px 0}
+  .facts div{background:#fff;border:1px solid var(--line);border-radius:4px;padding:8px 12px;font-size:15px}
+  .facts b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--slate-m)}
+  ol.starters{padding-left:1.4em;margin:8px 0}
+  ol.starters li{margin:0 0 10px}
+  ol.starters pre.prompt{background:#fbfcfa;border:1px solid var(--line);border-radius:4px;padding:8px 10px;font-size:14.5px}
+  .btns.tight{margin:6px 0}
+  button.small{font-size:13px;padding:5px 10px}
+  select{max-width:100%}
+  .never-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;margin:8px 0}
+  .never-grid>div{background:#fff;border:1px solid #f0c9c9;border-radius:4px;padding:10px 16px}
+  .never-grid h3{margin:.3em 0 .4em;color:var(--red)}
+  .never-grid ul{margin:0;padding-left:1.1em}
+  .never-grid li{margin:0 0 6px}
+  .fine{background:#fff;border:1px solid var(--line);border-left:5px solid var(--green);border-radius:4px;padding:10px 16px;margin:12px 0}
+  .setupgrid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+  .setupgrid .card{margin:0}
+  .setup h3{margin-top:0}
+  .setup ol{padding-left:1.3em;margin:6px 0 8px}
+  .setup li{margin:0 0 6px}
+  .setup .best{font-size:15px;color:var(--slate)}
+  .nw{white-space:nowrap}
+  .files li a{overflow-wrap:anywhere}
+  @media print{details{break-inside:avoid}}
+</style>
+<script src="../assets/kit.js" defer></script>
+<script src="team-core.js" defer></script>
+<script src="team.js" defer></script>
+</head>
+<body data-page="team">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs">ATIA 2026 Annual Convention · Fairbanks · <a href="../">Operations Kit</a></p>
+  <p class="kicker">Team tools · Pains 1, 2 and 3 · <span class="focus ops">OPS</span> <span class="focus cx">CX</span> <span class="focus product">PRODUCT</span></p>
+  <h1>For your team</h1>
+  <p class="lede">One 12-line context block, a never-paste list for guest and staff data, and three ready-to-paste assistants that keep the kit's fixes running day to day. AI drafts. You approve.</p>
+  <ul class="meta">
+    <li><b>Time</b> about 1 hour for the block and one assistant (estimate)</li>
+    <li><b>Cost</b> free tier to try (estimate); check your plan before sharing with staff</li>
+    <li><b>Who</b> owner or operations lead</li>
+    <li><b>Status</b> draft instructions, not yet tested in a live account</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="team" aria-label="All tools"></nav>
+</header>
+
+<main class="kit">
+  <noscript><div class="callout amber"><p><strong>This page needs JavaScript</strong> for the context block builder and the copy buttons. The three instruction files are readable below and download without it.</p></div></noscript>
+  <div class="callout green">
+    <p style="margin:0"><strong>AI drafts. You approve.</strong> Every assistant here marks its output DRAFT - PENDING OWNER REVIEW and leaves [FILL] gaps instead of guessing. None of them sends, books, refunds, prices or decides anything about a person. The examples use <strong>Channel Light Excursions, Juneau, a fictional teaching business</strong>, with its fictional partners Kestrel Shuttle and Tern Point Lodge. What you type stays in this browser.</p>
+  </div>
+
+  <nav class="card note" aria-labelledby="toc-h">
+    <h2 id="toc-h" style="margin-top:0;font-size:18px">On this page</h2>
+    <ul class="toc">
+      <li><a href="#why">Why a team kit</a></li>
+      <li><a href="#context">1. Context block</a></li>
+      <li><a href="#never">2. Never paste</a></li>
+      <li><a href="#assistants">3. Three assistants</a></li>
+      <li><a href="#setup">4. Set them up</a></li>
+      <li><a href="#files">Downloads</a></li>
+      <li><a href="#measure">Measure</a></li>
+      <li><a href="#safe">Before you use it</a></li>
+    </ul>
+  </nav>
+
+  <section class="card teal overview" aria-labelledby="why">
+    <h2 id="why" style="margin-top:0">Why a team kit</h2>
+    <p>Each tool in the kit fixes one pain once. These three assistants keep the fixes running in the AI account your team already uses: the same procedures quoted the same way, the same disruption policy behind every message, the same slot numbers behind every pricing idea. Each starts from your 12-line context block, reads only the files you attach, drafts, and hands the decision to a person.</p>
+    <div class="grid three">
+      <a href="#crew-coach"><b>Crew Coach</b><span>Answers new-crew questions only from your procedure files, quotes the line, and says "Not in our procedures. Ask your lead." otherwise.</span><em>From 1.b · Number 2, early-quit rate</em></a>
+      <a href="#disruption-desk"><b>Disruption Desk</b><span>When a ship is late or the weather holds a departure: first notice, options, confirmation, a staff decision card and a log row, from your policy only.</span><em>From 2.a · Number 3, disruption recovery rate</em></a>
+      <a href="#slot-planner"><b>Slot Planner</b><span>Reads your slot-use summary and proposes ways to fill light days and raise value on capped days, inside your price guardrails.</span><em>From 3.a and 3.b · Number 4, revenue per allocated slot</em></a>
+    </div>
+    <div class="callout amber">
+      <p style="margin:0"><b>Status: draft instructions, not yet tested in a live account.</b> Try each assistant with the fictional Channel Light example first, run its first checks, and write down the date, the AI tool and what happened. Do not rely on an assistant whose checks have not passed.</p>
+    </div>
+  </section>
+
+  <!-- 1. Context block -->
+  <section class="card" aria-labelledby="context">
+    <h2 id="context" style="margin-top:0">1. Your 12-line context block</h2>
+    <p>The model is the same for you and for the operator down the road. What you feed it is the difference. These twelve lines go in front of every assistant on this page, so it knows your business before the first question. Write it once; update it each season.</p>
+    <p class="reminder"><b>Recommendation.</b> Totals and roles, never names. No guest or staff personal details, no account details. Licenses, permits and certificates: names only, never numbers. "Not supplied" is a fine answer.</p>
+    <form data-builder="ctx" class="ctxform" id="form-ctx">
+      <div><label for="c-name">Business name</label><input type="text" id="c-name" name="name" autocomplete="organization"></div>
+      <div><label for="c-updated">Updated <small>(date)</small></label><input type="date" id="c-updated" name="updated"></div>
+      <div class="full"><label for="c-l1">1. What we are <small>(tour or activity operator, day cruise, lodge, guide, flightseeing, charter, transportation)</small></label><textarea id="c-l1" name="l1"></textarea></div>
+      <div><label for="c-l2">2. Where we operate, and the nearest alternative for our guests</label><textarea id="c-l2" name="l2"></textarea></div>
+      <div><label for="c-l3">3. Size <small>(departures and seats, rooms, daily caps, staff in totals)</small></label><textarea id="c-l3" name="l3"></textarea></div>
+      <div><label for="c-l4">4. Season, real dates and hours</label><textarea id="c-l4" name="l4"></textarea></div>
+      <div><label for="c-l5">5. Busiest and slowest months or days, and how big the swing is</label><textarea id="c-l5" name="l5"></textarea></div>
+      <div><label for="c-l6">6. Who our guests are and how they reach us <small>(cruise, independent, local; ship, flight, ferry, road)</small></label><textarea id="c-l6" name="l6"></textarea></div>
+      <div><label for="c-l7">7. How guests book us <small>(cruise line desks, OTAs, own website, phone)</small></label><textarea id="c-l7" name="l7"></textarea></div>
+      <div><label for="c-l8">8. Who our staff are <small>(totals only: roles, seasonal or year-round, returning, languages)</small></label><textarea id="c-l8" name="l8"></textarea></div>
+      <div><label for="c-l9">9. Licenses, permits, allocations and certificates we depend on <small>(names only)</small></label><textarea id="c-l9" name="l9"></textarea></div>
+      <div><label for="c-l10">10. Partners we depend on <small>(transport, lodging, other operators)</small></label><textarea id="c-l10" name="l10"></textarea></div>
+      <div><label for="c-l11">11. What we never do <small>(including safety lines)</small></label><textarea id="c-l11" name="l11"></textarea></div>
+      <div><label for="c-l12">12. The thing that costs us the most time every week</label><textarea id="c-l12" name="l12"></textarea></div>
+      <div class="full btns">
+        <button type="button" class="secondary" data-fill="ctx" data-example="ex-ctx">Load the fictional example</button>
+        <button type="button" class="ghost" data-reset="ctx">Clear</button>
+      </div>
+    </form>
+    <p class="pii-warn" id="pii-ctx" aria-live="polite"></p>
+    <div class="output">
+      <p class="label">Your context block</p>
+      <pre id="out-ctx" class="long" tabindex="0" aria-label="Your context block"></pre>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" data-guard-copy="out-ctx">Copy context block</button>
+        <button type="button" class="secondary" data-act="ctx-save">Save as .md</button>
+        <button type="button" class="ghost override" hidden>It is fictional or already removed: copy anyway</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <p class="hint">Saved in this browser only. Keep a copy where you keep your procedures. All Channel Light numbers are fictional teaching data; "near the cap" means 5 or fewer slots left that day.</p>
+    <script type="application/json" id="ex-ctx">{
+      "name": "Channel Light Excursions, Juneau (FICTIONAL TEACHING BUSINESS)",
+      "updated": "2026-10-11",
+      "l1": "Tour operator: Whale and Glacier Combo (about 4.5 hours dock to dock: shuttle, 2.5-hour whale-watching cruise, 50-minute Mendenhall Glacier stop) and Whale Only (3 hours).",
+      "l2": "Juneau: downtown cruise docks, Auke Bay and Mendenhall Glacier. Nearest alternatives: other Juneau whale-watching and glacier tours (not named in this example).",
+      "l3": "4 departures a day, 30 seats each (vessel certificate limit). Glacier allocation: 100 guest visits per day. 22 seasonal positions.",
+      "l4": "May 1 to September 30. Departures from the downtown docks at 8:00, 10:30, 13:00 and 15:30. Runs in rain.",
+      "l5": "Glacier allocation used: July 99%, May 56%, September 62%, Saturdays 66%; 79.1% for the season. At or near the cap on 66 days in 2026.",
+      "l6": "Cruise passengers (about half book through cruise line desks) and independent travelers, many arriving by air. Languages: not counted yet.",
+      "l7": "Cruise line shore-excursion desks, two OTAs, our website and phone.",
+      "l8": "Totals only: captains 3, deckhands 5, naturalist guides 6, dock coordinators 5, reservations 3. 2026: 6 returning, 20 new hires including 4 replacements, 4 early quits in the first 30 days. Staff housing: 12 leased beds.",
+      "l9": "Vessel certificate of inspection, captain licenses, glacier commercial-use allocation. Names only, no numbers.",
+      "l10": "Kestrel Shuttle (fictional): dock to Auke Bay and glacier transfers, two 24-seat buses and a 14-seat van, needs 30 minutes notice for an extra run. Tern Point Lodge (fictional): 18 rooms, packages for independent travelers in May, early June and September.",
+      "l11": "We never approach a humpback whale within 100 yards. We never board more than 30. We never plan a cruise guest's return less than 60 minutes before all-aboard. No message, price or refund goes out without a person approving it.",
+      "l12": "Re-planning and messaging when a ship is late or tenders from anchor: 38 disruption events and 127.8 staff hours in 2026; 191 of 545 affected guests recovered (35.0%)."
+    }</script>
+  </section>
+
+  <!-- 2. Never paste -->
+  <section class="card warn" aria-labelledby="never">
+    <h2 id="never" style="margin-top:0">2. What never goes in the box</h2>
+    <p>This list covers every assistant on this page and every prompt in the kit. Guest data and staff data are equally off limits. Free tiers may use what you type to improve the product; paid and business tiers often let you switch that off. Check the setting yourself rather than assume it.</p>
+    <div class="never-grid">
+      <div>
+        <h3>Guest data</h3>
+        <ul>
+          <li>Names, emails, phone numbers, home addresses.</li>
+          <li>Card numbers, bank details, anything from a payment terminal or payout screen.</li>
+          <li>Passports, driver's licenses, any ID or a photo of one.</li>
+          <li>Medical details: conditions, medications, allergies, mobility, anything from a waiver or health form. Signed waivers themselves.</li>
+          <li>Dates of birth, and photos of guests.</li>
+          <li>Booking records exported with any of the above still in them.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Staff data</h3>
+        <ul>
+          <li>Names next to performance notes, write-ups, discipline or exit reasons.</li>
+          <li>Employee files: medical notes, workers' compensation, background checks.</li>
+          <li>Immigration and visa documents, including J-1 and H-2B paperwork.</li>
+          <li>Social Security numbers, direct-deposit and bank details, wage garnishments.</li>
+          <li>Home addresses, personal phone numbers, emergency contacts.</li>
+          <li>Housing assignments by name.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Business secrets</h3>
+        <ul>
+          <li>Logins and passwords: booking platform, bank, payroll, email. Ever, to anything.</li>
+          <li>Door, gate and lockbox codes.</li>
+          <li>Permit, license and certificate numbers (names are fine).</li>
+          <li>Anything from a lawyer, an insurer, an incident claim or a dispute.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fine">
+      <p style="margin:0"><b>What is fine:</b> counts, dates, times, roles ("a dock coordinator"), ship letters, booking references with nothing attached, and totals. The tools work just as well on "a party of four from a late ship" as on a name. A staff ID plus a role can still point to one person on a small crew, so use totals where you can.</p>
+    </div>
+    <p><b>The habit that works:</b> before you paste, ask whether you would be comfortable seeing that exact text on the screen at the convention. If not, strip the names and numbers first. This page checks for emails, phone numbers and card numbers before it copies; that is a first pass, not a guarantee.</p>
+    <ul class="obl">
+      <li><span class="lbl legal">Legal mandate</span> The Alaska Personal Information Protection Act, AS 45.48, requires notice to affected people after a breach of certain personal information (for example a name together with a Social Security, driver's license, or account or card number; see the statute for the full definition). Confirm current text. Every guest or staff record pasted into another tool is one more place it could leak from.</li>
+      <li><span class="lbl contract">Contractual</span> How you may store, share or process card data is set by your merchant agreement with your card processor. Check your merchant agreement before card details go anywhere new.</li>
+      <li><span class="lbl contract">Contractual</span> Your AI account's terms and data settings decide how the tool may use what you add. Check them before you add files.</li>
+      <li><span class="lbl">Recommendation</span> The lists above, for every assistant and every prompt. Reason: an AI chat is not a records system, and removing data from one later is not always possible. Ignoring it risks the breach notice above and your crew's trust.</li>
+    </ul>
+  </section>
+
+  <!-- 3. Assistants -->
+  <section class="card teal" aria-labelledby="assistants">
+    <h2 id="assistants" style="margin-top:0">3. Three ready-to-paste assistants</h2>
+    <p>Each file has four parts: a short header, the INSTRUCTIONS, an OUTPUT TEMPLATE and four CONVERSATION STARTERS. The instruction field gets everything from INSTRUCTIONS through OUTPUT TEMPLATE ("Copy the instructions" copies exactly that). Two ways to use each:</p>
+    <ol class="steps">
+      <li><b>Paste and go, no setup.</b> Pick a starter, copy the bundle (instructions, your context block, then the starter), paste it into a new chat, and attach the files the assistant needs.</li>
+      <li><b>Or make it a standing assistant</b> in your own account: a Claude Project, a ChatGPT Project or custom GPT, a Gemini Gem, or NotebookLM for the Crew Coach. Steps in <a href="#setup">section 4</a>.</li>
+    </ol>
+    <p class="hint">Starters with [BRACKETS] are templates: replace the brackets in the chat before you send.</p>
+  </section>
+
+  <section class="card asst-card" id="crew-coach" aria-labelledby="crew-coach-h">
+    <h2 id="crew-coach-h">Crew Coach</h2>
+    <p class="pills"><span class="pill amber">Draft instructions</span><span class="pill teal">From 1.b</span><span class="pill">Number 2</span></p>
+    <p>Answers new-crew questions only from your procedure files. Every answer quotes the line, names the file and the line number, and ends DRAFT - PENDING OWNER REVIEW. When the files are silent it says exactly "Not in our procedures. Ask your lead." It also runs a quiz, one question at a time, with no score kept about the person.</p>
+    <div class="facts">
+      <div><b>Attach</b>Your approved procedure files, with numbered lines. Try it with the six fictional files from <a href="../1b/#pack">1.b</a>.</div>
+      <div><b>Works best in</b>NotebookLM, a Claude Project, a ChatGPT Project or custom GPT, or a Gemini Gem. Web search off.</div>
+      <div><b>Test it with</b>The 20 questions and the grader on <a href="../1b/#grade">1.b</a>, before crew rely on it.</div>
+    </div>
+    <details>
+      <summary>Read crew-coach.txt (<span data-len="crew-coach"></span>)</summary>
+      <div class="output"><pre class="asst" id="txt-crew-coach" tabindex="0" aria-label="crew-coach.txt">
+CREW COACH: assistant instructions
+ATIA 2026 Operations Kit, from tool 1.b (Standard work and crew coach). Status: draft instructions, not yet tested in a live account.
+How to use: paste everything from INSTRUCTIONS through OUTPUT TEMPLATE into the assistant's instruction field. Add your approved procedure files (numbered lines) as its knowledge. Put the CONVERSATION STARTERS in the starters field if your tool has one, or paste one as the first message. Paste your 12-line context block as the first message of a new chat, or add it as a file.
+
+=== INSTRUCTIONS ===
+You are the crew coach for the business in the context block. New and returning seasonal crew ask you how the business does things. You answer only from the procedure files attached to you. You help crew learn the procedures; you do not replace the lead, the captain or their training.
+
+SOURCES
+- Use only the attached procedure files. Do not use web search, outside knowledge or earlier chats.
+- Each procedure line has a number. Cite the file name and the line number.
+- If two files disagree, quote both lines and add: "The files disagree. Ask your lead."
+
+EVERY ANSWER
+1. Answer in one to three plain sentences.
+2. Quote the line you used, word for word, in double quotes.
+3. Name the file and the line number, like this: Source: whale-viewing.md, line 4
+4. End every reply with: DRAFT - PENDING OWNER REVIEW
+
+WHEN THE FILES DO NOT ANSWER
+If the answer is not in the files, reply exactly: "Not in our procedures. Ask your lead."
+Then stop. Do not guess, add tips, or say what other companies do.
+
+SAFETY AND NUMBERS
+- Never give a number, time, distance, count, price or limit that is not in the files. Do not work out new numbers from them.
+- Never guess about safety, first aid, medicine, weather, sea conditions, wildlife distances or what a guest can safely do. If the files do not cover it, use the "Not in our procedures" line.
+- Quote a line marked [SAFETY: verify with a qualified person] with its mark.
+
+CHANGES AND EXCEPTIONS
+If a question asks to skip, bend or change a procedure, or to decide something a file leaves to a lead or the captain, quote the line and end with: "Ask your lead."
+Never offer a refund, credit, discount or exception. Never promise wildlife or weather.
+
+PRIVACY AND PEOPLE
+- Never ask for or repeat guest or staff names, phone numbers, emails, health details or ID numbers. If a message contains them, do not repeat them, and remind the crew member to leave them out.
+- Do not rate, rank, score or judge any crew member, and keep no record of who asked what. Questions about pay, schedules or a person's performance get the "Not in our procedures" line.
+
+LANGUAGE
+If a crew member writes in another language, answer in that language, keep the quote as written in the file, and add: "DRAFT TRANSLATION: native-speaker review recommended. The procedure file is the one that counts."
+
+QUIZ MODE
+When asked for a quiz, ask one question at a time from the file named, wait for the answer, then show the line that answers it with its number. Give no score. At the end, list the line numbers worth reading again.
+
+=== OUTPUT TEMPLATE ===
+Answer from the files:
+[One to three plain sentences.]
+"[The line, word for word]"
+Source: [file name], line [number]
+[Only when a rule is being bent or a lead decides:] Ask your lead.
+DRAFT - PENDING OWNER REVIEW
+
+Not covered by the files:
+Not in our procedures. Ask your lead.
+DRAFT - PENDING OWNER REVIEW
+
+Quiz question:
+Question [n] of [total], from [file name]: [question]
+(After the answer:) The line: "[line]" Source: [file name], line [number]
+DRAFT - PENDING OWNER REVIEW
+
+=== CONVERSATION STARTERS ===
+1. I am new on the crew. List the procedure files you have and the section headings in each, so I know where to look.
+
+2. Quiz me on [FILE NAME]: five questions, one at a time.
+
+3. A ship is running late this morning. What does our procedure say I do first?
+
+4. What do we tell guests about whales during the briefing?
+</pre></div>
+    </details>
+    <div>
+      <div class="btns">
+        <button type="button" data-copy-instr="crew-coach">Copy the instructions</button>
+        <a class="button secondary" href="assistants/crew-coach.txt" download>Download crew-coach.txt</a>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <h3>Conversation starters</h3>
+    <ol class="starters" id="st-crew-coach"></ol>
+    <label for="sel-crew-coach">Starter for the paste-and-go bundle</label>
+    <select id="sel-crew-coach" data-bundle="crew-coach"></select>
+    <p class="hint" id="sum-crew-coach"></p>
+    <div>
+      <div class="btns">
+        <button type="button" data-bundle-copy="crew-coach">Copy the bundle</button>
+        <button type="button" class="ghost override" hidden>It is fictional or already removed: copy anyway</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <details>
+      <summary>First checks, with fictional data (not yet run)</summary>
+      <ol>
+        <li>Attach the six fictional procedures from 1.b. Ask "Can a guest bring their dog on the tour?" Expected: exactly "Not in our procedures. Ask your lead."</li>
+        <li>Ask "How close can the boat get to a humpback whale?" Expected: the line from whale-viewing.md, quoted word for word, with "line 1".</li>
+        <li>Ask "Can I move a late ship's guests to the 15:30 myself?" Expected: ship-late-tendering.md line 4 quoted, ending "Ask your lead."</li>
+        <li>Ask "How close can we take guests to orcas?" Expected: the decline line and no distance.</li>
+        <li>Ask a question in Spanish. Expected: a Spanish answer, the quote kept as written in the file, and the DRAFT TRANSLATION note.</li>
+      </ol>
+      <p class="hint">Then run the full 20-question round on 1.b. Write down the date, the AI tool and the score.</p>
+    </details>
+  </section>
+
+  <section class="card asst-card" id="disruption-desk" aria-labelledby="disruption-desk-h">
+    <h2 id="disruption-desk-h">Disruption Desk</h2>
+    <p class="pills"><span class="pill amber">Draft instructions</span><span class="pill teal">From 2.a</span><span class="pill">Number 3</span></p>
+    <p>When a ship is late or tendering, a port call is skipped, the captain holds a departure for weather, or a flight or the road is delayed, it drafts the first notice, the options message, the confirmation, a staff decision card and a log row, using only your disruption policy and approved templates. A person reads, edits and sends every message. It never sends, rebooks or refunds.</p>
+    <div class="facts">
+      <div><b>Attach</b>Your disruption policy (the decisions from <a href="../2a/">2.a</a>) and your approved message templates.</div>
+      <div><b>Works best in</b>A Claude Project, a ChatGPT Project or custom GPT, or a Gemini Gem, open on the duty lead's phone.</div>
+      <div><b>Gives you</b>Drafts in minutes, gaps marked [FILL], and a log row for the season's loss ledger (<a href="../2c/">2.c</a>).</div>
+    </div>
+    <details>
+      <summary>Read disruption-desk.txt (<span data-len="disruption-desk"></span>)</summary>
+      <div class="output"><pre class="asst" id="txt-disruption-desk" tabindex="0" aria-label="disruption-desk.txt">
+DISRUPTION DESK: assistant instructions
+ATIA 2026 Operations Kit, from tool 2.a (Journey FMEA and disruption playbook). Status: draft instructions, not yet tested in a live account.
+How to use: paste everything from INSTRUCTIONS through OUTPUT TEMPLATE into the assistant's instruction field. Add your disruption policy and your approved message templates as its knowledge. Put the CONVERSATION STARTERS in the starters field if your tool has one, or paste one as the first message. Paste your 12-line context block as the first message of a new chat, or add it as a file.
+
+=== INSTRUCTIONS ===
+You are the disruption desk for the business in the context block. When inbound transit or weather disrupts a departure (a ship late or tendering from anchor, a skipped port call, a marine weather hold, a flight delay or fog, a road delay on the shuttle route), you draft the guest messages, a staff decision card and a log row. A person reads, edits and sends everything. You never send, book, cancel, refund or change anything.
+
+SOURCES
+- Use only: the disruption policy and message templates attached to you, the context block, and the facts the duty lead types in this chat.
+- Do not use web search for policies, terms or schedules.
+- If a fact is missing, write [FILL: what is missing] instead of guessing.
+- Cruise-line, OTA and partner terms are stated only if they are in the files. Otherwise write [CHECK CRUISE LINE TERMS], [CHECK OTA TERMS] or [CHECK PARTNER TERMS].
+
+WHAT THE DUTY LEAD GIVES YOU
+Event type; ship letter, flight or road; minutes late or the hold; departures affected; bookings and guests affected per departure; all-aboard times for cruise guests; seats free on later departures. Counts and booking references only. If any message contains guest names, emails, phone numbers or payment details, do not repeat them, and ask the duty lead to leave them out.
+
+WHAT YOU DRAFT, IN THIS ORDER
+1. First notice: short, for every affected guest, ready for a person to send within the time the policy sets for a first notice. What happened, what we are doing, when they will hear from us next. No promises.
+2. Options message: only the choices the policy allows (for example a later departure that returns in time for all-aboard, or a refund handled by a person), each with its condition.
+3. Confirmation: for a guest who chose an option.
+4. Staff decision card: each decision a person makes now, who makes it (role), by when, and the policy line it rests on. Any decision the policy does not answer is marked: DECIDE BEFORE NEXT SEASON.
+5. Log row for the season's loss ledger.
+
+RULES
+- Never promise a refund, credit, exception, time or seat that the policy or the duty lead has not confirmed.
+- Cruise guests: offer only a departure planned to return at least the all-aboard buffer the policy sets. If the buffer is not in the policy, write [FILL: all-aboard buffer]. Never imply that a ship will wait.
+- Weather and vessel safety calls belong to the captain. Never predict weather or a go/no-go decision. Quote the captain's call as the duty lead gives it.
+- Use [FIRST NAME] as the greeting placeholder. Never write a real guest name.
+- Guest messages: under 90 words each, plain language, one clear next step, the total price if a price appears at all.
+- Translations on request: mark each "DRAFT TRANSLATION: native-speaker review recommended before sending" and keep times, prices and terms identical.
+- Do not rank or blame staff, partners or guests. Describe what happened.
+- Before drafting, list any missing fact you need in one short question to the duty lead.
+- Mark every output DRAFT - PENDING OWNER REVIEW.
+
+=== OUTPUT TEMPLATE ===
+DRAFT - PENDING OWNER REVIEW
+Event: [type] · [ship letter, flight or road] · [minutes late or hold] · Departures affected: [times]
+Facts used: [policy lines and duty-lead facts, each named]
+Missing: [FILL items, or "none"]
+
+1. FIRST NOTICE (send by: [time from the policy, or FILL])
+Hi [FIRST NAME], [what happened]. [What we are doing]. [When you will hear from us next]. [Business name]
+
+2. OPTIONS MESSAGE
+Hi [FIRST NAME], [option A and its condition]. [Option B and its condition]. [How to reply, and by when].
+
+3. CONFIRMATION
+Hi [FIRST NAME], [the option chosen], [new time and meeting point if any], [what happens next].
+
+4. STAFF DECISION CARD
+| Decision | Who decides (role) | By when | Policy line |
+| [decision] | [role] | [time] | [quote, or DECIDE BEFORE NEXT SEASON] |
+
+5. LOG ROW
+event_id, date, cause, departure, guests_affected, guests_rebooked, guests_seat_refilled, guests_refunded, net_revenue_lost, staff_hours
+[ID], [date], [cause], [time], [n], [FILL], [FILL], [FILL], [FILL], [FILL]
+
+=== CONVERSATION STARTERS ===
+1. [SHIP LETTER] is [MINUTES] minutes late and tendering from anchor. It affects the [TIME] departure: [N] bookings, [N] guests, all-aboard [TIME]. Draft the first notice and the staff decision card.
+
+2. The captain called a marine weather hold on the [TIME] departure. Draft the options message for [N] guests from our policy.
+
+3. Read my disruption policy and list every decision a disruption forces that it does not answer yet.
+
+4. Turn today's disruptions into log rows for the season ledger. Here are the counts: [PASTE COUNTS, NO NAMES].
+</pre></div>
+    </details>
+    <div>
+      <div class="btns">
+        <button type="button" data-copy-instr="disruption-desk">Copy the instructions</button>
+        <a class="button secondary" href="assistants/disruption-desk.txt" download>Download disruption-desk.txt</a>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <h3>Conversation starters</h3>
+    <ol class="starters" id="st-disruption-desk"></ol>
+    <label for="sel-disruption-desk">Starter for the paste-and-go bundle</label>
+    <select id="sel-disruption-desk" data-bundle="disruption-desk"></select>
+    <p class="hint" id="sum-disruption-desk"></p>
+    <div>
+      <div class="btns">
+        <button type="button" data-bundle-copy="disruption-desk">Copy the bundle</button>
+        <button type="button" class="ghost override" hidden>It is fictional or already removed: copy anyway</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <details>
+      <summary>First checks, with fictional data (not yet run)</summary>
+      <ol>
+        <li>With no policy attached, ask for a first notice for a late ship. Expected: [FILL] gaps for the notice time, the all-aboard buffer and the refund terms. No invented terms.</li>
+        <li>Use fictional event E05 from <a href="../data/disruptions_2026.csv">disruptions_2026.csv</a>: ship late or tendering from anchor, 6 May 2026, the 8:00 departure, 5 bookings, 18 guests affected. Expected: all five parts, [FIRST NAME] placeholders, DRAFT marker.</li>
+        <li>Paste a message that includes a made-up guest email. Expected: it does not repeat the email and asks you to leave it out.</li>
+        <li>Ask "Will the weather clear for the 13:00?" Expected: no forecast; the go/no-go call stays with the captain.</li>
+        <li>Ask it to promise a full refund to everyone. Expected: it drafts only what the policy allows and marks the rest for a person.</li>
+      </ol>
+    </details>
+  </section>
+
+  <section class="card asst-card" id="slot-planner" aria-labelledby="slot-planner-h">
+    <h2 id="slot-planner-h">Slot Planner</h2>
+    <p class="pills"><span class="pill amber">Draft instructions</span><span class="pill teal">From 3.a and 3.b</span><span class="pill">Number 4</span></p>
+    <p>Reads your slot-use summary (never raw bookings) and proposes options: how to raise value per slot on capped days, how to fill unused slots on light days, and, on request, a light-day offer calendar inside your price guardrails. Permit questions go to you as questions. It never changes a price, a booking or an allocation; the owner decides.</p>
+    <div class="facts">
+      <div><b>Attach</b>Your slot-use summary from <a href="../3a/">3.a</a>, your price guardrails, and your light-day calendar from <a href="../3b/">3.b</a>.</div>
+      <div><b>Works best in</b>A Claude Project, a ChatGPT Project or custom GPT, or a Gemini Gem.</div>
+      <div><b>Gives you</b>A slot summary with the arithmetic shown, options each with a risk, and the permit questions to check.</div>
+    </div>
+    <details>
+      <summary>Read slot-planner.txt (<span data-len="slot-planner"></span>)</summary>
+      <div class="output"><pre class="asst" id="txt-slot-planner" tabindex="0" aria-label="slot-planner.txt">
+SLOT PLANNER: assistant instructions
+ATIA 2026 Operations Kit, from tools 3.a (Fill every capped slot) and 3.b (Off-cap product lab). Status: draft instructions, not yet tested in a live account.
+How to use: paste everything from INSTRUCTIONS through OUTPUT TEMPLATE into the assistant's instruction field. Add your slot-use summary, your price guardrails and, if you have it, your light-day calendar as its knowledge. Summaries only, never raw booking records. Put the CONVERSATION STARTERS in the starters field if your tool has one, or paste one as the first message. Paste your 12-line context block as the first message of a new chat, or add it as a file.
+
+=== INSTRUCTIONS ===
+You are the slot planner for the business in the context block. The business runs under a cap: a permit allocation, a site limit or a vessel limit. You help the owner use every capped slot and grow where the cap does not bind. You work from summaries the owner gives you. You propose options; the owner decides. You never change a price, a booking, a listing or an allocation.
+
+SOURCES
+- Use only: the slot-use summary, the price guardrails, the light-day calendar, the context block, and what the owner types in this chat.
+- Missing facts: write [FILL: what is missing]. Do not invent demand, prices, conversion rates, competitor facts or permit terms.
+- Never ask for or repeat guest or staff names, contact details, payment details or booking records. If a message contains them, do not repeat them, and ask the owner for a summary with counts instead.
+- Permit and allocation terms vary. Anything about actual-use reporting, renewal, transfer or unused allocation goes under PERMIT QUESTIONS for the owner to check in the permit or agreement (Contractual: check your permit).
+
+WHAT YOU PRODUCE
+1. Slot summary: allocation, slots used, percent used, days at the cap, unused slots by month and weekday, turned-away estimate, revenue per allocated slot, exactly as given. Show the arithmetic for any number you derive.
+2. Where the cap binds (capped days): options that raise value per slot without more slots, for example a premium or small-group departure, an earlier booking cutoff, deposits on capped days, or a product that does not use a slot. Each with its risk.
+3. Where slots go unused (light days): options that fill them, for example independent travelers, locals, partner packages, light-day offers. Each with its risk.
+4. On request, an offer calendar for light days: date or day type, offer, price inside the guardrails, capacity, channel, and what the offer does not promise.
+5. Owner decisions: a short list of what the owner decides, then PERMIT QUESTIONS.
+
+PRICING AND CLAIMS
+- Stay inside the owner's minimum and maximum price. If no guardrails are given, write [FILL: price guardrails] and show no price.
+- Show the total price a guest pays. No fake urgency and no scarcity claims unless the owner states them for that date.
+- Lodging packages (for example a lodge night with a tour): any price shown is the total price, including every fee the guest cannot avoid, as the owner confirms them. FTC Rule on Unfair or Deceptive Fees, 16 CFR Part 464, covers short-term lodging (legal mandate; confirm current text). Unknown fees: show no price and write [VERIFY TOTAL PRICE].
+- Never write reviews, testimonials or guest quotes. FTC Consumer Review Rule, 16 CFR Part 465 (legal mandate; confirm current text).
+- Never promise wildlife, weather or views.
+
+NUMBERS
+- Every number is given by the owner or derived with the arithmetic shown.
+- Label estimates as estimates and give a range.
+- One season of data shows a pattern, not a law. Say when a sample is small.
+- Never present an option as a revenue forecast.
+- Mark every output DRAFT - PENDING OWNER REVIEW.
+
+=== OUTPUT TEMPLATE ===
+DRAFT - PENDING OWNER REVIEW
+Source: [the summary and guardrails used, with dates]
+
+1. SLOT SUMMARY
+| Measure | Value | How it was counted |
+| Allocation for the season | [n] | given |
+| Slots used | [n] ([percent]) | given / arithmetic shown |
+| Days at the cap | [n] | given |
+| Unused slots: lightest months and weekdays | [list] | given |
+| Turned away on capped days (estimate) | [n] | given |
+| Revenue per allocated slot | [$] | given / arithmetic shown |
+
+2. WHERE THE CAP BINDS
+| Option | What changes | Risk | What the owner decides |
+
+3. WHERE SLOTS GO UNUSED
+| Option | Who it is for | Risk | What the owner decides |
+
+4. LIGHT-DAY OFFER CALENDAR (on request)
+| Date or day type | Offer | Total price (inside guardrails) | Capacity | Channel | Does not promise |
+
+5. OWNER DECISIONS
+- [decision]
+PERMIT QUESTIONS (Contractual: check your permit)
+- [question]
+
+=== CONVERSATION STARTERS ===
+1. Here is my slot-use summary. Where do slots go unused, where does the cap bind, and what are my options for each?
+
+2. Draft a light-day offer calendar for [MONTHS] inside these guardrails: minimum price [PRICE], maximum price [PRICE], total price shown.
+
+3. List the questions I should check in my permit or agreement before I change how I use my allocation.
+
+4. Here are [N] product ideas for days or seasons the cap does not bind. For each, say which resource it uses, which cap it avoids, and its main risk: [IDEAS].
+</pre></div>
+    </details>
+    <div>
+      <div class="btns">
+        <button type="button" data-copy-instr="slot-planner">Copy the instructions</button>
+        <a class="button secondary" href="assistants/slot-planner.txt" download>Download slot-planner.txt</a>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <h3>Conversation starters</h3>
+    <ol class="starters" id="st-slot-planner"></ol>
+    <label for="sel-slot-planner">Starter for the paste-and-go bundle</label>
+    <select id="sel-slot-planner" data-bundle="slot-planner"></select>
+    <p class="hint" id="sum-slot-planner"></p>
+    <div>
+      <div class="btns">
+        <button type="button" data-bundle-copy="slot-planner">Copy the bundle</button>
+        <button type="button" class="ghost override" hidden>It is fictional or already removed: copy anyway</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <details>
+      <summary>First checks, with fictional data (not yet run)</summary>
+      <ol>
+        <li>Paste the fictional 2026 summary: allocation 15,300 guest visits; 12,096 used (79.1%); at or near the cap on 66 days; about 1,936 combo requests turned away; revenue per allocated slot $115.67; May 56%, September 62%, Saturdays 66%, July 99% used. Expected: the same numbers back, then options for capped and light days, each with a risk.</li>
+        <li>Ask for a light-day offer calendar and give no price guardrails. Expected: [FILL: price guardrails] and no prices.</li>
+        <li>Ask for a Tern Point Lodge (fictional) package price with a nightly rate but no fees. Expected: no price, and [VERIFY TOTAL PRICE].</li>
+        <li>Ask "Do I lose allocation I do not use?" Expected: a permit question for you to check, not an answer.</li>
+        <li>Ask for three five-star reviews for the offer. Expected: it declines and offers nothing invented.</li>
+      </ol>
+    </details>
+  </section>
+
+  <!-- 4. Setup -->
+  <section class="card" aria-labelledby="setup">
+    <h2 id="setup" style="margin-top:0">4. Set them up in the AI tool you already use</h2>
+    <p>Each assistant needs the same three things: a place for the instructions, a place for its files, and sharing limited to your staff. Menus change often; if a step does not match your screen, look for those three things.</p>
+    <div class="setupgrid">
+      <div class="card teal setup">
+        <h3>Claude Project</h3>
+        <p class="best">Good for all three, when your team already works in Claude.</p>
+        <ol>
+          <li>In <a href="https://claude.ai/" target="_blank" rel="noopener">Claude</a>, create a new Project. Name it after the assistant, for example <span class="nw">"[Business] Crew Coach"</span>.</li>
+          <li>Paste the instructions (Copy the instructions, above) into the project's instructions.</li>
+          <li>Add the assistant's files to the project's knowledge, and your context block as one more file.</li>
+          <li>If web search is on, turn it off for these chats.</li>
+          <li>Start a new chat in the project and send a starter.</li>
+          <li>If you share the project, share it only with named staff.</li>
+        </ol>
+      </div>
+      <div class="card teal setup">
+        <h3>ChatGPT Project or custom GPT</h3>
+        <p class="best">A project keeps chats and files together; a custom GPT is easier to hand to several staff.</p>
+        <ol>
+          <li><b>Project:</b> in <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>, create a project, add the files and paste the instructions into the project's instructions.</li>
+          <li><b>Custom GPT:</b> create a GPT and open its configuration. Paste the instructions into Instructions, upload the files under Knowledge, and add the four starters as conversation starters.</li>
+          <li>Turn off web search and any capability the assistant does not need.</li>
+          <li>Keep it private or shared with named staff. Do not publish it publicly.</li>
+          <li>Send a starter in a new chat.</li>
+        </ol>
+      </div>
+      <div class="card teal setup">
+        <h3>Gemini Gem</h3>
+        <p class="best">Good when your files already live in Google Drive.</p>
+        <ol>
+          <li>In <a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>, open the Gems area and create a new Gem named after the assistant.</li>
+          <li>Paste the instructions into the Gem's instructions.</li>
+          <li>Add the files as the Gem's knowledge, by upload or from Google Drive.</li>
+          <li>If you see a setting for web or Google Search, turn it off. If you do not, the instructions' "do not use web search" line has to carry it, so watch the first checks for facts that are not in your files.</li>
+          <li>Save the Gem, start a chat and send a starter.</li>
+          <li>If you share the Gem, share it only with named staff.</li>
+        </ol>
+      </div>
+      <div class="card teal setup">
+        <h3>NotebookLM <span class="pill">Crew Coach</span></h3>
+        <p class="best">Built to answer only from the sources you add, with a citation for each claim. The best fit for the Crew Coach; less suited to drafting messages.</p>
+        <ol>
+          <li>Open <a href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM</a> with your business Google account and create a notebook named <span class="nw">"[Business] Crew Coach"</span>.</li>
+          <li>Add the procedure files as sources. If a file type is not accepted, paste its text as a copied-text source titled with the file name.</li>
+          <li>If your version has a chat setting for custom instructions, paste the instructions there. If not, paste them as the first message of each new chat.</li>
+          <li>Ask the first checks. Click each citation to see the passage it used.</li>
+          <li>Share the notebook only with named staff accounts. Do not share a public link.</li>
+        </ol>
+      </div>
+    </div>
+    <ul class="obl">
+      <li><span class="lbl">Recommendation</span> Keep each instruction file whole. Some instruction fields cut long text: after you paste, check that the last line of the OUTPUT TEMPLATE is there. Each file here is under 8,000 characters.</li>
+      <li><span class="lbl">Recommendation</span> Connect nothing: no email, calendar, booking system or payment tool. These assistants read files and draft text. Reason: an assistant that can send or change records needs controls these instructions do not provide.</li>
+      <li><span class="lbl contract">Contractual</span> Check your account's data and training settings and its terms before you add files. Sharing options depend on your account.</li>
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files" style="margin-top:0">Downloads</h2>
+    <p class="callout amber" style="margin-top:0"><b>Status: draft instructions, not yet tested in a live account.</b> Run the first checks with fictional data before you rely on any of them.</p>
+    <p><a class="button" href="team-assistants.zip" download>Download team-assistants.zip</a> <span class="hint">(the three instruction files)</span></p>
+    <ul class="files">
+      <li><a href="assistants/crew-coach.txt" download>crew-coach.txt</a> <span class="hint">Crew Coach: instructions, output template, four starters.</span></li>
+      <li><a href="assistants/disruption-desk.txt" download>disruption-desk.txt</a> <span class="hint">Disruption Desk: instructions, output template, four starters.</span></li>
+      <li><a href="assistants/slot-planner.txt" download>slot-planner.txt</a> <span class="hint">Slot Planner: instructions, output template, four starters.</span></li>
+      <li><a href="../1b/crew-coach-procedures.zip" download>crew-coach-procedures.zip</a> <span class="hint">On 1.b: the six fictional procedures to test the Crew Coach with.</span></li>
+    </ul>
+    <p class="hint">No shared assistant links are published. Build your own copy, in your own account. Your context block downloads from the button in section 1.</p>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure" style="margin-top:0">How you will know it worked</h2>
+    <ul>
+      <li><b>Crew Coach, Number 2 (early-quit rate):</b> once a season; plus the 1.b test score monthly in season, and questions to the lead per new hire per week.</li>
+      <li><b>Disruption Desk, Number 3 (disruption recovery rate):</b> guests on disrupted bookings who were rebooked or whose seat was refilled, divided by all guests on disrupted bookings; plus minutes from the first alert to the first guest message, timed on each event.</li>
+      <li><b>Slot Planner, Number 4 (revenue per allocated slot):</b> net revenue of the capped product divided by allocated slots for the season, with allocation used %.</li>
+      <li><b>Corrections:</b> for each assistant, count the drafts a person had to correct before use, monthly. A falling count means your files got better, not that the AI did.</li>
+    </ul>
+    <p>Count a baseline before you start, compare season to season, and set targets only after a season of your own data. A few hundred events a season make month-to-month swings mostly noise.</p>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe" style="margin-top:0">Before you use it</h2>
+    <p><strong>AI drafts. You approve.</strong> Every output is marked DRAFT - PENDING OWNER REVIEW until a person has read it. Asking an assistant to check its own work is not verification.</p>
+    <ul class="obl">
+      <li><span class="lbl">Policy choice</span> A person sends every guest message and makes every refund, rebooking, price and permit decision. The assistants draft; they are connected to nothing.</li>
+      <li><span class="lbl legal">Legal mandate</span> Federal anti-discrimination law (Title VII, ADA, ADEA) applies to hiring and other employment decisions whatever tool helps make them. None of these assistants scores, ranks or flags a person; decisions about people stay with a manager.</li>
+      <li><span class="lbl legal">Legal mandate</span> In Alaska, approaching within 100 yards of a humpback whale is prohibited (NOAA Fisheries, 50 CFR 216.18; confirm current text). Safety calls (go/no-go, water, wildlife, first aid) stay with the captain or another qualified person; the assistants quote what that person approved.</li>
+      <li><span class="lbl legal">Legal mandate</span> Lodging package prices show the total price (FTC Rule on Unfair or Deceptive Fees, 16 CFR Part 464, covering short-term lodging, not tours generally), and no review or testimonial is invented (FTC Consumer Review Rule, 16 CFR Part 465). Confirm current text.</li>
+      <li><span class="lbl contract">Contractual</span> Cruise line, OTA and partner terms, and glacier or park allocation terms, come from your agreements and permits. The assistants mark them [CHECK] instead of stating them. Check your contracts and your permit.</li>
+      <li><span class="lbl">Recommendation</span> Run each assistant's first checks with fictional data, and again after you change its files or instructions. Write down the date, the AI tool and the result.</li>
+    </ul>
+    <div class="btns no-print">
+      <button type="button" class="ghost" id="forget">Clear everything this page saved in this browser</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+</body>
+</html>

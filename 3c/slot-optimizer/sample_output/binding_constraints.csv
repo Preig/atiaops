@@ -1,0 +1,13 @@
+period,day_type,days,combo_requests_est,combo_guests,allocation_used_pct,seats_used_pct,turned_away_at_cap,whale_only_takers_at_cap_est,turned_away_seats_or_timing,days_at_or_near_cap_5_or_fewer_left,unused_slots,seats_or_timing_on_days_at_or_near_cap,seats_or_timing_below_cap,slots_left_on_days_at_or_near_cap,binding_constraint_my_read
+2026 actual,heavy,65,8238,6379,98.1,94.9,198,198,1463,57,121,1342,121,46,Seats and departure timing (about 23 in 100 combo requests blocked); the glacier allocation is close behind (98% used)
+2026 actual,medium,51,4143,3898,76.4,72.6,8,8,229,9,1202,81,148,19,Mostly demand; seats and departure timing block about 6 in 100 combo requests
+2026 actual,light,37,1857,1819,49.2,48.0,0,0,38,0,1881,0,38,0,Demand (about 2 in 100 combo requests blocked)
+2026 actual,season,153,14238,12096,79.1,76.1,206,206,1730,66,3204,1423,307,65,Seats and departure timing (about 15 in 100 combo requests blocked)
+2027 if nothing changes (middle values),heavy,64,7721,6005,93.8,90.2,193,215,1308,44,395,1123,185,63,Seats and departure timing (about 22 in 100 combo requests blocked)
+2027 if nothing changes (middle values),medium,52,4489,4126,79.3,74.8,21,18,324,5,1074,51,272,10,Mostly demand; seats and departure timing block about 8 in 100 combo requests
+2027 if nothing changes (middle values),light,37,1807,1764,47.7,46.8,0,0,43,0,1936,0,43,0,Demand (about 2 in 100 combo requests blocked)
+2027 if nothing changes (middle values),season,153,14016,11895,77.7,74.4,214,233,1674,49,3405,1174,500,73,Seats and departure timing (about 15 in 100 combo requests blocked)
+2027 recommended plan (middle values),heavy,64,6508,5720,89.4,85.6,125,143,520,28,680,380,139,57,The glacier allocation and seats or timing (about 12 in 100 combo requests blocked)
+2027 recommended plan (middle values),medium,52,4489,4232,81.4,76.7,32,24,201,7,968,52,149,14,Mostly demand; seats and departure timing block about 6 in 100 combo requests
+2027 recommended plan (middle values),light,37,1807,1778,48.0,47.1,0,0,29,0,1922,0,29,0,Demand (about 2 in 100 combo requests blocked)
+2027 recommended plan (middle values),season,153,12804,11730,76.7,73.3,157,167,750,35,3570,432,318,71,Mostly demand; seats and departure timing block about 8 in 100 combo requests

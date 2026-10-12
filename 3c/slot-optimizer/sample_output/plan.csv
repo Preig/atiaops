@@ -1,0 +1,7 @@
+plan,day_type,days_2027,combo_price,whale_only_price,option_id,option,notes
+recommended,heavy,64,259,169,STEER,Offer independents the departures ships use least,combo price is at the highest option tested; whale-only price is at the highest option tested
+use_neutral,heavy,64,219,169,STEER,Offer independents the departures ships use least,whale-only price is at the highest option tested
+recommended,medium,52,219,159,STEER,Offer independents the departures ships use least,
+use_neutral,medium,52,219,159,STEER,Offer independents the departures ships use least,
+recommended,light,37,219,159,STEER,Offer independents the departures ships use least,
+use_neutral,light,37,219,159,STEER,Offer independents the departures ships use least,

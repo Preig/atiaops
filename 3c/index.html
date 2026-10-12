@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>3.c Revenue-per-slot optimizer · ATIA Operations Kit</title>
+<meta name="description" content="Advanced rung, Pain 3 (capacity caps): find which limit actually stops your guests, then test prices and selling rules per day type against ranges, not point guesses. A Python optimizer with Monte Carlo ranges, an allocation evidence pack for permit conversations, and a no-code what-if calculator.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='10' width='4' height='5' fill='%235c8727'/%3E%3Crect x='6' y='6' width='4' height='9' fill='%235c8727'/%3E%3Crect x='11' y='1' width='4' height='14' fill='%230d92b4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/kit.css">
+<script src="../assets/kit.js" defer></script>
+<script src="whatif-core.js" defer></script>
+<script src="whatif.js" defer></script>
+<style>
+/* Page-specific styles for tool 3.c. Shared styles live in ../assets/kit.css. */
+.toc ol{columns:2 220px;column-gap:28px;margin:6px 0 0;padding-left:22px;font-size:15px}
+.toc li{margin:2px 0;break-inside:avoid}
+.toc h2{margin-top:0;font-size:18px}
+.rules{padding-left:18px}
+.rules li{margin:10px 0}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;max-width:100%}
+.tablewrap:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+table.compact th,table.compact td{padding:6px 8px}
+.rng{color:var(--slate-m);font-size:.92em;white-space:nowrap}
+.inline-fields{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.inline-fields>div{min-width:0}
+.inline-fields label{min-height:2.6em;display:flex;flex-wrap:wrap;align-items:flex-end;column-gap:.3em}
+.bignums{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));margin:14px 0}
+.bignums div{background:var(--teal-t);border-radius:4px;padding:12px 14px;min-width:0}
+.bignums b{display:block;font-size:28px;line-height:1.1;color:var(--teal-d);overflow-wrap:anywhere}
+.bignums span{font-size:14px;color:var(--slate);display:block;margin-top:4px}
+.verdict{border-radius:4px;padding:12px 16px;margin:12px 0;background:var(--amber-t);border-left:5px solid #d49a1a}
+.verdict.ok{background:var(--green-t);border-left-color:var(--green)}
+.verdict.err{background:var(--red-t);border-left-color:var(--red)}
+.verdict p{margin:.3em 0}
+.verdict ul{margin:.3em 0;padding-left:20px}
+.fit-q{margin:10px 0}
+.fit-q legend{color:var(--slate)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts label{display:inline-flex;align-items:center;gap:8px;margin:0;border:1px solid #b8beb4;border-radius:4px;padding:8px 12px;background:#fff;cursor:pointer;font-weight:normal;font-size:15px}
+.opts input{width:18px;height:18px;margin:0;flex:none}
+.privacy{font-size:14px;color:#8a2a2a;margin:4px 0 0}
+.cmd{display:block;font:15px/1.5 Consolas,"Courier New",monospace;background:#1e293b;color:#f1f5f9;border-radius:4px;padding:10px 12px;margin:6px 0;overflow-x:auto;white-space:pre}
+.flow{counter-reset:f;list-style:none;padding:0;margin:10px 0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.flow li{counter-increment:f;background:#fafbf9;border:1px solid var(--line);border-top:4px solid var(--teal);border-radius:4px;padding:10px 12px;font-size:15px;min-width:0}
+.flow li::before{content:counter(f) ". ";font-weight:bold;color:var(--teal-d)}
+.flow b{color:var(--slate)}
+.split{display:grid;gap:4px 16px;grid-template-columns:max-content 1fr;font-size:15px;margin:8px 0}
+.split dt{color:var(--slate-m)}
+.split dd{margin:0;font-weight:bold;color:var(--slate)}
+.files li{flex-wrap:wrap;gap:4px 12px}
+.files li a{white-space:nowrap}
+.files .hint{flex:1 1 240px}
+.toc-steps{margin:0}
+pre.prompt{max-height:none}
+@media(max-width:640px){
+  .bignums{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bignums div{padding:10px}.bignums b{font-size:21px}.bignums span{font-size:13px}
+  table.compact{font-size:13px}table.compact th,table.compact td{padding:5px 6px}
+  table.stack thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack{background:transparent}
+  table.stack tr{border:1px solid #ccd2c8;border-radius:4px;margin:0 0 8px;background:#fff}
+  table.stack td{border:0;border-top:1px solid #eef1ec;display:grid;grid-template-columns:7.6em minmax(0,1fr);gap:8px;text-align:left;padding:6px 8px;font-size:14px}
+  table.stack td:first-child{border-top:0;display:block;font-weight:bold;background:var(--green-t);color:var(--green-d);border-radius:4px 4px 0 0}
+  table.stack td::before{content:attr(data-label);font-weight:bold;color:var(--green-d);font-size:12.5px;line-height:1.5}
+  table.stack td:first-child::before{content:none}
+  .rng{white-space:normal}
+  .split{grid-template-columns:1fr}
+  .split dd{margin-bottom:6px}
+}
+@media print{.tablewrap{overflow:visible}details{border:0}details>summary{display:none}details:not([open])>*{display:block}}
+</style>
+</head>
+<body data-page="3c">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs"><a href="../">ATIA 2026 Annual Convention · Fairbanks · Operations Kit</a></p>
+  <p class="kicker"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>Pain 3 · Advanced · <span class="focus ops">OPS</span></p>
+  <h1>Revenue-per-slot optimizer</h1>
+  <p class="lede">At a permit cap, the number that grows the business is net revenue per allocated slot. This rung finds out which limit actually stops your guests, then tests prices and selling rules per day type against ranges, not point guesses. It never changes a price: it writes a memo for the owner.</p>
+  <ul class="meta">
+    <li><b>Time</b> 2 to 5 days with an analyst to fit your exports, then about an hour before each season (estimate)</li>
+    <li><b>Cost</b> analyst time; the software is free; an optional AI memo adds model API fees (estimate)</li>
+    <li><b>Who</b> owner plus an analyst or developer</li>
+    <li><b>Feeds</b> Number 4</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="3c" aria-label="All tools"></nav>
+</header>
+
+<main class="kit">
+  <div class="callout green">
+    <p><strong>It tests. You decide.</strong> The optimizer and the calculator do arithmetic on counts and prices you supply. They change nothing in your booking system, and every report and memo is marked DRAFT - PENDING OWNER REVIEW. The examples use <strong>Channel Light Excursions, Juneau, a fictional teaching business</strong>. What you type on this page stays in this browser.</p>
+  </div>
+
+  <nav class="card note toc" aria-labelledby="toc-h">
+    <h2 id="toc-h">On this page</h2>
+    <ol>
+      <li><a href="#why">The pain it fixes</a></li>
+      <li><a href="#how">How to use it</a></li>
+      <li><a href="#fit">Is it for you?</a></li>
+      <li><a href="#whatif">What-if calculator</a></li>
+      <li><a href="#model">How the optimizer works</a></li>
+      <li><a href="#report">Sample report</a></li>
+      <li><a href="#prompt">Turn the report into a decision memo</a></li>
+      <li><a href="#files">Downloads</a></li>
+      <li><a href="#measure">How you will know it worked</a></li>
+      <li><a href="#safe">Before you use it</a></li>
+      <li><a href="#next">Before this rung</a></li>
+    </ol>
+  </nav>
+
+  <section class="card teal" aria-labelledby="why">
+    <h2 id="why">The pain it fixes</h2>
+    <p><strong>Lean Six Sigma lens: Theory of Constraints at a regulatory cap.</strong> The glacier allocation caps combo guests at 100 a day, and a regulatory cap cannot be raised by working harder. So first identify which limit actually stops guests, day by day: the allocation, or your own seats and departure times. Then exploit the cap: no empty slots, and the highest-value use of every slot. Then subordinate everything else (prices, the seat plan, which departures you offer to whom) to it. On a day the cap is full, more guests cannot raise revenue; only the value of each slot can. That is why, at a cap, pricing and mix become the growth lever, and revenue per allocated slot (Number 4) is the throughput metric.</p>
+    <h3>The fictional example: Channel Light Excursions, 2026</h3>
+    <div class="bignums">
+      <div><b>$115.67</b><span>revenue per allocated slot: $1,769,688 / 15,300 slots</span></div>
+      <div><b>79.1%</b><span>of the allocation used (12,096 of 15,300)</span></div>
+      <div><b>66</b><span>days at or near the cap (5 or fewer slots left; 33 with none)</span></div>
+      <div><b>1,936</b><span>combo requests turned away: 206 at the cap, 1,730 for seats or timing</span></div>
+    </div>
+    <p><strong>Both limits at once.</strong> 1,423 of the 1,730 seats-or-timing turnaways fell on the 66 days at or near the cap, when only 65 slots were left in total. A guest turned away for a seat on those days could not have had the glacier anyway, so extra seats there mostly sell Whale Only ($117.58 net per guest who travels) rather than the combo ($157.84). Only 307 seats-or-timing turnaways fell on the 87 below-cap days: that is where moving or adding a departure, a constraint the owner controls, wins back combo guests. <small class="hint">(Fictional numbers.)</small></p>
+    <p><strong>My read:</strong> the permit was not the main thing turning guests away; seats and ship timing were, and on the busiest days both ran out together. The lever that is left on those days is the value of each slot. Unused slots sit in May, September and on Saturdays, which is a fill problem for <a href="../3a/">3.a</a> and <a href="../3b/">3.b</a>, not a price problem.</p>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <ol class="steps">
+      <li><strong>Check the fit</strong> with the three questions below. <em>Write down:</em> this rung, or the lower rung to start with.</li>
+      <li><strong>Run the what-if</strong> with last season's numbers, then one change at a time. <em>Write down:</em> last season's revenue per slot and the plan's range.</li>
+      <li><strong>Read the sample report</strong>, or run the demo bundle (about five minutes). <em>Write down:</em> the binding constraint on heavy, medium and light days.</li>
+      <li><strong>Point the bundle at your own exports</strong> (counts and prices only, no names) and read the replay check first. <em>Write down:</em> whether the replay lands within a few percent of your files.</li>
+      <li><strong>Turn the report into a decision memo</strong> with the prompt below. <em>Write down:</em> the decision, who approves it and by when.</li>
+      <li><strong>Test before you switch:</strong> one price change on part of the inventory for a month. <em>Write down:</em> the test, the number you will watch and the result that makes you stop.</li>
+      <li><strong>Build the evidence pack</strong> before any permit renewal or conversation with the land manager or city. <em>Write down:</em> what your permit asks you to report, and by when.</li>
+    </ol>
+  </section>
+
+  <section class="card" aria-labelledby="fit">
+    <h2 id="fit">Is it for you?</h2>
+    <p><strong>Built for:</strong> operators whose main product hits a permit allocation or another cap on some days, with a season of daily counts and someone who can run a Python script <small class="hint">(my read)</small>. Everyone else: the what-if calculator below does the core arithmetic, no code.</p>
+    <form id="fit-form" autocomplete="off">
+      <fieldset class="fit-q">
+        <legend>Is your main product capped (a permit allocation or similar)?</legend>
+        <div class="opts">
+          <label><input type="radio" name="cap" value="often"> Yes, and we reach it some days</label>
+          <label><input type="radio" name="cap" value="rarely"> Yes, but we rarely reach it</label>
+          <label><input type="radio" name="cap" value="none"> No cap</label>
+        </div>
+      </fieldset>
+      <fieldset class="fit-q">
+        <legend>Last season's daily counts: allocation used, and requests turned away</legend>
+        <div class="opts">
+          <label><input type="radio" name="data" value="yes"> Yes, every day</label>
+          <label><input type="radio" name="data" value="partly"> Partly, or monthly</label>
+          <label><input type="radio" name="data" value="no"> No</label>
+        </div>
+      </fieldset>
+      <fieldset class="fit-q">
+        <legend>Someone to run a Python script</legend>
+        <div class="opts">
+          <label><input type="radio" name="help" value="yes"> Yes: an analyst, a developer or me</label>
+          <label><input type="radio" name="help" value="maybe"> Could hire for a few days</label>
+          <label><input type="radio" name="help" value="no"> No</label>
+        </div>
+      </fieldset>
+    </form>
+    <div class="verdict" id="fit-out" role="status" aria-live="polite"><p>Answer the three questions to see where to start.</p></div>
+  </section>
+
+  <section class="card teal" aria-labelledby="whatif">
+    <h2 id="whatif">What-if calculator: revenue per allocated slot</h2>
+    <p>Type last season, then a plan: fill more of the allocation, charge a premium to some combo guests (for example on heavy days, or on the departures that sell out first), or both. The calculator shows Number 4 for the plan, the change against last season and a range. It starts with the fictional 2026 season and a plan identical to it.</p>
+    <form data-builder="whatif" id="whatif-form" autocomplete="off" novalidate>
+      <p class="privacy">Counts and prices only. No guest names or booking details.</p>
+      <fieldset>
+        <legend>Last season</legend>
+        <div class="inline-fields">
+          <div><label for="w-alloc">Allocation per day <small>(guest visits)</small></label><input type="number" id="w-alloc" name="allocation" value="100" min="1" step="1" inputmode="numeric"></div>
+          <div><label for="w-days">Days in the season</label><input type="number" id="w-days" name="days" value="153" min="1" max="366" step="1" inputmode="numeric"></div>
+          <div><label for="w-base">Share of the allocation used, %</label><input type="number" id="w-base" name="base_used" value="79.06" min="0" max="100" step="0.01" inputmode="decimal"></div>
+          <div><label for="w-net">Combo net revenue per booked guest, $</label><input type="number" id="w-net" name="net_per_guest" value="146.30" min="0" step="0.01" inputmode="decimal"></div>
+        </div>
+        <p class="hint">Net per booked guest = combo net revenue / combo guests booked, so cancellations, no-shows and refunds are already in it. Fictional 2026: $1,769,688 / 12,096 = $146.30 ($157.84 per guest who travelled).</p>
+      </fieldset>
+      <fieldset>
+        <legend>The plan</legend>
+        <div class="inline-fields">
+          <div><label for="w-plan">Share of the allocation used, %</label><input type="number" id="w-plan" name="plan_used" value="79.06" min="0" max="100" step="0.1" inputmode="decimal"></div>
+          <div><label for="w-pshare">Combo guests who pay the premium, %</label><input type="number" id="w-pshare" name="premium_share" value="0" min="0" max="100" step="1" inputmode="decimal"></div>
+          <div><label for="w-uplift">Premium uplift, % <small>(net)</small></label><input type="number" id="w-uplift" name="premium_uplift" value="0" min="-90" max="300" step="0.5" inputmode="decimal"></div>
+          <div><label for="w-whale">Whale-only guests per day <small>(avg)</small></label><input type="number" id="w-whale" name="whale_per_day" value="12.3" min="0" step="0.1" inputmode="decimal"></div>
+          <div><label for="w-wnet">Whale-only net per booked guest, $</label><input type="number" id="w-wnet" name="whale_net" value="106.39" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="w-seats">Seats per day <small>(all departures)</small></label><input type="number" id="w-seats" name="seats_per_day" value="120" min="1" step="1" inputmode="numeric"></div>
+          <div><label for="w-unc">Uncertainty on the change, plus or minus %</label><input type="number" id="w-unc" name="uncertainty" value="30" min="0" max="100" step="5" inputmode="numeric"></div>
+        </div>
+      </fieldset>
+      <div class="btns">
+        <button type="button" class="secondary" data-fill="whatif" data-example="whatif-demo">Load the fictional example</button>
+        <button type="button" class="secondary" id="wi-same">Plan = last season</button>
+        <button type="button" class="ghost" data-reset="whatif">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+      <!-- BEGIN:demo-json -->
+<script type="application/json" id="whatif-demo">{"allocation": "100", "days": "153", "base_used": "79.06", "net_per_guest": "146.30", "plan_used": "76.0", "premium_share": "48.5", "premium_uplift": "18.3", "whale_per_day": "12.3", "whale_net": "106.39", "seats_per_day": "120", "uncertainty": "30"}</script>
+<!-- END:demo-json -->
+    </form>
+    <div class="verdict err" id="wi-errors" role="alert" hidden></div>
+    <div id="wi-results" aria-live="polite">
+      <div class="bignums">
+        <div><b id="o-plan">$115.66</b><span>plan: revenue per allocated slot</span></div>
+        <div><b id="o-range">$115.66 to $115.66</b><span>range, from the uncertainty on the change</span></div>
+        <div><b id="o-change">+$0.00</b><span>change against last season</span></div>
+        <div><b id="o-base">$115.66</b><span>last season: revenue per allocated slot</span></div>
+      </div>
+      <dl class="split">
+        <dt>Allocated slots</dt><dd id="o-slots">15,300</dd>
+        <dt>Of the change, per slot, from filling more (or fewer) slots</dt><dd id="o-fill">$0.00</dd>
+        <dt>Of the change, per slot, from the premium</dt><dd id="o-prem">$0.00</dd>
+        <dt>Season combo net, plan</dt><dd id="o-season">$1,769,671</dd>
+        <dt>Season combo net, last season</dt><dd id="o-season-base">$1,769,671</dd>
+        <dt>Change in season combo net</dt><dd id="o-season-change">$0</dd>
+        <dt>Whale-only net for the season <small class="hint">(uses no allocation, so it never changes Number 4)</small></dt><dd id="o-whale">$200,215</dd>
+        <dt>Season net, combo plus whale-only</dt><dd id="o-total">$1,969,886</dd>
+      </dl>
+      <div class="verdict" id="wi-seat" role="status"><p>Add seats per day to check that the plan fits your departures.</p></div>
+      <p class="hint">The fictional files give $115.67 per slot; a cent of difference comes from rounding in the typed inputs. The range covers only how much of the change you get (plus or minus the uncertainty); it does not cover a bad season. For that, see the optimizer's P10 to P90 below. The calculator does not know how guests react to a price: a premium that loses guests shows up only if you also lower the plan's share used.</p>
+      <div class="output">
+        <p class="label">Result to paste into a memo</p>
+        <pre id="wi-summary"></pre>
+      </div>
+      <div class="btns"><button type="button" class="secondary" data-copy="wi-summary" data-copy-msg="Copied. Paste it into your memo or notes.">Copy the result</button></div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <details>
+      <summary>The arithmetic</summary>
+      <p>Allocated slots = allocation per day x days. Last season per slot = share used x combo net per booked guest. Plan per slot = plan share used x combo net per booked guest x (1 + premium share x premium uplift). Change = plan minus last season = (plan share used minus last season's share) x net per guest, plus plan share used x net per guest x premium share x uplift. Range = last season + change x (1 minus uncertainty) to last season + change x (1 + uncertainty). Whale-only net = whale-only guests per day x days x whale-only net per guest. Seat check: allocation x plan share used + whale-only guests per day, against seats per day.</p>
+      <p>The "Load the fictional example" button uses the optimizer's recommended plan from the sample report: the plan's median share used, the share of combo guests on heavy days, and the heavy-day price change as the premium. The optimizer's own median is a little different because it also models seats, timing and whale-only prices.</p>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="model">
+    <h2 id="model">How the optimizer works</h2>
+    <p>A Python program (standard library only) that runs on the fictional data in about a minute or less and on your own exports after a few days of setup <small class="hint">(estimates)</small>.</p>
+    <ol class="flow">
+      <li><b>Identify the constraint.</b> From the daily log: requests blocked at the cap and blocked for seats or timing, by day type, and on days at or near the cap against below-cap days.</li>
+      <li><b>Day types.</b> The kit's rule, shared with <a href="../3b/">3.b</a>: heavy if port load is 70% or more or last season's same-weekday, same-month use was 95% or more; light only if port load is under 40% and use under 75%; medium otherwise.</li>
+      <li><b>Requests, not sales.</b> Sold + turned away (both causes) + an estimate of guests who took Whale Only when the glacier was full. A fitted line on passengers in port and month gives requests per day.</li>
+      <li><b>A booking day, party by party.</b> Cruise parties only fit departures that are back before their ship's all-aboard; each departure has 30 seats; the allocation caps the combo at 100 a day. It replays 2026 within a few percent.</li>
+      <li><b>72 options per day type.</b> 6 combo prices x 3 whale-only prices x 4 selling rules: as 2026, protect combo seats from whale-only, steer independent guests to the departures ships use least, or both.</li>
+      <li><b>2,000 Monte Carlo draws.</b> Seeded. Demand level, price response (elasticity -2.0 to -0.4, never measured) and whale-only acceptance drawn from ranges; every option sees the same draws.</li>
+      <li><b>Decision rule.</b> Change a setting only if it beats the 2026 settings in 80 of 100 draws and each changed lever does so on its own (Policy choice). Plus a use-neutral alternative that never lowers allocation use.</li>
+      <li><b>Sensitivity and scenarios.</b> One input at a time; and owner-controlled changes: a 60-minute return buffer, an added 11:45 departure on heavy or on medium days.</li>
+    </ol>
+    <p><strong>Why the added departure on heavy days sells mostly Whale Only:</strong> the simulator stops selling the combo at the allocation whatever the seats, so on days at or near the cap extra seats can only take whale-only guests. The scenario table shows combo and whale-only guests separately, and it does not model the cost of a second vessel.</p>
+  </section>
+
+  <section class="card" aria-labelledby="report">
+    <h2 id="report">Sample report (fictional)</h2>
+    <p>Key tables from <a href="slot-optimizer/sample_output/report.md">sample_output/report.md</a>, the full demo run. Fictional data; the medians matter less than the ranges.</p>
+    <!-- BEGIN:sample -->
+<h3 id="r-season">Season totals, 2027 (fictional)</h3>
+<div class="tablewrap" role="region" tabindex="0" aria-label="Season totals">
+<table class="compact stack">
+<caption class="visually-hidden">Season totals</caption>
+<thead><tr>
+<th scope="col">Plan</th>
+<th scope="col">Revenue per allocated slot (Number 4)</th>
+<th scope="col">Season net revenue</th>
+<th scope="col">Allocation used</th>
+<th scope="col">Beats nothing-changes in</th>
+</tr></thead><tbody>
+<tr><td data-label="Plan">2027 if nothing changes</td><td data-label="Revenue per allocated slot (Number 4)">$114.34 <span class="rng">(P10 $108.99 to P90 $118.43)</span></td><td data-label="Season net revenue">$1,930,000 <span class="rng">(P10 $1,830,000 to P90 $2,020,000)</span></td><td data-label="Allocation used">77.7% <span class="rng">(P10 74.2% to P90 80.2%)</span></td><td data-label="Beats nothing-changes in"></td></tr>
+<tr><td data-label="Plan">2027 recommended plan</td><td data-label="Revenue per allocated slot (Number 4)">$120.93 <span class="rng">(P10 $113.83 to P90 $126.69)</span></td><td data-label="Season net revenue">$2,030,000 <span class="rng">(P10 $1,900,000 to P90 $2,140,000)</span></td><td data-label="Allocation used">76.0% <span class="rng">(P10 71.6% to P90 79.5%)</span></td><td data-label="Beats nothing-changes in">99 in 100</td></tr>
+<tr><td data-label="Plan">2027 use-neutral alternative</td><td data-label="Revenue per allocated slot (Number 4)">$115.63 <span class="rng">(P10 $110.21 to P90 $119.54)</span></td><td data-label="Season net revenue">$1,960,000 <span class="rng">(P10 $1,860,000 to P90 $2,040,000)</span></td><td data-label="Allocation used">79.0% <span class="rng">(P10 75.4% to P90 81.6%)</span></td><td data-label="Beats nothing-changes in">100 in 100</td></tr>
+</tbody></table></div>
+<p class="hint">2026 actual (fictional): $115.67 per allocated slot, 79.1% of the allocation used. P10 to P90: in 8 of 10 draws the result falls inside.</p>
+<h3 id="r-plan">Recommended settings per day type, and the downside</h3>
+<div class="tablewrap" role="region" tabindex="0" aria-label="Recommended settings">
+<table class="compact stack">
+<caption class="visually-hidden">Recommended settings</caption>
+<thead><tr>
+<th scope="col">Day type</th>
+<th scope="col">Settings (2026: combo $219, whale-only $159, as 2026)</th>
+<th scope="col">Gain over 2026 settings, these days</th>
+<th scope="col">Beats 2026 settings in</th>
+<th scope="col">Flags</th>
+</tr></thead><tbody>
+<tr><td data-label="Day type">Heavy (64 days)</td><td data-label="Settings (2026: combo $219, whale-only $159, as 2026)">combo $259, whale-only $169, steer independents</td><td data-label="Gain over 2026 settings, these days">$85,700 <span class="rng">(P10 $31,500 to P90 $126,000)</span></td><td data-label="Beats 2026 settings in">98 in 100</td><td data-label="Flags">combo price is at the highest option tested; whale-only price is at the highest option tested</td></tr>
+<tr><td data-label="Day type">Medium (52 days)</td><td data-label="Settings (2026: combo $219, whale-only $159, as 2026)">combo $219, whale-only $159, steer independents</td><td data-label="Gain over 2026 settings, these days">$13,600 <span class="rng">(P10 $10,900 to P90 $14,000)</span></td><td data-label="Beats 2026 settings in">100 in 100</td><td data-label="Flags">none</td></tr>
+<tr><td data-label="Day type">Light (37 days)</td><td data-label="Settings (2026: combo $219, whale-only $159, as 2026)">combo $219, whale-only $159, steer independents</td><td data-label="Gain over 2026 settings, these days">$1,240 <span class="rng">(P10 $811 to P90 $2,390)</span></td><td data-label="Beats 2026 settings in">100 in 100</td><td data-label="Flags">none</td></tr>
+</tbody></table></div>
+<p class="hint">Decision rule (Policy choice): change a setting only if it beats keeping the 2026 settings in at least 80 of 100 draws, and each changed lever does so on its own. "Steer independents" = offer OTA and direct guests the departures ships use least, first.</p>
+<h3 id="r-bind">Which constraint binds</h3>
+<div class="tablewrap" role="region" tabindex="0" aria-label="Binding constraint by day type">
+<table class="compact stack">
+<caption class="visually-hidden">Binding constraint by day type</caption>
+<thead><tr>
+<th scope="col">Period and day type</th>
+<th scope="col">Days</th>
+<th scope="col">Allocation used</th>
+<th scope="col">Seats used</th>
+<th scope="col">Blocked at the cap (incl. est. whale-only takers)</th>
+<th scope="col">Blocked, seats or timing</th>
+<th scope="col">Binding constraint (my read)</th>
+</tr></thead><tbody>
+<tr><td data-label="Period and day type">2026 actual, heavy days</td><td data-label="Days">65</td><td data-label="Allocation used">98.1%</td><td data-label="Seats used">94.9%</td><td data-label="Blocked at the cap (incl. est. whale-only takers)">396</td><td data-label="Blocked, seats or timing">1,463</td><td data-label="Binding constraint (my read)">Seats and departure timing (about 23 in 100 combo requests blocked); the glacier allocation is close behind (98% used)</td></tr>
+<tr><td data-label="Period and day type">2026 actual, medium days</td><td data-label="Days">51</td><td data-label="Allocation used">76.4%</td><td data-label="Seats used">72.6%</td><td data-label="Blocked at the cap (incl. est. whale-only takers)">16</td><td data-label="Blocked, seats or timing">229</td><td data-label="Binding constraint (my read)">Mostly demand; seats and departure timing block about 6 in 100 combo requests</td></tr>
+<tr><td data-label="Period and day type">2026 actual, light days</td><td data-label="Days">37</td><td data-label="Allocation used">49.2%</td><td data-label="Seats used">48.0%</td><td data-label="Blocked at the cap (incl. est. whale-only takers)">0</td><td data-label="Blocked, seats or timing">38</td><td data-label="Binding constraint (my read)">Demand (about 2 in 100 combo requests blocked)</td></tr>
+<tr><td data-label="Period and day type">2026 actual, whole season</td><td data-label="Days">153</td><td data-label="Allocation used">79.1%</td><td data-label="Seats used">76.1%</td><td data-label="Blocked at the cap (incl. est. whale-only takers)">412</td><td data-label="Blocked, seats or timing">1,730</td><td data-label="Binding constraint (my read)">Seats and departure timing (about 15 in 100 combo requests blocked)</td></tr>
+<tr><td data-label="Period and day type">2027 if nothing changes, heavy days</td><td data-label="Days">64</td><td data-label="Allocation used">93.8%</td><td data-label="Seats used">90.2%</td><td data-label="Blocked at the cap (incl. est. whale-only takers)">408</td><td data-label="Blocked, seats or timing">1,308</td><td data-label="Binding constraint (my read)">Seats and departure timing (about 22 in 100 combo requests blocked)</td></tr>
+<tr><td data-label="Period and day type">2027 if nothing changes, medium days</td><td data-label="Days">52</td><td data-label="Allocation used">79.3%</td><td data-label="Seats used">74.8%</td><td data-label="Blocked at the cap (incl. est. whale-only takers)">39</td><td data-label="Blocked, seats or timing">324</td><td data-label="Binding constraint (my read)">Mostly demand; seats and departure timing block about 8 in 100 combo requests</td></tr>
+<tr><td data-label="Period and day type">2027 if nothing changes, light days</td><td data-label="Days">37</td><td data-label="Allocation used">47.7%</td><td data-label="Seats used">46.8%</td><td data-label="Blocked at the cap (incl. est. whale-only takers)">0</td><td data-label="Blocked, seats or timing">43</td><td data-label="Binding constraint (my read)">Demand (about 2 in 100 combo requests blocked)</td></tr>
+<tr><td data-label="Period and day type">2027 if nothing changes, whole season</td><td data-label="Days">153</td><td data-label="Allocation used">77.7%</td><td data-label="Seats used">74.4%</td><td data-label="Blocked at the cap (incl. est. whale-only takers)">447</td><td data-label="Blocked, seats or timing">1,674</td><td data-label="Binding constraint (my read)">Seats and departure timing (about 15 in 100 combo requests blocked)</td></tr>
+</tbody></table></div>
+<p><strong>Both limits at once:</strong> on days at or near the cap, seats-or-timing turnaways meet an allocation that is nearly gone, so extra seats there mostly sell whale-only. Below the cap, the same seats win back combo guests.</p>
+<div class="tablewrap" role="region" tabindex="0" aria-label="Both limits at once">
+<table class="compact stack">
+<caption class="visually-hidden">Both limits at once</caption>
+<thead><tr>
+<th scope="col">Period</th>
+<th scope="col">Days at or near the cap (5 or fewer slots left)</th>
+<th scope="col">Slots left on those days</th>
+<th scope="col">Seats-or-timing turnaways on those days</th>
+<th scope="col">Below-cap days</th>
+<th scope="col">Seats-or-timing turnaways below the cap</th>
+</tr></thead><tbody>
+<tr><td data-label="Period">2026 actual</td><td data-label="Days at or near the cap (5 or fewer slots left)">66</td><td data-label="Slots left on those days">65</td><td data-label="Seats-or-timing turnaways on those days">1,423</td><td data-label="Below-cap days">87</td><td data-label="Seats-or-timing turnaways below the cap">307</td></tr>
+<tr><td data-label="Period">2027 if nothing changes</td><td data-label="Days at or near the cap (5 or fewer slots left)">49</td><td data-label="Slots left on those days">73</td><td data-label="Seats-or-timing turnaways on those days">1,174</td><td data-label="Below-cap days">104</td><td data-label="Seats-or-timing turnaways below the cap">500</td></tr>
+<tr><td data-label="Period">2027 recommended plan</td><td data-label="Days at or near the cap (5 or fewer slots left)">35</td><td data-label="Slots left on those days">71</td><td data-label="Seats-or-timing turnaways on those days">432</td><td data-label="Below-cap days">118</td><td data-label="Seats-or-timing turnaways below the cap">318</td></tr>
+</tbody></table></div>
+<h3 id="r-scen">Scenarios the owner controls (costs not modeled)</h3>
+<div class="tablewrap" role="region" tabindex="0" aria-label="Scenarios">
+<table class="compact stack">
+<caption class="visually-hidden">Scenarios</caption>
+<thead><tr>
+<th scope="col">Scenario</th>
+<th scope="col">Season net vs recommended plan</th>
+<th scope="col">Combo guests (P50)</th>
+<th scope="col">Whale-only guests (P50)</th>
+</tr></thead><tbody>
+<tr><td data-label="Scenario">Keep the stated 60-minute return buffer before all-aboard</td><td data-label="Season net vs recommended plan">-$41,500 <span class="rng">(P10 -$43,500 to P90 -$39,700)</span></td><td data-label="Combo guests (P50)">-318</td><td data-label="Whale-only guests (P50)">-41</td></tr>
+<tr><td data-label="Scenario">Add an 11:45 departure on heavy days (a second vessel, 30 seats)</td><td data-label="Season net vs recommended plan">$23,600 <span class="rng">(P10 $14,700 to P90 $38,200)</span></td><td data-label="Combo guests (P50)">+58</td><td data-label="Whale-only guests (P50)">+161</td></tr>
+<tr><td data-label="Scenario">Add an 11:45 departure on medium days (a second vessel, 30 seats)</td><td data-label="Season net vs recommended plan">$10,900 <span class="rng">(P10 $9,170 to P90 $13,700)</span></td><td data-label="Combo guests (P50)">+65</td><td data-label="Whale-only guests (P50)">+39</td></tr>
+</tbody></table></div>
+<h3 id="r-sens">Sensitivity: one input at a time (middle values for the rest)</h3>
+<div class="tablewrap" role="region" tabindex="0" aria-label="Sensitivity">
+<table class="compact stack">
+<caption class="visually-hidden">Sensitivity</caption>
+<thead><tr>
+<th scope="col">Input changed</th>
+<th scope="col">Gain of the recommended plan</th>
+<th scope="col">Number 4, recommended</th>
+<th scope="col">Still ahead?</th>
+</tr></thead><tbody>
+<tr><td data-label="Input changed">All inputs at middle values</td><td data-label="Gain of the recommended plan">$114,000</td><td data-label="Number 4, recommended">$122.21</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Demand at the low end of its range</td><td data-label="Gain of the recommended plan">$79,600</td><td data-label="Number 4, recommended">$110.32</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Demand at the high end of its range</td><td data-label="Gain of the recommended plan">$145,000</td><td data-label="Number 4, recommended">$131.59</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Price response -2.0 (guests more price-sensitive)</td><td data-label="Gain of the recommended plan">$4,500</td><td data-label="Number 4, recommended">$115.87</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Price response -0.4 (guests less price-sensitive)</td><td data-label="Gain of the recommended plan">$169,000</td><td data-label="Number 4, recommended">$125.34</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Whale-only accepted by 30% when the glacier is full</td><td data-label="Gain of the recommended plan">$114,000</td><td data-label="Number 4, recommended">$122.22</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Whale-only accepted by 70% when the glacier is full</td><td data-label="Gain of the recommended plan">$112,000</td><td data-label="Number 4, recommended">$122.20</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">40% of steered independents take the offered time</td><td data-label="Gain of the recommended plan">$105,000</td><td data-label="Number 4, recommended">$121.80</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">80% of steered independents take the offered time</td><td data-label="Gain of the recommended plan">$118,000</td><td data-label="Number 4, recommended">$122.46</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Cruise share of requests 10 points lower</td><td data-label="Gain of the recommended plan">$110,000</td><td data-label="Number 4, recommended">$127.04</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Cruise share of requests 10 points higher</td><td data-label="Gain of the recommended plan">$112,000</td><td data-label="Number 4, recommended">$116.69</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Cruise-line rate stays at the 2026 rate (price change on OTA and direct only)</td><td data-label="Gain of the recommended plan">$70,200</td><td data-label="Number 4, recommended">$119.20</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Kept share of booked net 3 points lower (more cancellations or refunds)</td><td data-label="Gain of the recommended plan">$110,000</td><td data-label="Number 4, recommended">$118.25</td><td data-label="Still ahead?">yes</td></tr>
+<tr><td data-label="Input changed">Cruise-line net share 5 points lower</td><td data-label="Gain of the recommended plan">$106,000</td><td data-label="Number 4, recommended">$118.28</td><td data-label="Still ahead?">yes</td></tr>
+</tbody></table></div>
+<!-- END:sample -->
+    <p><strong>My read:</strong> the robust part of the plan is steering independent guests away from the departures ships need: it moves guests, not prices, and wins in every draw. The heavy-day price change carries the price-response risk, sits at the top of the prices tested, and lowers allocation use a little. Test it on part of the inventory before switching, and check your permit before trading use for price.</p>
+  </section>
+
+  <section class="card" aria-labelledby="prompt">
+    <h2 id="prompt">Turn the report into a decision memo</h2>
+    <p>Paste this into Claude, ChatGPT or Gemini, replace the placeholders, and paste your <code>report.md</code> at the end. The report holds aggregates only; check that before you paste.</p>
+    <p class="privacy">No guest names, emails, phone numbers or booking references in the chat.</p>
+    <div class="output">
+      <p class="label">Decision memo prompt</p>
+      <!-- BEGIN:prompt -->
+<pre class="prompt" id="prompt-text">You are helping the owner of [BUSINESS NAME] decide next season's prices and seat rules for a tour that is limited by a permit allocation. Below is a report from a revenue-per-slot model. Turn it into a one-page decision memo for the owner.
+
+Rules:
+1. Start with this exact line: DRAFT - PENDING OWNER REVIEW
+2. Use only numbers that appear in the report. Do not calculate new totals or invent figures. If the owner needs a number the report does not have, write [FILL: what is missing].
+3. Keep every range as a range (P10 to P90). Never present a median as a sure result.
+4. Label every obligation: Legal mandate (cite it and add "confirm current text"), Contractual (name the agreement to check: permit, cruise line or OTA contract), Policy choice (the owner's call), or Recommendation (give the reason and the cost of ignoring it). Do not write "must" or "required" unless it is a cited legal mandate.
+5. Do not decide or change any price. Present options. The owner decides.
+6. No names, emails, phone numbers or booking references.
+
+Structure:
+- Decision needed by [DECISION DATE]. Approver: [OWNER OR MANAGER ROLE].
+- The binding constraint in two sentences: which limit actually stopped guests, by day type.
+- Two or three options. For each: what changes, revenue per allocated slot (range), season net revenue (range), allocation used, and the main risk.
+- What to test first, how we will know it worked (which number, how often), and what result would make us stop.
+- What to check before acting (permit, contracts), each with its label.
+- Questions for the owner: every [FILL] and every open question in the report.
+
+Keep it under 400 words. Plain language, short sentences, no hype.
+
+Report:
+[PASTE REPORT.MD HERE]</pre>
+<!-- END:prompt -->
+    </div>
+    <div class="btns"><button type="button" data-copy="prompt-text">Copy the prompt</button></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files">Downloads</h2>
+    <div class="callout amber"><p><strong>The reference implementation is held back from the public kit.</strong> The Python program behind this rung (standard library only, with its own test suite) is available on request for operators or associations that want to run it on their own data: <a href="https://www.linkedin.com/in/pascualreig/" target="_blank" rel="noopener">contact the presenter</a>. Everything on this page, and the sample output below, is public.</p></div>
+    <h3>Sample output (fictional business)</h3>
+    <ul class="files">
+      <li><a href="slot-optimizer/sample_output/report.md">sample_output/report.md</a> <span class="hint">The demo memo in full, marked DRAFT - PENDING OWNER REVIEW.</span></li>
+      <li><a href="slot-optimizer/sample_output/plan.csv" download>plan.csv</a> <span class="hint">Recommended settings per day type, and the use-neutral alternative.</span></li>
+      <li><a href="slot-optimizer/sample_output/options_by_day_type.csv" download>options_by_day_type.csv</a> <span class="hint">All 72 options per day type with P10, P50, P90 and how often each wins.</span></li>
+      <li><a href="slot-optimizer/sample_output/binding_constraints.csv" download>binding_constraints.csv</a> <span class="hint">Which limit blocked combo requests, by day type and period.</span></li>
+      <li><a href="slot-optimizer/sample_output/sensitivity.csv" download>sensitivity.csv</a> and <a href="slot-optimizer/sample_output/scenarios.csv" download>scenarios.csv</a> <span class="hint">One input at a time; owner-controlled changes.</span></li>
+      <li><a href="slot-optimizer/sample_output/day_types_2027.csv" download>day_types_2027.csv</a> <span class="hint">Every 2027 day with its port load, last-season use and day type.</span></li>
+      <li><a href="slot-optimizer/sample_output/memo_draft.md">memo_draft.md</a> <span class="hint">The memo the mock model drafted, with the program's checks.</span></li>
+      <li><a href="slot-optimizer/config.json">config.json</a> <span class="hint">Allocation, seats, prices, ranges and the decision rule, each with a note. All fictional.</span></li>
+    </ul>
+    <h3>Allocation evidence pack</h3>
+    <p>For a permit renewal or a conversation with the land manager or the city: actual use by month and weekday against the allocation, days at or near the cap, a turned-away estimate with its range, a daily compliance log template and a cover note draft. It separates the 206 requests turned away at the cap (plus an estimated 88 to 481 who took Whale Only) from the 1,730 turned away for your own seats and times, which are not allocation demand. <span class="lbl contract">Contractual</span> Check your permit for what it asks you to report; the pack makes no claim about use-it-or-lose-it rules.</p>
+    <ul class="files">
+      <li><a href="slot-optimizer/sample_output/evidence/evidence_pack.md">evidence_pack.md</a> <span class="hint">The pack, with reconciliation against the season summary and a cover note draft.</span></li>
+      <li><a href="slot-optimizer/sample_output/evidence/evidence_by_month.csv" download>evidence_by_month.csv</a> <span class="hint">Use, unused slots, days at or near the cap and turnaways by month.</span></li>
+      <li><a href="slot-optimizer/sample_output/evidence/compliance_log_template.csv" download>compliance_log_template.csv</a> <span class="hint">One row per departure at the site: counts and staff IDs, no names.</span></li>
+    </ul>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure">How you will know it worked</h2>
+    <h3>Number 4 · Revenue per allocated slot</h3>
+    <p>Net revenue of the capped product (the combo) / allocated slots for the season. Report allocation used % beside it, every time: a higher Number 4 bought with lower use is a trade-off the owner should see. Want: up.</p>
+    <p><strong>How often:</strong> count both monthly in season, and compare season against season. Keep the daily log (allocation used, requests turned away at the cap, turned away for seats or timing) so next fall's run starts from your own numbers.</p>
+    <p><strong>Noise or a real change?</strong> In the fictional model, day-to-day luck alone moved 2026 revenue per slot by <!-- BEGIN:noise -->
+about $4.66 per slot between the lowest and the highest of 10 replays ($113.28 to $117.94)
+<!-- END:noise -->. A season-to-season change smaller than that is not evidence <small class="hint">(my read)</small>. A price test on part of the inventory is cleaner: compare the tested days with similar untested days in the same month. No targets: set them after a season of your own data.</p>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe">Before you use it</h2>
+    <p><strong>It tests. A person decides.</strong> Every report and memo is marked DRAFT - PENDING OWNER REVIEW. The tools never change a price, an inventory setting or a channel; a person does, after reading the ranges.</p>
+    <ul class="rules">
+      <li><span class="lbl contract">Contractual</span> <strong>Your permit or agreement.</strong> Check what it says about actual-use reporting, how a visit is counted, and whether use is considered at renewal. Commercial-use terms vary; this page makes no claim about use-it-or-lose-it rules or any threshold.</li>
+      <li><span class="lbl contract">Contractual</span> <strong>Cruise line and OTA agreements.</strong> Check them before changing the rate a cruise line pays, the price on an OTA, or which departures a channel can sell (steering). The sample report shows the plan with cruise-line rates held at 2026.</li>
+      <li><span class="lbl legal">Legal mandate</span> <strong>Vessel passenger limits.</strong> Each vessel's passenger limit comes from its Coast Guard certificate of inspection, including any second vessel for an added departure. Vessel-specific: confirm the current certificate.</li>
+      <li><span class="lbl legal">Legal mandate</span> <strong>Overtime.</strong> Added departures add crew hours. Alaska overtime rules apply (AS 23.10.060, exemptions in AS 23.10.055); confirm the current text with Alaska DOLWD Wage and Hour.</li>
+      <li><span class="lbl contract">Contractual</span> <strong>AI memo.</strong> If you use a real model for the optional memo, check the provider's API data terms first. The memo path sends report.md only: aggregates, no bookings.</li>
+      <li><span class="lbl">Policy choice</span> <strong>Prices, selling rules, the return buffer, day-type thresholds and the decision rule.</strong> Business decisions. Write down who set each one and when.</li>
+      <li><span class="lbl">Policy choice</span> <strong>The return buffer.</strong> In the fictional 2026 bookings, about 1 in 5 cruise guests were on departures that returned less than 60 minutes before all-aboard, though the stated plan is 60 minutes. Decide the rule, with the guest-safety side in view, before you price seats.</li>
+      <li><span class="lbl">Recommendation</span> <strong>Test before you switch.</strong> Apply one price change to part of the inventory for a month and compare. Cost of skipping it: the price response, the biggest unknown in the model, stays unmeasured for another season.</li>
+      <li><span class="lbl">Recommendation</span> <strong>Privacy.</strong> Export counts, dates, times, prices and IDs only: never names, emails, phone numbers or payment data. The loader drops columns it does not use and reports their names only.</li>
+    </ul>
+    <p>This page keeps what you type in this browser only. Nothing is sent anywhere.</p>
+    <div class="btns"><button type="button" class="danger" id="clear-all">Clear my data on this page</button></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="next">
+    <h2 id="next">Before this rung</h2>
+    <p>3.c is the top rung of Pain 3. It assumes the lower rungs are done: <a href="../3a/">3.a Fill every capped slot</a> finds the empty slots (exploit), and <a href="../3b/">3.b Off-cap product lab</a> grows where the cap does not bind and sets the day types this page reuses. The <a href="../leak/">Season Leak Audit</a> puts a dollar figure on the cap leak.</p>
+    <div class="btns"><a class="button secondary" href="../3a/">Go to 3.a</a> <a class="button secondary" href="../3b/">Go to 3.b</a> <a class="button secondary" href="../leak/">Season Leak Audit</a> <a class="button secondary" href="../">All tools</a></div>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,19 @@
+season,member_code,business_type,port,month,cause_code,cause,events,guests_affected,guests_recovered,net_revenue_lost_usd,staff_hours
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-05,FLIGHT_OR_FOG,Flight delay or fog (independent guests),2,20,12,1515,9.3
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-05,MARINE_WEATHER,Marine weather hold,1,10,0,1412,3.8
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-05,ROAD_DELAY,Road or traffic delay on the shuttle route,3,21,0,3020,8.7
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-05,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,2,30,13,1856,6.4
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-06,FLIGHT_OR_FOG,Flight delay or fog (independent guests),2,23,0,4010,3.9
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-06,MARINE_WEATHER,Marine weather hold,1,30,12,2881,3.7
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-06,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,4,32,14,2252,11.9
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-06,SHIP_SCHEDULE_CHANGE,Ship schedule change or skipped call,1,18,7,1432,2.2
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-07,FLIGHT_OR_FOG,Flight delay or fog (independent guests),1,15,7,1325,5.2
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-07,MARINE_WEATHER,Marine weather hold,4,107,37,10172,15.4
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-07,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,2,23,11,1598,8.1
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-07,SHIP_SCHEDULE_CHANGE,Ship schedule change or skipped call,2,22,5,2085,6.2
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-08,FLIGHT_OR_FOG,Flight delay or fog (independent guests),1,19,7,1905,2.6
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-08,MARINE_WEATHER,Marine weather hold,3,58,20,6722,9.3
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-08,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,3,41,20,2696,10.6
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-09,FLIGHT_OR_FOG,Flight delay or fog (independent guests),1,4,0,549,2.6
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-09,ROAD_DELAY,Road or traffic delay on the shuttle route,2,18,6,1965,6.0
+2026,FICTIONAL-DEMO,day tour,Juneau,2026-09,SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,3,54,20,4201,11.9

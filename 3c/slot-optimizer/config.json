@@ -1,0 +1,164 @@
+{
+  "_about": "Revenue-per-slot optimizer settings. FICTIONAL TEACHING BUSINESS: Channel Light Excursions, Juneau. Every price, share and count here is invented for teaching. Keys that start with _ are notes. The tool never changes a price: it writes a memo for the owner.",
+  "business": "Channel Light Excursions, Juneau (FICTIONAL TEACHING BUSINESS)",
+  "files": {
+    "allocation_last_season": "data/allocation_2026.csv",
+    "bookings_last_season": "data/bookings_2026.csv",
+    "schedule_last_season": "data/port_schedule_2026.csv",
+    "schedule_next_season": "data/port_schedule_2027.csv",
+    "summary_last_season": "data/summary_2026.json"
+  },
+  "season_last": {"label": "2026"},
+  "season_next": {"label": "2027", "start": "2027-05-01", "end": "2027-09-30"},
+  "operation": {
+    "allocation_per_day": 100,
+    "_allocation_per_day": "Fictional glacier commercial-use allocation, guest visits per day. Contractual: check your permit.",
+    "departures": ["08:00", "10:30", "13:00", "15:30"],
+    "seats_per_departure": 30,
+    "_seats_per_departure": "Fictional vessel limit. Legal mandate: your vessel's Coast Guard certificate of inspection sets it (vessel-specific; confirm the current certificate).",
+    "all_aboard_buffer_minutes": 0,
+    "_all_aboard_buffer_minutes": "Minutes between the return to the dock and the ship's all-aboard time. 0 matches how the fictional 2026 season was actually sold (calibration). The stated plan is 60: see scenario BUFFER60. Policy choice."
+  },
+  "products": {
+    "COMBO": {
+      "label": "Whale and Glacier Combo",
+      "uses_allocation_slot": true,
+      "hours_dock_to_dock": 4.5,
+      "list_price_adult": 219,
+      "price_options_adult": [209, 219, 229, 239, 249, 259],
+      "_price_options_adult": "Fictional options to test, not advice. The child price moves in the same proportion as the adult price."
+    },
+    "WHALE": {
+      "label": "Whale Only",
+      "uses_allocation_slot": false,
+      "hours_dock_to_dock": 3.0,
+      "list_price_adult": 159,
+      "price_options_adult": [149, 159, 169],
+      "_price_options_adult": "Fictional options to test, not advice."
+    }
+  },
+  "channels": {
+    "net_share": {"CRUISE": 0.62, "OTA": 0.75, "DIRECT": 0.97},
+    "_net_share": "Share of the ticket price the business keeps, by channel. Fictional contracts, not industry norms. Contractual: check your cruise line and OTA agreements."
+  },
+  "day_types": {
+    "port_load_heavy_at_or_above": 0.7,
+    "use_heavy_at_or_above": 95,
+    "port_load_light_below": 0.4,
+    "use_light_below": 75,
+    "_how": "The kit's day-type rule, the same as tool 3b. Port load = cruise passengers in port / the day's passenger limit (16,000; Saturday 12,000, from the port schedule). Last-season use = the combo's allocation used % on the same weekday in the same month last season. Heavy if port load >= 70% or use >= 95%. Light only if port load < 40% and use < 75% (or no use data). Medium otherwise. Last season's own days use that season's month-and-weekday average. Policy choice: the owner can edit the thresholds. Checked against 2026 use: 2026 heavy days sold 98.1 of 100 combo slots on average, light days 49.2."
+  },
+  "uncertainty": {
+    "_label": "Assumptions, not measurements. The fictional business has never tested a price change and has one season of data. Wide ranges on purpose. Replace them with your own evidence.",
+    "demand_change_vs_last_season": {"low": -0.1, "mid": 0.0, "high": 0.1},
+    "price_elasticity": {"low": -2.0, "mid": -1.0, "high": -0.4},
+    "_price_elasticity": "Percent change in requests for a 1 percent price change. Mid -1.0 is a neutral starting point: away from the cap, a price change neither gains nor loses revenue in the middle case, so the model does not build in a bias for or against raising prices.",
+    "whale_only_acceptance_when_glacier_full": {"low": 0.3, "mid": 0.5, "high": 0.7},
+    "steer_acceptance": {"low": 0.4, "mid": 0.6, "high": 0.8},
+    "_steer_acceptance": "Share of independent (OTA and direct) parties who take the departure you offer first when you steer them away from the times ships need."
+  },
+  "operating_options": [
+    {
+      "id": "AS_2026",
+      "label": "As 2026: first come, any time that fits",
+      "protect_combo_seats": false,
+      "steer_independents": false
+    },
+    {
+      "id": "PROTECT",
+      "label": "Protect combo seats from whale-only until the release point",
+      "protect_combo_seats": true,
+      "steer_independents": false
+    },
+    {
+      "id": "STEER",
+      "label": "Offer independents the departures ships use least",
+      "protect_combo_seats": false,
+      "steer_independents": true
+    },
+    {
+      "id": "PROTECT_STEER",
+      "label": "Protect combo seats and steer independents",
+      "protect_combo_seats": true,
+      "steer_independents": true
+    }
+  ],
+  "rules": {
+    "protect_release_share": 0.9,
+    "_protect_release_share": "Protection stops after this share of a day's requests has arrived (the last 10 percent book after the release, for example inside 48 hours). Assumption.",
+    "cap_day_margin": 5,
+    "_cap_day_margin": "A day counts as 'at the cap' when 5 or fewer slots are left, as in summary_2026.json."
+  },
+  "monte_carlo": {
+    "draws": 2000,
+    "seed": 2027,
+    "grid_step": 0.1,
+    "_how": "Each draw picks a demand level (the same percentile for every day type: a bad season is bad everywhere), a price response and a whale-only acceptance from the ranges above. The same draws are used for every option (common random numbers), so differences between options are not noise from different draws."
+  },
+  "decision_rule": {
+    "objective": "season_net",
+    "min_win_share": 0.8,
+    "min_median_gain": 0,
+    "_how": "Policy choice. For each day type, a change from the 2026 settings is recommended only if it earns more than keeping them in at least min_win_share of draws, each changed lever (combo price, whale-only price, operating option) also does so on its own, and the median gain is at least min_median_gain dollars. Among those, the highest median wins. season_net counts combo and whale-only net revenue; per_slot counts combo only (Number 4)."
+  },
+  "scenarios": [
+    {
+      "id": "BUFFER60",
+      "label": "Keep the stated 60-minute return buffer before all-aboard",
+      "all_aboard_buffer_minutes": 60,
+      "day_types": ["heavy", "medium", "light"],
+      "_assumptions": "Same demand and settings as the recommended plan. Cruise parties only book departures that return 60 minutes before all-aboard. Policy choice: guest safety margin versus seats."
+    },
+    {
+      "id": "ADD_1145_HEAVY",
+      "label": "Add an 11:45 departure on heavy days (a second vessel, 30 seats)",
+      "departures": ["08:00", "10:30", "11:45", "13:00", "15:30"],
+      "day_types": ["heavy"],
+      "_assumptions": "A second vessel, crew and shuttle seats are available at 11:45 on heavy days. The glacier allocation does not change, so the combo stays capped at 100 a day: on days at or near the cap most added seats can only sell whale-only. Costs (charter, crew hours, fuel, shuttle) are NOT modeled: compare the gain with your own cost before deciding."
+    },
+    {
+      "id": "ADD_1145_MEDIUM",
+      "label": "Add an 11:45 departure on medium days (a second vessel, 30 seats)",
+      "departures": ["08:00", "10:30", "11:45", "13:00", "15:30"],
+      "day_types": ["medium"],
+      "_assumptions": "Same as the heavy-day scenario, on medium days instead. These days are mostly below the cap, so seats at a time that fits the ships can win back combo guests. Costs are NOT modeled."
+    }
+  ],
+  "demand": {
+    "_how": "Calibrated by 'python optimize.py --calibrate' from last season's files. Requests = sold + turned away (both causes) + estimated whale-only converts at the cap. Fitted line: requests = per_1000_passengers x passengers in port / 1000 + month base. Low and high per day type combine the whale-only acceptance range, the change-versus-last-season assumption and the fit's uncertainty. Edit the ranges if you know more; rerun --calibrate to rebuild them from data.",
+    "per_1000_passengers": 7.2418,
+    "base_by_month": {"05": 17.546, "06": 35.617, "07": 49.803, "08": 33.565, "09": 19.694},
+    "whale_requests_by_month": {"05": 9.387, "06": 11.633, "07": 13.226, "08": 12.323, "09": 8.233},
+    "day_to_day_sd": 7.878,
+    "fit_r_squared": 0.952,
+    "party_sizes": {"1": 679, "2": 1810, "3": 649, "4": 1164, "5": 615},
+    "gross_per_guest_at_list": {"COMBO": 211.142, "WHALE": 153.343},
+    "kept_share_of_booked_net": {"COMBO": 0.9263, "WHALE": 0.9062},
+    "by_day_type_next_season": {
+      "heavy": {
+        "days": 64,
+        "combo_requests_per_day": {"low": 106.2, "mid": 121.4, "high": 139.2},
+        "whale_requests_per_day": {"low": 9.5, "mid": 12.5, "high": 15.4},
+        "cruise_share_of_requests": 0.4774,
+        "ota_share_of_independent": 0.488,
+        "last_season_days": 65
+      },
+      "medium": {
+        "days": 52,
+        "combo_requests_per_day": {"low": 73.7, "mid": 84.3, "high": 95.6},
+        "whale_requests_per_day": {"low": 9.0, "mid": 10.6, "high": 12.0},
+        "cruise_share_of_requests": 0.5077,
+        "ota_share_of_independent": 0.4577,
+        "last_season_days": 51
+      },
+      "light": {
+        "days": 37,
+        "combo_requests_per_day": {"low": 43.0, "mid": 50.7, "high": 58.2},
+        "whale_requests_per_day": {"low": 8.0, "mid": 8.9, "high": 9.8},
+        "cruise_share_of_requests": 0.5201,
+        "ota_share_of_independent": 0.4179,
+        "last_season_days": 37
+      }
+    }
+  }
+}

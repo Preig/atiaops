@@ -1,0 +1,5 @@
+item,kind,low,mid,high,note
+Turned away at the cap,fact from the log,206,206,206,allocation used up and the guest declined whale-only
+Took whale-only when the glacier was full,estimate,88,206,481,"turned_away_at_cap x a / (1 - a), a = 0.3 to 0.7 (assumption)"
+Glacier visits the allocation could not serve,estimate,294,412,687,the two rows above added
+Turned away for seats or departure timing,fact from the log,1730,1730,1730,our own seats and times: NOT allocation demand

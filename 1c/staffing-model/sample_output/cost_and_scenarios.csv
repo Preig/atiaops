@@ -1,0 +1,26 @@
+scenario,metric,mean,p10,p50,p90
+Rehire 35%,returning_staff,6.96,4,7,10
+Rehire 35%,new_hires_to_open,15.04,12,15,18
+Rehire 35%,early_quits,4.11,1,3,8
+Rehire 35%,replacement_hires,4.64,1,4,9
+Rehire 35%,total_hires,19.68,15,19,25
+Rehire 35%,later_departures_new_hires,0.89,0,0,3
+Rehire 35%,returning_staff_departures,1.18,0,1,3
+Rehire 35%,recruiting_cost_usd,54513.76,42317.84,53692.98,67732.1
+Rehire 35%,shortfall_person_weeks,15.51,3.4,13.6,30
+Rehire 50%,returning_staff,9.93,7,10,13
+Rehire 50%,new_hires_to_open,12.07,9,12,15
+Rehire 50%,early_quits,3.33,0,3,7
+Rehire 50%,replacement_hires,4.03,1,4,8
+Rehire 50%,total_hires,16.11,12,16,21
+Rehire 50%,later_departures_new_hires,0.73,0,0,2
+Rehire 50%,returning_staff_departures,1.7,0,1,4.1
+Rehire 50%,recruiting_cost_usd,44997.08,32812.62,44378.66,57803.68
+Rehire 50%,shortfall_person_weeks,14.22,3.2,12.4,28.4
+Difference: Rehire 35% minus Rehire 50%,returning_staff,-2.96,-5,-3,-1
+Difference: Rehire 35% minus Rehire 50%,new_hires_to_open,2.96,1,3,5
+Difference: Rehire 35% minus Rehire 50%,early_quits,0.77,0,0,2
+Difference: Rehire 35% minus Rehire 50%,replacement_hires,0.61,0,0,2
+Difference: Rehire 35% minus Rehire 50%,total_hires,3.57,1,3,6
+Difference: Rehire 35% minus Rehire 50%,recruiting_cost_usd,9516.69,2617.29,8773.34,17355.2
+Difference: Rehire 35% minus Rehire 50%,shortfall_person_weeks,1.29,-2.4,0,5.8

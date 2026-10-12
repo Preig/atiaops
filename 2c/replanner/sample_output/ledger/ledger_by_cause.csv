@@ -1,0 +1,6 @@
+cause_code,cause,events,guests_affected,guests_recovered,recovery_rate_pct,net_lost,net_recovered,staff_hours,staff_cost,copq_partial,copq_share_pct,copq_cumulative_pct
+MARINE_WEATHER,Marine weather hold,9,205,69,33.7,21187.21,11239.27,32.2,1030.40,22217.61,39.9,39.9
+SHIP_LATE_OR_TENDER,Ship late or tendering from anchor,14,180,78,43.3,12603.36,10156.84,48.9,1564.80,14168.16,25.4,65.3
+FLIGHT_OR_FOG,Flight delay or fog (independent guests),7,81,26,32.1,9303.97,3904.23,23.6,755.20,10059.17,18.1,83.4
+ROAD_DELAY,Road or traffic delay on the shuttle route,5,39,6,15.4,4985.04,1092.22,14.7,470.40,5455.44,9.8,93.2
+SHIP_SCHEDULE_CHANGE,Ship schedule change or skipped call,3,40,12,30.0,3516.64,1517.76,8.4,268.80,3785.44,6.8,100.0

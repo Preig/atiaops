@@ -1,0 +1,37 @@
+queue_id,date,event,kind,about,recipient,draft,status,approved_by,approved_at,sent_by,sent_at,notes
+Q01,2026-07-24,Ship A 180 min late,staff,all,"Duty lead, captains, shuttle dispatch (internal)","DRAFT - PENDING OWNER REVIEW
+To: duty lead, captains on duty, Kestrel Shuttle dispatch (fictional partner)
+Subject: Rebook plan, Fri 2026-07-24: Ship A 180 min late
+
+Ship A is now due at 13:00 instead of 10:00 (180 minutes late). Its all-aboard time stays 18:30. We knew at 10:00.
+
+Headcount by departure (booked now, after the plan):
+- 8:00: 29 now, 29 after.
+- 10:30: 30 now, 27 after.
+- 13:00: 30 now, 18 after, plus up to 9 from the waitlist if accepted.
+- 15:30: 30 now, 30 after.
+
+Affected: 5 bookings, 15 guests. Moves proposed: 0 guests. No same-day seat: 15 guests. Duty lead decides: 0 guests.
+Freed seats too late to offer: 3.
+Nothing has been sent. Every guest, desk and waitlist message waits in the approval queue.",approved,AB,10:06,,,"FICTIONAL EXAMPLE ROW: delete before use. Internal summary, approved and shared with staff."
+Q02,2026-07-24,Ship A 180 min late,desk,CL-26-02805 CL-26-02819 CL-26-02798 CL-26-02802 CL-26-02807,Ship A shore excursion desk,"DRAFT - PENDING OWNER REVIEW
+To: [FILL: Ship A shore excursion desk contact] (cruise line terms apply)
+Subject: Ship A, Fri 2026-07-24: Channel Light Excursions (fictional) bookings
+
+Ship A is now due at 13:00 instead of 10:00 (180 minutes late). Its all-aboard time stays 18:30.
+These bookings are affected:
+- CL-26-02805: 2 guests, Whale and Glacier Combo, booked 10:30. No other departure today fits the time and seats. [FILL: refund or another day, under our policy]
+- CL-26-02819: 1 guest, Whale and Glacier Combo, booked 10:30. No other departure today fits the time and seats. [FILL: refund or another day, under our policy]
+- CL-26-02798: 2 guests, Whale and Glacier Combo, booked 13:00. No other departure today fits the time and seats. [FILL: refund or another day, under our policy]
+- CL-26-02802: 5 guests, Whale and Glacier Combo, booked 13:00. No other departure today fits the time and seats. [FILL: refund or another day, under our policy]
+- CL-26-02807: 5 guests, Whale and Glacier Combo, booked 13:00. No other departure today fits the time and seats. [FILL: refund or another day, under our policy]
+
+Please confirm each guest's choice by [FILL: reply-by time]. [FILL: how long we hold the proposed seats]
+[FILL: duty lead first name], Channel Light Excursions (fictional), [FILL: business phone]",pending,,,,,"FICTIONAL EXAMPLE ROW: delete before use. Still has [FILL] items, so it cannot be approved yet."
+Q03,2026-07-24,Ship A 180 min late,waitlist,WL-0724-01,Waitlist guest,"To: Waitlist entry WL-0724-01, through the OTA's messaging
+Subject: A seat opened on today's 13:00 Whale Only
+
+Hi [GUEST FIRST NAME],
+2 seats opened on today's 13:00 departure from the downtown docks, back about 17:30.
+If you want them, reply by 11:30. After that we offer them to the next party on the list. Price: the same as a normal booking, shown in full.
+[STAFF FIRST NAME], Channel Light Excursions (fictional), [BUSINESS PHONE]",sent,AB,10:41,AB,10:44,FICTIONAL EXAMPLE ROW: delete before use. Every [FILL] completed and the DRAFT line deleted before sending. Placeholders in square brackets are merged in the booking system.

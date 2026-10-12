@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>1.c Season staffing model · ATIA Operations Kit</title>
+<meta name="description" content="Advanced rung, Pain 1 (staff turnover): a Python staffing model that plans weekly headcount, a hiring calendar by channel, early quits and recruiting cost as ranges, and a workload check that ends in schedule a check-in. Plus a no-code hiring-plan calculator.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='10' width='4' height='5' fill='%235c8727'/%3E%3Crect x='6' y='6' width='4' height='9' fill='%235c8727'/%3E%3Crect x='11' y='1' width='4' height='14' fill='%230d92b4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/kit.css">
+<script src="../assets/kit.js" defer></script>
+<script src="plan-core.js" defer></script>
+<script src="plan.js" defer></script>
+<style>
+/* Page-specific styles for tool 1.c. Shared styles live in ../assets/kit.css. */
+.toc ol{columns:2 220px;column-gap:28px;margin:6px 0 0;padding-left:22px;font-size:15px}
+.toc li{margin:2px 0;break-inside:avoid}
+.toc h2{margin-top:0;font-size:18px}
+h4{font-size:16px;line-height:1.3;color:var(--teal-d);margin:1em 0 .3em}
+.rules{padding-left:18px}
+.rules li{margin:10px 0}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;max-width:100%}
+.tablewrap:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+table.compact th,table.compact td{padding:6px 8px}
+table.compact td.num,table.compact th.num{white-space:nowrap}
+.nowrap{white-space:nowrap}
+.inline-fields{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.inline-fields label{min-height:2.6em;display:flex;flex-wrap:wrap;align-items:flex-end;column-gap:.3em}
+.chan{display:grid;gap:0 12px;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr);align-items:end;border-top:1px solid var(--line);padding:4px 0 8px}
+.chan:first-of-type{border-top:0}
+.chan label{margin:8px 0 4px;font-size:14px}
+.bignums{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));margin:14px 0}
+.bignums div{background:var(--teal-t);border-radius:4px;padding:12px 14px;min-width:0}
+.bignums b{display:block;font-size:28px;line-height:1.1;color:var(--teal-d);overflow-wrap:anywhere}
+.bignums span{font-size:14px;color:var(--slate);display:block;margin-top:4px}
+.verdict{border-radius:4px;padding:12px 16px;margin:12px 0;background:var(--amber-t);border-left:5px solid #d49a1a}
+.verdict.ok{background:var(--green-t);border-left-color:var(--green)}
+.verdict.err{background:var(--red-t);border-left-color:var(--red)}
+.verdict p{margin:.3em 0}
+.verdict ul{margin:.3em 0;padding-left:20px}
+.fit-q{margin:10px 0}
+.fit-q legend{color:var(--slate)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts label{display:inline-flex;align-items:center;gap:8px;margin:0;border:1px solid #b8beb4;border-radius:4px;padding:8px 12px;background:#fff;cursor:pointer;font-weight:normal;font-size:15px}
+.opts input{width:18px;height:18px;margin:0;flex:none}
+.privacy{font-size:14px;color:#8a2a2a;margin:4px 0 0}
+.cmd{display:block;font:15px/1.5 Consolas,"Courier New",monospace;background:#1e293b;color:#f1f5f9;border-radius:4px;padding:10px 12px;margin:6px 0;overflow-x:auto;white-space:pre}
+.flow{counter-reset:f;list-style:none;padding:0;margin:10px 0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.flow li{counter-increment:f;background:#fafbf9;border:1px solid var(--line);border-top:4px solid var(--teal);border-radius:4px;padding:10px 12px;font-size:15px;min-width:0}
+.flow li::before{content:counter(f) ". ";font-weight:bold;color:var(--teal-d)}
+.flow b{color:var(--slate)}
+tr.late td{background:var(--red-t)}
+tr.soon td{background:var(--amber-t)}
+.st-late{color:var(--red);font-weight:bold}
+.st-soon{color:var(--amber);font-weight:bold}
+.files li{flex-wrap:wrap;gap:4px 12px}
+.files li a{white-space:nowrap}
+.files .hint{flex:1 1 240px}
+.sample-note{font-size:14px;color:var(--slate-m)}
+.lvl{display:inline-block;font-size:12px;font-weight:bold;letter-spacing:.04em;border-radius:3px;padding:1px 6px;white-space:nowrap}
+.lvl.check{background:var(--teal-t);color:var(--teal-d)}
+.lvl.watch{background:var(--amber-t);color:var(--amber)}
+.lvl.ot{background:var(--red-t);color:var(--red)}
+details.inner{margin:12px 0}
+@media(max-width:640px){
+  .bignums{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bignums div{padding:10px}.bignums b{font-size:22px}.bignums span{font-size:13px}
+  table.compact{font-size:13px}table.compact th,table.compact td{padding:5px 6px}
+  .chan{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.chan .cname{grid-column:1 / -1}
+  table.stack thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack{background:transparent}
+  table.stack tr{border:1px solid #ccd2c8;border-radius:4px;margin:0 0 8px;background:#fff}
+  table.stack td{border:0;border-top:1px solid #eef1ec;display:grid;grid-template-columns:7.2em minmax(0,1fr);gap:8px;text-align:left;padding:6px 8px;font-size:14px}
+  table.stack td.num{text-align:left;white-space:normal}
+  table.stack td:first-child{border-top:0;display:block;font-weight:bold;background:var(--green-t);color:var(--green-d);border-radius:4px 4px 0 0}
+  table.stack td:first-child::before{content:none}
+  table.stack td::before{content:attr(data-label);font-weight:bold;color:var(--green-d);font-size:12.5px;line-height:1.5}
+  table.stack tr.late td:first-child{background:var(--red-t);color:var(--red)}
+  table.stack tr.soon td:first-child{background:var(--amber-t);color:var(--amber)}
+}
+@media print{.tablewrap{overflow:visible}details{border:0}details>summary{display:none}details:not([open])>*{display:block}}
+</style>
+</head>
+<body data-page="1c">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs"><a href="../">ATIA 2026 Annual Convention · Fairbanks · Operations Kit</a></p>
+  <p class="kicker"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>Pain 1 · Advanced · <span class="focus ops">OPS</span></p>
+  <h1>Season staffing model</h1>
+  <p class="lede">Plan next season's crew from last season's data: headcount by week, who to recruit through which channel and by when, early quits and recruiting cost as ranges, and a workload check that ends in "schedule a check-in". It plans. A person decides.</p>
+  <ul class="meta">
+    <li><b>Time</b> 2 to 5 days to set up with an analyst, then about an hour a month in season (estimate)</li>
+    <li><b>Cost</b> analyst time; the software is free; an optional AI memo adds model API fees (estimate)</li>
+    <li><b>Who</b> owner plus an analyst or developer</li>
+    <li><b>Feeds</b> Numbers 1 and 2</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="1c" aria-label="All tools"></nav>
+</header>
+
+<main class="kit">
+  <div class="callout green">
+    <p><strong>It plans. You decide.</strong> The model counts positions, dates and ranges. It never chooses, scores or ranks a person, and it sends nothing. Its report and any AI memo are marked DRAFT - PENDING OWNER REVIEW. The examples use <strong>Channel Light Excursions, Juneau, a fictional teaching business</strong>. What you type on this page stays in this browser.</p>
+  </div>
+
+  <nav class="card note toc" aria-labelledby="toc-h">
+    <h2 id="toc-h">On this page</h2>
+    <ol>
+      <li><a href="#why">The pain it fixes</a></li>
+      <li><a href="#how">How to use it</a></li>
+      <li><a href="#fit">Is it for you?</a></li>
+      <li><a href="#calc">Hiring-plan calculator</a></li>
+      <li><a href="#model">How the model works</a></li>
+      <li><a href="#report">Sample report</a></li>
+      <li><a href="#prompt">Turn the report into a plan</a></li>
+      <li><a href="#files">Downloads</a></li>
+      <li><a href="#measure">How you will know it worked</a></li>
+      <li><a href="#safe">Before you use it</a></li>
+      <li><a href="#next">Before this rung</a></li>
+    </ol>
+  </nav>
+
+  <section class="card teal" aria-labelledby="why">
+    <h2 id="why">The pain it fixes</h2>
+    <p><strong>Lean Six Sigma lens: capacity planning with an attrition curve.</strong> Most operators hire to the headcount they need on July 1 and discover the early-quit rate in June. Every early quit is rework: recruiting, travel, housing and training done twice. A staffing model treats attrition as a known input with a range, not a surprise: hires = new hires needed / (1 - early-quit rate), and each recruiting channel starts early enough for its lead time.</p>
+    <h3>The fictional example: Channel Light Excursions, 2026</h3>
+    <div class="bignums">
+      <div><b>22</b><span>seasonal positions</span></div>
+      <div><b>20</b><span>new hires, including 4 replacements</span></div>
+      <div><b>20.0%</b><span>early-quit rate: 4 of 20 left in the first 30 days</span></div>
+      <div><b>$56,000</b><span>recruiting, at about $2,800 a hire ($42,000 to $70,000)</span></div>
+    </div>
+    <p>Six staff returned. The four replacements alone cost about $11,200 ($8,400 to $14,000) of rework. <small class="hint">(Fictional numbers; cost per hire is the kit's fictional builder, about $2,800, range $2,100 to $3,500.)</small></p>
+    <p><strong>My read:</strong> the early quits were predictable in kind, only the timing surprised. The four left 16 to 23 days after starting, which put all of them in the first eight days of the season, before any replacement could be recruited and trained.</p>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <ol class="steps">
+      <li><strong>Check the fit</strong> with the three questions below. <em>Write down:</em> this rung, or the lower rung to start with.</li>
+      <li><strong>Try the calculator</strong> with your own counts (two minutes, no code). <em>Write down:</em> the latest start-recruiting date for each channel.</li>
+      <li><strong>Run the demo</strong> of the Python model (five minutes, no keys, no internet). <em>Write down:</em> the three headline numbers: positions at peak, first deadline, cost range.</li>
+      <li><strong>Export last season</strong>: each hire's role, returning yes or no, start and end dates (no names), plus bookings or a forecast and next season's ship calls. <em>Write down:</em> how many new hires you had and how many left in the first 30 days.</li>
+      <li><strong>Set config.json</strong>: crew ratios (never below your vessel's certificate of inspection), shifts per week, buffer, lead times and costs by channel, your workload thresholds. Rerun until the model check reproduces last season's staffing. <em>Write down:</em> each ratio and who agreed to it.</li>
+      <li><strong>Run your plan</strong> and read the report. <em>Write down:</em> every start-recruiting date in your calendar, with an owner for each channel, and each check-in on the manager's calendar.</li>
+      <li><strong>After the season</strong>, add the new start and end dates and rerun. <em>Write down:</em> Numbers 1 and 2, season over season.</li>
+    </ol>
+  </section>
+
+  <section class="card" aria-labelledby="fit">
+    <h2 id="fit">Is it for you?</h2>
+    <p><strong>Built for:</strong> operators with roughly 10 or more seasonal positions, last season's start and end dates by role, and someone who can run a Python script <small class="hint">(my read)</small>. Smaller crews: the calculator below does the core arithmetic, no code.</p>
+    <form id="fit-form" autocomplete="off">
+      <fieldset class="fit-q">
+        <legend>Seasonal positions</legend>
+        <div class="opts">
+          <label><input type="radio" name="size" value="small"> Under 8</label>
+          <label><input type="radio" name="size" value="mid"> 8 to 25</label>
+          <label><input type="radio" name="size" value="big"> More than 25</label>
+        </div>
+      </fieldset>
+      <fieldset class="fit-q">
+        <legend>Last season's start and end date for each hire, by role</legend>
+        <div class="opts">
+          <label><input type="radio" name="data" value="yes"> Yes, in a spreadsheet</label>
+          <label><input type="radio" name="data" value="partly"> Partly, or on paper</label>
+          <label><input type="radio" name="data" value="no"> No</label>
+        </div>
+      </fieldset>
+      <fieldset class="fit-q">
+        <legend>Someone to run a Python script</legend>
+        <div class="opts">
+          <label><input type="radio" name="help" value="yes"> Yes: an analyst, a developer or me</label>
+          <label><input type="radio" name="help" value="maybe"> Could hire for a few days</label>
+          <label><input type="radio" name="help" value="no"> No</label>
+        </div>
+      </fieldset>
+    </form>
+    <div class="verdict" id="fit-out" role="status" aria-live="polite">
+      <p data-fit="" >Answer the three questions to see where to start.</p>
+      <p data-fit="start" hidden><strong>Start lower on the ladder.</strong> Use the calculator below for this winter's dates and counts. Then do <a href="../1a/">1.a Rehire before you recruit</a> (it moves the rehire rate, the biggest lever here) and <a href="../1b/">1.b Standard work and crew coach</a> (it targets early quits). Start writing down every hire's start and end date this season: that is the data this model needs.</p>
+      <p data-fit="homework" hidden><strong>Possible, with homework.</strong> Put last season's hires in a spreadsheet: role, returning yes or no, start date, end date, finished the season yes or no. No names. Then run the demo with an analyst for a few days, and replace config.json's fictional ratios and lead times with yours.</p>
+      <p data-fit="fit" hidden><strong>A good fit.</strong> Run the demo, then your own data. Plan 2 to 5 days with an analyst to set the ratios and check them against last season (estimate), then about an hour a month in season.</p>
+    </div>
+  </section>
+
+  <section class="card teal" aria-labelledby="calc">
+    <h2 id="calc">Hiring-plan calculator</h2>
+    <p>The core arithmetic of the model, in your browser: how many hires, including replacements for early quits, and the latest day to start recruiting in each channel. The Python model adds the week-by-week curve, replacement timing and ranges from a simulation.</p>
+    <form data-builder="plan" id="plan-form" autocomplete="off" novalidate>
+      <p class="privacy">Counts, rates, dates and channel names only. No staff names, emails or phone numbers.</p>
+      <fieldset>
+        <legend>Your season</legend>
+        <div class="inline-fields">
+          <div><label for="p-positions">Positions to fill</label><input type="number" id="p-positions" name="positions" value="22" min="1" step="1" inputmode="numeric"></div>
+          <div><label for="p-eligible">Staff eligible to return</label><input type="number" id="p-eligible" name="eligible" value="20" min="0" step="1" inputmode="numeric"></div>
+          <div><label for="p-rehire">Expected rehire rate, %</label><input type="number" id="p-rehire" name="rehire" value="35" min="0" max="100" step="1" inputmode="decimal"></div>
+          <div><label for="p-compare">Compare with rehire rate, % <small>(optional)</small></label><input type="number" id="p-compare" name="compare" value="50" min="0" max="100" step="1" inputmode="decimal"></div>
+          <div><label for="p-quit">Expected early-quit rate, %</label><input type="number" id="p-quit" name="quitRate" value="20" min="0" max="99" step="1" inputmode="decimal"></div>
+        </div>
+        <p class="hint">Rehire rate = staff who return / staff eligible to return (Number 1). Early-quit rate = new hires who leave in their first 30 days / new hires who started (Number 2).</p>
+      </fieldset>
+      <fieldset>
+        <legend>Last season's early quits <small class="hint">(optional: shows how sure the rate is)</small></legend>
+        <div class="inline-fields">
+          <div><label for="p-qlast">Early quits last season</label><input type="number" id="p-qlast" name="quitsLast" value="4" min="0" step="1" inputmode="numeric"></div>
+          <div><label for="p-nlast">New hires last season</label><input type="number" id="p-nlast" name="newLast" value="20" min="1" step="1" inputmode="numeric"></div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Dates</legend>
+        <div class="inline-fields">
+          <div><label for="p-start">Season opens</label><input type="date" id="p-start" name="seasonStart" value="2027-05-01"></div>
+          <div><label for="p-onb">Onboarding days before working alone</label><input type="number" id="p-onb" name="onboarding" value="14" min="0" max="120" step="1" inputmode="numeric"></div>
+          <div><label for="p-plan">Plan date <small>(blank = today)</small></label><input type="date" id="p-plan" name="planDate" value="2026-10-11"></div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Channels for new hires: share and weeks of lead time</legend>
+        <p class="hint">Lead time = weeks from starting to recruit to the hire's first day. Use the long end of what you have seen. Shares add up to 100.</p>
+        <div class="chan"><div class="cname"><label for="c1-n">Channel 1</label><input type="text" id="c1-n" name="ch1_name" value="J-1 sponsor"></div><div><label for="c1-s">Share, %</label><input type="number" id="c1-s" name="ch1_share" value="25" min="0" max="100" inputmode="decimal"></div><div><label for="c1-l">Lead, weeks</label><input type="number" id="c1-l" name="ch1_lead" value="24" min="0" max="104" inputmode="decimal"></div></div>
+        <div class="chan"><div class="cname"><label for="c2-n">Channel 2</label><input type="text" id="c2-n" name="ch2_name" value="Job boards and ads"></div><div><label for="c2-s">Share, %</label><input type="number" id="c2-s" name="ch2_share" value="35" min="0" max="100" inputmode="decimal"></div><div><label for="c2-l">Lead, weeks</label><input type="number" id="c2-l" name="ch2_lead" value="10" min="0" max="104" inputmode="decimal"></div></div>
+        <div class="chan"><div class="cname"><label for="c3-n">Channel 3</label><input type="text" id="c3-n" name="ch3_name" value="Staff referral"></div><div><label for="c3-s">Share, %</label><input type="number" id="c3-s" name="ch3_share" value="20" min="0" max="100" inputmode="decimal"></div><div><label for="c3-l">Lead, weeks</label><input type="number" id="c3-l" name="ch3_lead" value="8" min="0" max="104" inputmode="decimal"></div></div>
+        <div class="chan"><div class="cname"><label for="c4-n">Channel 4</label><input type="text" id="c4-n" name="ch4_name" value="Local hire"></div><div><label for="c4-s">Share, %</label><input type="number" id="c4-s" name="ch4_share" value="20" min="0" max="100" inputmode="decimal"></div><div><label for="c4-l">Lead, weeks</label><input type="number" id="c4-l" name="ch4_lead" value="6" min="0" max="104" inputmode="decimal"></div></div>
+        <div class="chan"><div class="cname"><label for="c5-n">Channel 5 <small>(optional)</small></label><input type="text" id="c5-n" name="ch5_name" value=""></div><div><label for="c5-s">Share, %</label><input type="number" id="c5-s" name="ch5_share" value="" min="0" max="100" inputmode="decimal"></div><div><label for="c5-l">Lead, weeks</label><input type="number" id="c5-l" name="ch5_lead" value="" min="0" max="104" inputmode="decimal"></div></div>
+      </fieldset>
+      <fieldset>
+        <legend>Cost <small class="hint">(optional)</small></legend>
+        <div class="inline-fields">
+          <div><label for="p-cost">All-in cost per hire, $</label><input type="number" id="p-cost" name="costPerHire" value="2800" min="0" step="50" inputmode="decimal"></div>
+          <div><label for="p-spread">Plus or minus, %</label><input type="number" id="p-spread" name="costRange" value="25" min="0" max="100" step="5" inputmode="decimal"></div>
+        </div>
+        <p class="hint">No number of your own yet? The <a href="../leak/">Season Leak Audit</a> has an itemized cost-per-hire builder.</p>
+      </fieldset>
+      <div class="btns">
+        <button type="button" class="secondary" data-fill="plan" data-example="plan-demo">Load the fictional example</button>
+        <button type="button" class="ghost" id="plan-clear">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </form>
+    <script type="application/json" id="plan-demo">{"positions":"22","eligible":"20","rehire":"35","compare":"50","quitRate":"20","quitsLast":"4","newLast":"20","seasonStart":"2027-05-01","onboarding":"14","planDate":"2026-10-11","ch1_name":"J-1 sponsor","ch1_share":"25","ch1_lead":"24","ch2_name":"Job boards and ads","ch2_share":"35","ch2_lead":"10","ch3_name":"Staff referral","ch3_share":"20","ch3_lead":"8","ch4_name":"Local hire","ch4_share":"20","ch4_lead":"6","ch5_name":"","ch5_share":"","ch5_lead":"","costPerHire":"2800","costRange":"25"}</script>
+
+    <div id="plan-out" aria-live="polite">
+      <div class="bignums">
+        <div><b id="o-ret">7</b><span>returning staff (expected)</span></div>
+        <div><b id="o-new">15</b><span>new hires to open the season</span></div>
+        <div><b id="o-total">18.8</b><span>hires in all, with replacements (expected)</span></div>
+        <div><b id="o-cost">$52,500</b><span id="o-cost-l">recruiting cost ($39,400 to $65,600)</span></div>
+      </div>
+      <div class="verdict" id="o-verdict"><p>With the fictional example: 15 new hires at a 20% early-quit rate means about 3 early quits and 3.8 replacement hires.</p></div>
+      <div class="tablewrap" tabindex="0" role="region" aria-label="Start-recruiting dates by channel">
+        <table class="compact">
+          <caption class="visually-hidden">Start-recruiting dates by channel</caption>
+          <thead><tr><th scope="col">Channel</th><th scope="col" class="num">Hires</th><th scope="col" class="num">Lead</th><th scope="col">Start recruiting by</th><th scope="col">Status</th></tr></thead>
+          <tbody id="o-rows"><tr><td colspan="5">Loading.</td></tr></tbody>
+        </table>
+      </div>
+      <div id="o-more"></div>
+      <div class="btns">
+        <button type="button" class="secondary" id="copy-plan">Copy this plan as text</button>
+        <button type="button" class="ghost" id="save-plan">Save as .txt</button>
+      </div>
+      <p class="status" id="plan-status" role="status" aria-live="polite"></p>
+    </div>
+    <details>
+      <summary>The formulas</summary>
+      <ul class="rules">
+        <li><strong>Returning staff</strong> = eligible to return x rehire rate, rounded, never more than the positions.</li>
+        <li><strong>New hires to open</strong> = positions - returning staff.</li>
+        <li><strong>Hires in all</strong> = new hires / (1 - early-quit rate). Each early quit is replaced, and a replacement can quit too. With last season's 16 new hires and 20%, that gives 20, what the fictional business made.</li>
+        <li><strong>Range of the rate</strong>: the Wilson 95% interval for last season's early quits out of new hires. With 4 of 20 it runs from 8.1% to 41.6%: one person is 5 points.</li>
+        <li><strong>Latest start-recruiting date</strong> = season opens - onboarding days - lead time in weeks x 7. SOON means within 28 days of the plan date; LATE means already past it.</li>
+        <li><strong>Cost</strong> = hires in all x cost per hire, plus or minus your percent. An estimate.</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="model">
+    <h2 id="model">How the model works</h2>
+    <p>The reference implementation, available on request, is a small Python program (standard library only) that does what the calculator cannot: it follows the season week by week.</p>
+    <ol class="flow">
+      <li><b>Demand.</b> Last season's departures and guests per departure, moved to next season's weekdays, or your forecast. Ship calls per day from next season's port schedule.</li>
+      <li><b>Shifts.</b> Your ratios: crew per departure (more guests, more guides), dock staff per ship call, fixed roles per day.</li>
+      <li><b>People.</b> Shifts become people at your shifts per week, with a buffer. Positions are the busiest week's count, needed from the first week it is reached.</li>
+      <li><b>Attrition curve.</b> Who left in which week of tenure last season, with a Wilson interval and a bootstrap band, and a small-sample warning.</li>
+      <li><b>Hiring calendar.</b> Returning staff first, long-lead channels for the earliest positions, the latest start date for each.</li>
+      <li><b>Simulation.</b> 2,000 seeded seasons per scenario: how uncertain the rate is, plus luck. Hires and cost as P10 to P90, rehire 35% against 50% on paired seasons.</li>
+      <li><b>Workload check.</b> Hours and days off per person by role and week, last season's schedules by role, and a draft rota line by line. Output: "schedule a check-in".</li>
+    </ol>
+    <p><strong>P10 to P90</strong> holds 8 of 10 simulated seasons. Budget with the range, not the middle.</p>
+  </section>
+
+  <section class="card" aria-labelledby="report">
+    <h2 id="report">Sample report</h2>
+<!-- SAMPLE:START -->
+    <p>The demo output for Channel Light Excursions (FICTIONAL TEACHING BUSINESS): the same files as the sample output listed under Downloads. Plan date Oct 11, 2026; season May 1, 2027 to Sep 30, 2027. Every input is invented.</p>
+    <div class="bignums">
+    <div><b>22</b><span>positions at peak</span></div>
+    <div><b>Oct 31</b><span>first deadline: J-1 sponsor, 4 people</span></div>
+    <div><b>19</b><span>hires in all at rehire 35%, P50 (P10 15 to P90 25)</span></div>
+    <div><b>$53,700</b><span>recruiting cost ($42,300 to $67,700)</span></div>
+    <div><b>$8,800</b><span>less at rehire 50% ($2,600 to $17,400)</span></div>
+    </div>
+    <h3>Recruiting calendar (Rehire 35%)</h3>
+    <p class="hint">Latest day to start recruiting, counted back from the day each person is needed working alone: 14 days of onboarding, then the long end of the channel's lead time.</p>
+    <div class="tablewrap" tabindex="0" role="region" aria-label="Recruiting calendar"><table class="compact stack"><caption class="visually-hidden">Recruiting calendar</caption><thead><tr><th scope="col">Start by</th><th scope="col">Channel</th><th scope="col">People and roles</th><th scope="col">Working alone by</th><th scope="col">Status</th></tr></thead><tbody><tr class="soon"><td data-label="Start by">Oct 31, 2026</td><td data-label="Channel">J-1 sponsor</td><td data-label="People and roles">4: deckhand 1, dock coordinator 1, naturalist guide 1, reservations 1</td><td data-label="Working alone by">May 1</td><td data-label="Status">SOON (20 days away)</td></tr><tr><td data-label="Start by">Feb 6, 2027</td><td data-label="Channel">Job boards and ads</td><td data-label="People and roles">5: captain 1, deckhand 1, dock coordinator 1, naturalist guide 1, reservations 1</td><td data-label="Working alone by">May 1</td><td data-label="Status">OK</td></tr><tr><td data-label="Start by">Feb 20, 2027</td><td data-label="Channel">Staff referral</td><td data-label="People and roles">1: captain 1</td><td data-label="Working alone by">May 1</td><td data-label="Status">OK</td></tr><tr><td data-label="Start by">Feb 20, 2027</td><td data-label="Channel">Returning staff (rehire letter, tool 1a)</td><td data-label="People and roles">7: captain 1, deckhand 2, dock coordinator 1, naturalist guide 2, reservations 1</td><td data-label="Working alone by">May 1</td><td data-label="Status">OK</td></tr><tr><td data-label="Start by">Feb 27, 2027</td><td data-label="Channel">Staff referral</td><td data-label="People and roles">1: naturalist guide 1</td><td data-label="Working alone by">May 8</td><td data-label="Status">OK</td></tr><tr><td data-label="Start by">Mar 20, 2027</td><td data-label="Channel">Staff referral</td><td data-label="People and roles">1: deckhand 1</td><td data-label="Working alone by">May 29</td><td data-label="Status">OK</td></tr><tr><td data-label="Start by">Apr 3, 2027</td><td data-label="Channel">Staff referral</td><td data-label="People and roles">1: dock coordinator 1</td><td data-label="Working alone by">Jun 12</td><td data-label="Status">OK</td></tr><tr><td data-label="Start by">Apr 10, 2027</td><td data-label="Channel">Local hire (lives in Juneau)</td><td data-label="People and roles">2: deckhand 1, naturalist guide 1</td><td data-label="Working alone by">Jun 5</td><td data-label="Status">OK</td></tr></tbody></table></div>
+    <p><strong>Replacements.</strong> Expect 4 replacement hires (P50; P10 1 to P90 9). In half of the simulated seasons the first departure came by May 4, 2027 (in 1 of 10, by May 1, 2027). Keep a standby list of about 9 pre-screened people from short-lead channels (Job boards and ads; Staff referral; Local hire (lives in Juneau)) ready by May 1, 2027; start building it by Mar 6, 2027 at the latest.</p>
+    <h3>Hires and cost: rehire 35% against rehire 50%</h3>
+    <div class="tablewrap" tabindex="0" role="region" aria-label="Scenario comparison"><table class="compact stack"><caption class="visually-hidden">Scenario comparison</caption><thead><tr><th scope="col">P50 (P10 to P90)</th><th scope="col">Rehire 35%</th><th scope="col">Rehire 50%</th><th scope="col">Difference</th></tr></thead><tbody><tr><td data-label="P50 (P10 to P90)">Returning staff</td><td data-label="Rehire 35%">7 (4 to 10)</td><td data-label="Rehire 50%">10 (7 to 13)</td><td data-label="Difference">-3 (-5 to -1)</td></tr><tr><td data-label="P50 (P10 to P90)">New hires to open</td><td data-label="Rehire 35%">15 (12 to 18)</td><td data-label="Rehire 50%">12 (9 to 15)</td><td data-label="Difference">3 (1 to 5)</td></tr><tr><td data-label="P50 (P10 to P90)">Early quits</td><td data-label="Rehire 35%">3 (1 to 8)</td><td data-label="Rehire 50%">3 (0 to 7)</td><td data-label="Difference">0 (0 to 2)</td></tr><tr><td data-label="P50 (P10 to P90)">Replacement hires</td><td data-label="Rehire 35%">4 (1 to 9)</td><td data-label="Rehire 50%">4 (1 to 8)</td><td data-label="Difference">0 (0 to 2)</td></tr><tr><td data-label="P50 (P10 to P90)">Total hires</td><td data-label="Rehire 35%">19 (15 to 25)</td><td data-label="Rehire 50%">16 (12 to 21)</td><td data-label="Difference">3 (1 to 6)</td></tr><tr><td data-label="P50 (P10 to P90)">Recruiting cost</td><td data-label="Rehire 35%">$53,700 ($42,300 to $67,700)</td><td data-label="Rehire 50%">$44,400 ($32,800 to $57,800)</td><td data-label="Difference">$8,800 ($2,600 to $17,400)</td></tr></tbody></table></div>
+    <p class="hint">Difference = Rehire 35% minus Rehire 50%, measured run by run on 2,000 paired simulated seasons. Cheaper at rehire 50% in 96% of them.</p>
+    <p><strong>My read:</strong> in this model the rehire rate moves cost through fewer hires, because a returning person is counted at $0 recruiting cost, and last season no returning person left in the first 30 days. That last point rests on 6 people. The shortfall row barely moves between the scenarios. In the Rehire 35% scenario, 44% of the shortfall falls in the first six weeks, when early quits land before their replacements work alone.</p>
+    <h3>Attrition curve, last season</h3>
+    <div class="callout amber"><p><strong>Small sample.</strong> 20 new hires, 4 early quits. One person more or less moves the rate by about 5 points. Treat the curve as a planning range, not a fact.</p></div>
+    <div class="tablewrap" tabindex="0" role="region" aria-label="Share of new hires who had left, by week of tenure"><table class="compact"><caption class="visually-hidden">Share of new hires who had left, by week of tenure</caption><thead><tr><th scope="col" class="num">Week</th><th scope="col" class="num">At risk</th><th scope="col" class="num">Left</th><th scope="col">Share left</th><th scope="col">95% band</th></tr></thead><tbody><tr><td data-label="Week" class="num">1</td><td data-label="At risk" class="num">20</td><td data-label="Left" class="num">0</td><td data-label="Share left">0.0%</td><td data-label="95% band">0.0% to 0.0%</td></tr><tr><td data-label="Week" class="num">2</td><td data-label="At risk" class="num">20</td><td data-label="Left" class="num">0</td><td data-label="Share left">0.0%</td><td data-label="95% band">0.0% to 0.0%</td></tr><tr><td data-label="Week" class="num">3</td><td data-label="At risk" class="num">20</td><td data-label="Left" class="num">3</td><td data-label="Share left">15.0%</td><td data-label="95% band">0.0% to 30.0%</td></tr><tr><td data-label="Week" class="num">4</td><td data-label="At risk" class="num">17</td><td data-label="Left" class="num">1</td><td data-label="Share left">20.0%</td><td data-label="95% band">5.0% to 40.0%</td></tr><tr><td data-label="Week" class="num">5</td><td data-label="At risk" class="num">16</td><td data-label="Left" class="num">0</td><td data-label="Share left">20.0%</td><td data-label="95% band">5.0% to 40.0%</td></tr><tr><td data-label="Week" class="num">6</td><td data-label="At risk" class="num">16</td><td data-label="Left" class="num">0</td><td data-label="Share left">20.0%</td><td data-label="95% band">5.0% to 40.0%</td></tr><tr><td data-label="Week" class="num">16</td><td data-label="At risk" class="num">16</td><td data-label="Left" class="num">1</td><td data-label="Share left">25.0%</td><td data-label="95% band">10.0% to 45.0%</td></tr></tbody></table></div>
+    <p>Early-quit rate (Number 2): 4 of 20 new hires, 20.0%; Wilson 95% interval 8.1% to 41.6%. Returning staff: 0 of 6 (interval 0.0% to 39.0%). Departures in week 16 were mid-season, not early quits.</p>
+    <h3>Workload check</h3>
+    <p>Owner-set thresholds <span class="lbl">Policy choice</span>: more than 50 hours a week, fewer than 1 day off a week, more than 7 days in a row. Schedules only, never people. Every item ends in "schedule a check-in", owned by a manager. Overtime items restate AS 23.10.060 <span class="lbl legal">Legal mandate</span>: confirm with Alaska DOLWD Wage and Hour.</p>
+    <p><span class="lvl check">CHECK-IN</span> schedule a check-in, owned by a manager. <span class="lvl watch">WATCH</span> only a bad simulated season (1 in 10) crosses the line: keep the standby list ready and check in if it happens. <span class="lvl ot">OVERTIME</span> a reminder: budget it or change the pattern.</p>
+    <details class="inner"><summary>Workload items: 9 check-in, 5 watch, 4 overtime</summary>
+    <div class="tablewrap" tabindex="0" role="region" aria-label="Workload check items"><table class="compact stack"><caption class="visually-hidden">Workload check items</caption><thead><tr><th scope="col">Item</th><th scope="col">Where</th><th scope="col">What crossed the line</th></tr></thead><tbody><tr><td data-label="Item"><span class="lvl watch">WATCH</span> Captain</td><td data-label="Where">Plan, weeks 1 to 6, 8, 14 to 18</td><td data-label="What crossed the line">up to 7 shifts a week per person (limit 6 shifts)</td></tr><tr><td data-label="Item"><span class="lvl watch">WATCH</span> Deckhand</td><td data-label="Where">Plan, weeks 4</td><td data-label="What crossed the line">up to 6.7 shifts a week per person (limit 6 shifts)</td></tr><tr><td data-label="Item"><span class="lvl watch">WATCH</span> Naturalist guide</td><td data-label="Where">Plan, weeks 1, 3 to 10, 14 to 17</td><td data-label="What crossed the line">up to 76 h; up to 8 shifts a week per person (limits 50 h; 6 shifts)</td></tr><tr><td data-label="Item"><span class="lvl watch">WATCH</span> Dock coordinator</td><td data-label="Where">Plan, weeks 1, 3 to 5, 8 to 11, 14 to 15</td><td data-label="What crossed the line">up to 53.3 h; up to 6.7 shifts a week per person (limits 50 h; 6 shifts)</td></tr><tr><td data-label="Item"><span class="lvl watch">WATCH</span> Reservations</td><td data-label="Where">Plan, weeks 1 to 6, 8, 14 to 18</td><td data-label="What crossed the line">up to 56 h; up to 7 shifts a week per person (limits 50 h; 6 shifts)</td></tr><tr><td data-label="Item"><span class="lvl ot">OVERTIME</span> Naturalist guide</td><td data-label="Where">Plan, at target</td><td data-label="What crossed the line">9.5 h shifts (over 8 h a day); about 45.6 h a week per person in the heaviest week, May 15 to May 21 (over 40 h)</td></tr><tr><td data-label="Item"><span class="lvl check">CHECK-IN</span> Captain</td><td data-label="Where">Last season, by role</td><td data-label="What crossed the line">1 of 3 schedules had a run over 7 days without a day off (longest 8 days)</td></tr><tr><td data-label="Item"><span class="lvl check">CHECK-IN</span> Deckhand</td><td data-label="Where">Last season, by role</td><td data-label="What crossed the line">2 of 5 schedules had a run over 7 days without a day off (longest 11 days)</td></tr><tr><td data-label="Item"><span class="lvl check">CHECK-IN</span> Dock coordinator</td><td data-label="Where">Last season, by role</td><td data-label="What crossed the line">3 of 6 schedules had a run over 7 days without a day off (longest 9 days)</td></tr><tr><td data-label="Item"><span class="lvl check">CHECK-IN</span> Naturalist guide</td><td data-label="Where">Last season, by role</td><td data-label="What crossed the line">5 of 8 schedules had a run over 7 days without a day off (longest 12 days)</td></tr><tr><td data-label="Item"><span class="lvl check">CHECK-IN</span> Reservations</td><td data-label="Where">Last season, by role</td><td data-label="What crossed the line">1 of 4 schedules had a run over 7 days without a day off (longest 9 days)</td></tr><tr><td data-label="Item"><span class="lvl check">CHECK-IN</span> Reservations</td><td data-label="Where">Last season, by role</td><td data-label="What crossed the line">1 of 4 schedules averaged over 50 h a week (highest 55 h)</td></tr><tr><td data-label="Item"><span class="lvl ot">OVERTIME</span> All roles</td><td data-label="Where">Last season, by role</td><td data-label="What crossed the line">20 of 26 schedules averaged over 40 h a week</td></tr><tr><td data-label="Item"><span class="lvl check">CHECK-IN</span> Naturalist guide</td><td data-label="Where">Draft rota, rota line R04, Jul 5 to Jul 14</td><td data-label="What crossed the line">days in a row without a day off: 10 (limit 7 days)</td></tr><tr><td data-label="Item"><span class="lvl check">CHECK-IN</span> Naturalist guide</td><td data-label="Where">Draft rota, rota line R04, week of Jul 5</td><td data-label="What crossed the line">hours in the week: 66.5 (limit 50 h)</td></tr><tr><td data-label="Item"><span class="lvl check">CHECK-IN</span> Dock coordinator</td><td data-label="Where">Draft rota, rota line R07, week of Jul 5</td><td data-label="What crossed the line">hours in the week: 57 (limit 50 h)</td></tr><tr><td data-label="Item"><span class="lvl ot">OVERTIME</span> Dock coordinator</td><td data-label="Where">Draft rota, rota line R07, Jul 5 to Jul 16</td><td data-label="What crossed the line">6 shifts over 8 h a day, 1 line-week over 40 h</td></tr><tr><td data-label="Item"><span class="lvl ot">OVERTIME</span> Naturalist guide</td><td data-label="Where">Draft rota, rota lines R04, R05, R06, Jul 5 to Jul 18</td><td data-label="What crossed the line">32 shifts over 8 h a day, 6 line-weeks over 40 h</td></tr></tbody></table></div>
+    </details>
+    <p><strong>My read:</strong> at a 10% buffer, no role gets an extra person at its peak, because 10% of a team of 3 to 6 is less than half a person. Peak slack is captain 0.2 of a person, deckhand 0.4 of a person, naturalist guide 0.4 of a person, dock coordinator 0.0 of a person, reservations 0.2 of a person. With so little slack, one early departure is enough to take away days off until a replacement works alone, which is what the WATCH items show. A buffer for a small team is a whole person or nothing (Policy choice).</p>
+    <details class="inner"><summary>Headcount by week (22 weeks, target people on staff)</summary>
+    <div class="tablewrap" tabindex="0" role="region" aria-label="Headcount by week"><table class="compact"><caption class="visually-hidden">Headcount by week</caption><thead><tr><th scope="col">Week</th><th scope="col">Dates</th><th scope="col" class="num">Guests</th><th scope="col" class="num">Capt.</th><th scope="col" class="num">Deck</th><th scope="col" class="num">Guides</th><th scope="col" class="num">Dock</th><th scope="col" class="num">Res.</th><th scope="col" class="num">Total</th></tr></thead><tbody><tr><td data-label="Week">1</td><td data-label="Dates">May 1 to May 7</td><td data-label="Guests" class="num">398</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">4</td><td data-label="Guides" class="num">4</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">17</td></tr><tr><td data-label="Week">2</td><td data-label="Dates">May 8 to May 14</td><td data-label="Guests" class="num">414</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">4</td><td data-label="Guides" class="num">5</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">18</td></tr><tr><td data-label="Week">3</td><td data-label="Dates">May 15 to May 21</td><td data-label="Guests" class="num">450</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">4</td><td data-label="Guides" class="num">5</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">18</td></tr><tr><td data-label="Week">4</td><td data-label="Dates">May 22 to May 28</td><td data-label="Guests" class="num">512</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">4</td><td data-label="Guides" class="num">5</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">18</td></tr><tr><td data-label="Week">5</td><td data-label="Dates">May 29 to Jun 4</td><td data-label="Guests" class="num">549</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">5</td><td data-label="Guides" class="num">5</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">19</td></tr><tr><td data-label="Week">6</td><td data-label="Dates">Jun 5 to Jun 11</td><td data-label="Guests" class="num">707</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">21</td></tr><tr><td data-label="Week">7</td><td data-label="Dates">Jun 12 to Jun 18</td><td data-label="Guests" class="num">732</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">22</td></tr><tr><td data-label="Week">8</td><td data-label="Dates">Jun 19 to Jun 25</td><td data-label="Guests" class="num">735</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">5</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">21</td></tr><tr><td data-label="Week">9</td><td data-label="Dates">Jun 26 to Jul 2</td><td data-label="Guests" class="num">786</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">22</td></tr><tr><td data-label="Week">10</td><td data-label="Dates">Jul 3 to Jul 9</td><td data-label="Guests" class="num">770</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">22</td></tr><tr><td data-label="Week">11</td><td data-label="Dates">Jul 10 to Jul 16</td><td data-label="Guests" class="num">783</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">22</td></tr><tr><td data-label="Week">12</td><td data-label="Dates">Jul 17 to Jul 23</td><td data-label="Guests" class="num">783</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">22</td></tr><tr><td data-label="Week">13</td><td data-label="Dates">Jul 24 to Jul 30</td><td data-label="Guests" class="num">785</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">22</td></tr><tr><td data-label="Week">14</td><td data-label="Dates">Jul 31 to Aug 6</td><td data-label="Guests" class="num">774</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">22</td></tr><tr><td data-label="Week">15</td><td data-label="Dates">Aug 7 to Aug 13</td><td data-label="Guests" class="num">695</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">22</td></tr><tr><td data-label="Week">16</td><td data-label="Dates">Aug 14 to Aug 20</td><td data-label="Guests" class="num">652</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">5</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">4</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">21</td></tr><tr><td data-label="Week">17</td><td data-label="Dates">Aug 21 to Aug 27</td><td data-label="Guests" class="num">654</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">6</td><td data-label="Guides" class="num">6</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">21</td></tr><tr><td data-label="Week">18</td><td data-label="Dates">Aug 28 to Sep 3</td><td data-label="Guests" class="num">518</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">5</td><td data-label="Guides" class="num">5</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">19</td></tr><tr><td data-label="Week">19</td><td data-label="Dates">Sep 4 to Sep 10</td><td data-label="Guests" class="num">510</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">4</td><td data-label="Guides" class="num">5</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">18</td></tr><tr><td data-label="Week">20</td><td data-label="Dates">Sep 11 to Sep 17</td><td data-label="Guests" class="num">473</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">4</td><td data-label="Guides" class="num">5</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">18</td></tr><tr><td data-label="Week">21</td><td data-label="Dates">Sep 18 to Sep 24</td><td data-label="Guests" class="num">451</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">4</td><td data-label="Guides" class="num">5</td><td data-label="Dock" class="num">2</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">17</td></tr><tr><td data-label="Week">22</td><td data-label="Dates">Sep 25 to Sep 30</td><td data-label="Guests" class="num">386</td><td data-label="Capt." class="num">3</td><td data-label="Deck" class="num">4</td><td data-label="Guides" class="num">5</td><td data-label="Dock" class="num">3</td><td data-label="Res." class="num">3</td><td data-label="Total" class="num">18</td></tr></tbody></table></div>
+    <p><strong>Model check against 2026:</strong> the same ratios give 22 positions for last season's own dates, against 22 staffed (deckhand +1, dock coordinator -1).</p>
+    </details>
+    <p class="hint">Full text: <a href="staffing-model/sample_output/report.md">sample_output/report.md</a>. Effort, cost and time figures are estimates.</p>
+<!-- SAMPLE:END -->
+  </section>
+
+  <section class="card" aria-labelledby="prompt">
+    <h2 id="prompt">Turn the report into a plan</h2>
+    <p>Paste the report into Claude, ChatGPT or Gemini with this prompt to get a one-page plan you can act on. The report holds counts, dates and ranges only; keep it that way.</p>
+    <form data-builder="memo" autocomplete="off">
+      <p class="privacy">No staff names, emails or phone numbers in these boxes or in what you paste.</p>
+      <div class="inline-fields">
+        <div><label for="m-biz">Your business (name, type, town)</label><input type="text" id="m-biz" name="business"></div>
+        <div><label for="m-cur">Rehire rate now, %</label><input type="text" id="m-cur" name="current" inputmode="decimal"></div>
+        <div><label for="m-tgt">Rehire rate to test, %</label><input type="text" id="m-tgt" name="target" inputmode="decimal"></div>
+        <div><label for="m-mgr">Who owns check-ins (a role)</label><input type="text" id="m-mgr" name="manager"></div>
+        <div><label for="m-wh">Overtime questions go to</label><input type="text" id="m-wh" name="wagehour"></div>
+        <div><label for="m-sp">Visa sponsor, if any</label><input type="text" id="m-sp" name="sponsor"></div>
+      </div>
+      <div class="btns">
+        <button type="button" class="secondary" data-fill="memo" data-example="memo-demo">Load the fictional example</button>
+        <button type="button" class="ghost" data-reset="memo">Clear</button>
+      </div>
+    </form>
+    <script type="application/json" id="memo-demo">{"business":"Channel Light Excursions, a whale and glacier day-tour operator in Juneau (FICTIONAL TEACHING BUSINESS)","current":"35","target":"50","manager":"operations manager","wagehour":"Alaska DOLWD Wage and Hour","sponsor":"our J-1 sponsor"}</script>
+    <div class="output">
+      <p class="label">Prompt</p>
+      <pre id="out-memo" data-render="tpl-memo" data-builder-src="memo"></pre>
+    </div>
+    <div class="btns">
+      <button type="button" data-copy="out-memo">Copy prompt</button>
+      <button type="button" class="secondary" data-download="1c-staffing-plan-prompt.txt" data-from="out-memo">Save as .txt</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+    <template id="tpl-memo">I run {{business|[BUSINESS: name, type of operation, town]}}, a seasonal business in Alaska. Below is the report from our season staffing model: counts, dates and ranges only, no staff names.
+
+[PASTE report.md OR summary.json FROM THE MODEL'S OUTPUT FOLDER]
+
+Using only the numbers and dates in that report, write a one-page staffing plan for me:
+1. The recruiting calendar for this winter: each channel, how many people, and the latest date to start. Put anything marked LATE or SOON first, and say what to do about it.
+2. Hires and recruiting cost for each scenario, as ranges (P10 to P90), and what moving our rehire rate from {{current|[CURRENT REHIRE RATE]}}% to {{target|[TARGET REHIRE RATE]}}% is worth in hires and dollars.
+3. The standby list for replacements: how many names, by when, from which channels.
+4. The workload check: each "schedule a check-in" item, with the weeks it covers and {{manager|[MANAGER ROLE]}} as the owner. List the overtime reminders as questions for {{wagehour|[WAGE AND HOUR CONTACT]}}.
+5. How sure we are: what the early-quit interval means in people, in plain words.
+6. Three questions I should answer before I commit money.
+
+Rules: mark the plan DRAFT - PENDING OWNER REVIEW. Use only numbers from the report and write [FILL] where something is missing instead of guessing. Do not name, rank or score any staff member, and do not predict who will quit. Treat overtime, J-1 or H-2B and vessel crew questions as questions for {{wagehour|[WAGE AND HOUR CONTACT]}}, {{sponsor|[SPONSOR]}} and our vessel's Coast Guard certificate of inspection, not as legal advice. Plain words, short sentences, no hype.</template>
+    <p class="hint">Asking the AI to check its own plan is not verification. A person checks every date and number against the report.</p>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files">Downloads</h2>
+    <div class="callout amber"><p><strong>The reference implementation is held back from the public kit.</strong> The Python program behind this rung (standard library only, with its own test suite) is available on request for operators or associations that want to run it on their own data: <a href="https://www.linkedin.com/in/pascualreig/" target="_blank" rel="noopener">contact the presenter</a>. Everything on this page, and the sample output below, is public.</p></div>
+    <h3>Sample output (fictional business)</h3>
+    <ul class="files">
+      <li><a href="staffing-model/sample_output/report.md">sample_output/report.md</a> <span class="hint">The demo report in full, marked DRAFT - PENDING OWNER REVIEW.</span></li>
+      <li><a href="staffing-model/sample_output/recruiting_calendar.csv" download>recruiting_calendar.csv</a> <span class="hint">What to start, when, by channel.</span></li>
+      <li><a href="staffing-model/sample_output/weekly_headcount.csv" download>weekly_headcount.csv</a> <span class="hint">22 weeks x 5 roles: shifts, hours, need, target, people on hand.</span></li>
+      <li><a href="staffing-model/sample_output/cost_and_scenarios.csv" download>cost_and_scenarios.csv</a> <span class="hint">P10, P50, P90 for hires and cost, and the paired difference.</span></li>
+      <li><a href="staffing-model/sample_output/workload_checks.csv" download>workload_checks.csv</a> <span class="hint">Every check-in, watch and overtime item. No staff IDs.</span></li>
+      <li><a href="staffing-model/sample_output/attrition_curve.csv" download>attrition_curve.csv</a> <span class="hint">Last season's curve with its bootstrap band.</span></li>
+      <li><a href="staffing-model/sample_output/narrative_draft.md">narrative_draft.md</a> <span class="hint">The memo the mock model drafted, with the program's checks.</span></li>
+      <li><a href="staffing-model/config.json">config.json</a> <span class="hint">Ratios, lead times, costs and thresholds, each with a note. All fictional.</span></li>
+    </ul>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure">How you will know it worked</h2>
+    <h3>Number 1 · Rehire rate</h3>
+    <p>Staff who return this season / staff eligible to return from last season (finished in good standing). Count once, when the season opens. Want: up. It is the scenario lever in this model.</p>
+    <h3>Number 2 · Early-quit rate</h3>
+    <p>New hires who leave within their first 30 days / new hires who started. Count it 30 days after the last start of the season. Want: down.</p>
+    <h3>Plan against actual</h3>
+    <p>After the season, put the plan next to what happened: hires made against the P10 to P90 range, the date each channel actually started against its latest start date, and weeks a role ran below need. A season outside the range is a reason to recheck the ratios and lead times, not proof the model is wrong.</p>
+    <p><strong>Noise or a real change?</strong> With 20 new hires, one early quit moves the rate by 5 points, and 4 of 20 has a 95% interval of 8.1% to 41.6%. A move from 20% to 15% is one person. <small class="hint">(my read)</small> Call it a change when it holds for two seasons, or when the intervals stop overlapping. No targets: set them after a season of your own data.</p>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe">Before you use it</h2>
+    <p><strong>It plans. A person decides.</strong> Every report and memo is marked DRAFT - PENDING OWNER REVIEW. The model counts positions and dates; it never chooses, scores, ranks or flags a person.</p>
+    <ul class="rules">
+      <li><span class="lbl legal">Legal mandate</span> <strong>Hiring decisions.</strong> Federal anti-discrimination law (Title VII, ADA, ADEA) applies to hiring decisions whatever tool helps make them. This model plans counts and dates; it does not pick people. Confirm current text.</li>
+      <li><span class="lbl legal">Legal mandate</span> <strong>Overtime.</strong> Alaska Statute AS 23.10.060 requires overtime at one and one-half times the regular rate for hours over 8 in a day or over 40 in a workweek, with exemptions in AS 23.10.055 and in AS 23.10.060 itself. The model flags planned shifts and weeks over those lines as reminders. Confirm the current text and whether any exemption applies with Alaska DOLWD Wage and Hour. Checked 11 Oct 2026.</li>
+      <li><span class="lbl legal">Legal mandate</span> <strong>Vessel crew.</strong> The minimum crew and the passenger limit for each vessel come from its Coast Guard certificate of inspection. Vessel-specific: your ratios in config.json can never go below your COI.</li>
+      <li><span class="lbl contract">Contractual</span> <strong>J-1 and H-2B.</strong> Obligations and timing vary by sponsor and program. Check your sponsor agreement and current DOL and State Department rules. The lead times here are fictional.</li>
+      <li><span class="lbl contract">Contractual</span> <strong>AI memo.</strong> If you use a real model for the optional memo, check the provider's API data terms first. The model sees aggregates only.</li>
+      <li><span class="lbl">Policy choice</span> <strong>Ratios, buffer, shifts per week, thresholds, channel mix, any returning bonus.</strong> Business decisions. Write down who set each one and when.</li>
+      <li><span class="lbl">Recommendation</span> <strong>No person scores, ever.</strong> The workload check reads schedules (hours, days without a day off), and its only output is "schedule a check-in", owned by a manager. Keep it that way: a score on a person becomes an input to hiring or discipline, and the federal laws above apply to those decisions.</li>
+      <li><span class="lbl">Recommendation</span> <strong>Privacy.</strong> Export IDs, roles, dates and counts only: never names, emails, phone numbers, IDs or medical details. The loader drops columns it does not use and says which. If you keep staff personal information on file, Alaska's Personal Information Protection Act (AS 45.48) sets breach-notification duties for certain personal information <span class="lbl legal">Legal mandate</span>; confirm current text.</li>
+      <li><span class="lbl">Recommendation</span> <strong>Test on the fictional data first.</strong> Then on a copy of your own export. A wrong column caught on fictional data costs nothing; one caught after the plan is in the calendar costs a channel's lead time.</li>
+    </ul>
+    <p>This page keeps what you type in this browser only. Nothing is sent anywhere.</p>
+    <div class="btns"><button type="button" class="danger" id="clear-all">Clear my data on this page</button></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="next">
+    <h2 id="next">Before this rung</h2>
+    <p>1.c is the top rung of Pain 1. It plans around the two numbers the lower rungs move: <a href="../1a/">1.a Rehire before you recruit</a> raises Number 1 (the scenario lever here), and <a href="../1b/">1.b Standard work and crew coach</a> targets Number 2. The <a href="../leak/">Season Leak Audit</a> puts a dollar figure on both.</p>
+    <div class="btns"><a class="button secondary" href="../1a/">Go to 1.a</a> <a class="button secondary" href="../1b/">Go to 1.b</a> <a class="button secondary" href="../leak/">Season Leak Audit</a> <a class="button secondary" href="../">All tools</a></div>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+</body>
+</html>

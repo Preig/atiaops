@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>2a Journey FMEA and disruption playbook · ATIA Operations Kit</title>
+<meta name="description" content="Score how a guest's trip to your dock can fail (Severity, Occurrence, Detection, RPN), decide the disruption policies before May, and build a message pack and an honest 'Getting here' section. Works in your browser; nothing you type leaves it.">
+<link rel="stylesheet" href="../assets/kit.css">
+<style>
+  /* Page-specific styles for tool 2a. Shared styles live in ../assets/kit.css. */
+  .toc{display:flex;flex-wrap:wrap;gap:4px 16px;list-style:none;padding:0;margin:4px 0 0;font-size:15px}
+  .card>h2:first-child{margin-top:0}
+  .reminder{font-size:14px;line-height:1.45;color:#5c3d00;background:var(--amber-t);border-left:4px solid #d49a1a;border-radius:4px;padding:7px 11px;margin:6px 0 10px}
+  .myread{font-size:15px;color:var(--slate)}
+  .pill.grey{background:#eef1ec;color:var(--slate)}
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
+  .tablewrap table td{overflow-wrap:anywhere}
+  .bars{list-style:none;padding:0;margin:10px 0}
+  .bars li{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;margin:0 0 10px;font-size:15px}
+  .bars .bar{height:14px;background:var(--teal);border-radius:2px;min-width:2px}
+  .bars .bt{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .stats{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));margin:12px 0}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+  .stat b{display:block;font-size:26px;color:var(--teal);line-height:1.1}
+  .stat span{font-size:14px;color:var(--slate-m)}
+  details.scale{margin:8px 0}
+  table.scale td:first-child{font-weight:bold;text-align:center;width:3em}
+  ol.rules li{margin:0 0 6px}
+  /* FMEA editor */
+  .frow{border-left:4px solid var(--teal);padding:0;margin:10px 0}
+  .frow.severe{border-left-color:var(--red)}
+  .frow.top{border-left-color:var(--green)}
+  .frow>summary{padding:10px 14px;line-height:1.45;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+  .frow[open]>summary{border-bottom:1px solid var(--line)}
+  .frow .fm{color:var(--slate);flex:1 1 12em;min-width:0;overflow-wrap:anywhere}
+  .frow .rpnbox{font-weight:bold;color:var(--teal-d);white-space:nowrap}
+  .fbody{padding:4px 14px 14px}
+  .fgrid{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+  .fgrid>div{min-width:0}
+  .sod{display:grid;gap:0 14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+  .sod>div{min-width:0}
+  .sod .hint{display:block;min-height:2.6em;margin:4px 0 0}
+  .after{background:#fbfcfa;border:1px dashed var(--sage);border-radius:4px;padding:2px 12px 10px;margin:14px 0 4px}
+  .after h4{margin:10px 0 0;font-size:15px;color:var(--teal-d)}
+  textarea.short{min-height:64px}
+  button.small{font-size:14px;padding:6px 12px}
+  ul.chk{list-style:none;padding:0;margin:8px 0;font-size:15px}
+  ul.chk li{padding:6px 0;border-bottom:1px dashed var(--line);overflow-wrap:anywhere}
+  .tag{display:inline-block;min-width:58px;font-size:12px;font-weight:bold;letter-spacing:.05em;text-transform:uppercase;border-radius:3px;padding:1px 6px;margin-right:6px;text-align:center}
+  li.ok .tag{background:var(--green-t);color:var(--green-d)}
+  li.warn .tag,li.gap .tag{background:var(--amber-t);color:var(--amber)}
+  li.bad .tag{background:var(--red-t);color:var(--red)}
+  li.info .tag{background:var(--teal-t);color:var(--teal-d)}
+  .flag{display:inline-block;font-size:11.5px;font-weight:bold;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:1px 8px;white-space:nowrap}
+  .flag.sev{background:var(--red-t);color:var(--red)}
+  .flag.top{background:var(--green-t);color:var(--green-d)}
+  .flag.none{background:#eef1ec;color:var(--slate-m)}
+  table.ranked td.num{white-space:nowrap}
+  /* policy check */
+  .pq{border-top:1px solid var(--line);padding:6px 0 10px}
+  .pq label{margin-top:8px}
+  .pq .st{font-size:14px;font-weight:bold;margin:4px 0 0}
+  .pq .st.ok{color:var(--green-d)}
+  .pq .st.gap{color:var(--amber)}
+  .pq .st.bad{color:var(--red)}
+  .pq input[type=number]{max-width:12em}
+  .scorebig{font-size:34px;font-weight:bold;color:var(--teal);line-height:1}
+  /* message pack */
+  .scen{list-style:none;padding:0;margin:8px 0;display:grid;gap:4px 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+  .scen label{display:flex;gap:8px;align-items:flex-start;font-weight:normal;font-size:15px;margin:4px 0;color:var(--ink)}
+  .scen input{width:20px;height:20px;flex:none;margin-top:2px;accent-color:var(--green)}
+  details.prompt{border-left:4px solid var(--teal);padding:0}
+  details.prompt>summary{padding:10px 14px}
+  details.prompt .pbody{padding:4px 14px 12px}
+  .output pre{max-height:30em;overflow:auto}
+  .vs{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+  .vs .output{margin:0}
+  .vs .output.wrong{border-left-color:var(--red)}
+  .vs .output.wrong .label{color:var(--red)}
+  .vs .output.right{border-left-color:var(--green)}
+  .vs .output.right .label{color:var(--green-d)}
+  .ailinks a{margin-right:12px;white-space:nowrap}
+  .obl{list-style:none;padding:0;margin:10px 0}
+  .obl li{padding:8px 0;border-top:1px solid var(--line)}
+  .card.warn .lbl{background:#fff}
+  .card.warn .lbl.legal{background:#fff;color:var(--red)}
+  .files li{flex-wrap:wrap;gap:4px 12px}
+  label.button{cursor:pointer}
+  label.button:focus-within{outline:3px solid var(--teal);outline-offset:2px}
+  .calc{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+  @media(max-width:640px){
+    .frow>summary{padding:10px}.fbody{padding:4px 10px 12px}
+    table.ranked thead{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    table.ranked,table.ranked tbody,table.ranked tr,table.ranked td{display:block;width:100%}
+    table.ranked{background:none}
+    table.ranked tr{border:1px solid #ccd2c8;border-radius:4px;margin:0 0 8px;background:#fff;padding:4px 0}
+    table.ranked td,table.ranked td.num{border:0;padding:2px 10px;text-align:left}
+    table.ranked td[data-label]::before{content:attr(data-label) ": ";font-weight:bold;color:var(--green-d)}
+    table.ranked td.sod-c{display:inline-block;width:auto;padding-right:2px}
+    table.ranked td.rk-c{display:inline-block;width:3em;vertical-align:top;font-weight:bold;color:var(--teal-d)}
+    table.ranked td.rk-c::before{content:"#"!important;font-weight:bold;color:var(--teal-d)}
+    table.ranked td.fm-c{display:inline-block;width:calc(100% - 3.2em);vertical-align:top;padding-left:0;font-weight:bold;color:var(--slate)}
+    table.ranked td.fm-c::before{content:""!important}
+    table.ranked td.after-c.empty{display:none}
+  }
+  @media print{.reminder,details.scale{display:none}.frow{break-inside:avoid}}
+</style>
+<script src="../assets/kit.js" defer></script>
+<script src="fmea-core.js" defer></script>
+<script src="fmea.js" defer></script>
+</head>
+<body data-page="2a">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs"><a href="../">ATIA 2026 Annual Convention · Fairbanks · Operations Kit</a></p>
+  <p class="kicker"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Pain 2 · Basic · <span class="focus cx">CX</span> + <span class="focus ops">OPS</span></p>
+  <h1>Journey FMEA and disruption playbook</h1>
+  <p class="lede">List the ways a guest's trip to your dock can fail, score each one, fix the riskiest first, and decide your disruption policies and messages in the off-season, not on a ship day in July.</p>
+  <ul class="meta">
+    <li><b>Time</b> 2 to 3 hours with your team (estimate)</li>
+    <li><b>Cost</b> free; a free AI tier works for the message pack (estimate)</li>
+    <li><b>Who</b> owner, duty lead and one captain</li>
+    <li><b>Feeds</b> Number 3, disruption recovery rate</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="2a" aria-label="All tools"></nav>
+</header>
+
+<main class="kit">
+  <noscript><p class="callout amber">The builders on this page need JavaScript. The scoring tables, the policy questions and the safety notes below still read fine without it.</p></noscript>
+
+  <nav class="card note" aria-labelledby="toc-h">
+    <h2 id="toc-h" style="font-size:18px">On this page</h2>
+    <ul class="toc">
+      <li><a href="#why">The pain it fixes</a></li>
+      <li><a href="#how">How to use it</a></li>
+      <li><a href="#fmea">1. Journey FMEA</a></li>
+      <li><a href="#policy">2. Policy check</a></li>
+      <li><a href="#pack">3. Message pack</a></li>
+      <li><a href="#example">Polished but wrong</a></li>
+      <li><a href="#getting-here">4. Getting here, honestly</a></li>
+      <li><a href="#files">Downloads</a></li>
+      <li><a href="#measure">How you will know</a></li>
+      <li><a href="#safe">Before you use it</a></li>
+      <li><a href="#next">Next rung</a></li>
+    </ul>
+  </nav>
+
+  <section class="card teal" aria-labelledby="why">
+    <h2 id="why">The pain it fixes</h2>
+    <p>Arrival time is an input you do not control. Ships run late or anchor and tender guests ashore, fog holds flights, roads back up, and the marine forecast turns. At a cruise port these are not rare accidents; they are a process with a rate. FMEA (failure mode and effects analysis) is the Six Sigma tool for exactly this: list how the guest's journey to your dock can fail, score each failure for severity, occurrence and detection, and spend your countermeasures where the risk is highest. Then write the standard response once, so the person on duty follows it instead of improvising.</p>
+    <h3>The fictional example: Channel Light Excursions, Juneau, 2026</h3>
+    <p class="hint">FICTIONAL TEACHING BUSINESS. Every number below comes from the invented teaching data (data/disruptions_2026.csv).</p>
+    <div class="stats">
+      <div class="stat"><b>38</b><span>disruption events</span></div>
+      <div class="stat"><b>545</b><span>guests on disrupted bookings</span></div>
+      <div class="stat"><b>35.0%</b><span>recovered: 127 rebooked, 64 seats refilled (191)</span></div>
+      <div class="stat"><b>$51,596</b><span>net revenue lost to refunds</span></div>
+      <div class="stat"><b>127.8 h</b><span>staff hours handling them</span></div>
+    </div>
+    <h3>Net revenue lost by cause (fictional 2026 log)</h3>
+    <ul class="bars" id="cause-bars" aria-label="Net revenue lost by cause"></ul>
+    <div class="tablewrap">
+      <table>
+        <caption class="visually-hidden">Fictional 2026 disruption log by cause</caption>
+        <thead><tr><th scope="col">Cause</th><th scope="col" class="num">Events</th><th scope="col" class="num">Guests</th><th scope="col" class="num">Recovered</th><th scope="col" class="num">Lost</th></tr></thead>
+        <tbody id="cause-table"></tbody>
+      </table>
+    </div>
+    <p class="myread"><span class="pill grey">My read</span> The cause that lost the most money (marine weather holds) does not top the FMEA below, because the captain sees it coming the evening before (detection 3). RPN ranks the risk that a failure reaches a guest you were not ready for; the loss ledger in <a href="../2c/">2c</a> ranks money. Use both.</p>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <ol class="steps">
+      <li><b>Book two hours</b> with the owner, the person who runs the dock on a busy day, and one captain. Write down who was in the room.</li>
+      <li><b>Score the journey FMEA</b> (Section 1). Start from the fictional rows, change them to your route, add your own. Use your disruption log for occurrence. Write down the top five and every severity 9 or 10.</li>
+      <li><b>Write a countermeasure and an owner role</b> for each of those rows, with a date. Write them in the row.</li>
+      <li><b>Answer the policy check</b> (Section 2). Every gap is a decision someone makes before May. Write down who decides each gap and by when.</li>
+      <li><b>Build the message pack</b> (Section 3) for the scenarios on your action list. Paste each prompt into Claude, ChatGPT or Gemini, check every draft with the checker, and have the owner approve it. Save the approved texts as your standard messages.</li>
+      <li><b>Build "Getting here, honestly"</b> (Section 4). The owner approves it; then it goes on your website and in your booking confirmation. Write down the date it went live.</li>
+      <li><b>After the season,</b> re-score occurrence and detection from your log and write down the new action list.</li>
+    </ol>
+  </section>
+
+  <!-- 1. FMEA -->
+  <section class="card" aria-labelledby="fmea">
+    <h2 id="fmea">1. Journey FMEA builder</h2>
+    <p>One row per way the journey can fail, from the ship or flight to your boat. RPN (risk priority number) = Severity x Occurrence x Detection, each scored 1 to 10. The table ranks rows by RPN. Any row with <b>severity 9 or 10 is flagged whatever its RPN</b>, because a low RPN can hide a severe failure.</p>
+    <p class="reminder">Write failure modes, causes and roles. No guest names, staff names, booking details or phone numbers. Everything stays in this browser.</p>
+
+    <details class="scale">
+      <summary>How to score: severity, occurrence, detection</summary>
+      <p><b>Severity</b> scores the worst credible effect on the guest and the business. Only a change to the process or design that removes the effect lowers it; better checks do not.</p>
+      <div class="tablewrap"><table class="scale" id="scale-S"><caption class="visually-hidden">Severity scale</caption><thead><tr><th scope="col">S</th><th scope="col">Meaning</th><th scope="col">Tour operator example</th></tr></thead><tbody></tbody></table></div>
+      <p><b>Occurrence</b> scores how often the cause or failure happens. Count it from your disruption log. A season here is about 150 operating days. These bands are a starting scale: adjust them with your team once, then keep them the same season to season.</p>
+      <div class="tablewrap"><table class="scale" id="scale-O"><caption class="visually-hidden">Occurrence scale</caption><thead><tr><th scope="col">O</th><th scope="col">Meaning</th><th scope="col">Per season</th></tr></thead><tbody></tbody></table></div>
+      <p><b>Detection</b> scores how early and how surely your current controls catch it before the guest feels it. 1 is best. No control at all is 10.</p>
+      <div class="tablewrap"><table class="scale" id="scale-D"><caption class="visually-hidden">Detection scale</caption><thead><tr><th scope="col">D</th><th scope="col">Meaning</th><th scope="col">Detail</th></tr></thead><tbody></tbody></table></div>
+    </details>
+    <details class="scale">
+      <summary>Five rules a Black Belt would check</summary>
+      <ol class="rules">
+        <li><b>Score with the team, not alone.</b> The person on the dock knows occurrence and detection better than the owner.</li>
+        <li><b>Severity follows the effect, not the cause.</b> Two rows with the same effect get the same severity.</li>
+        <li><b>RPN sorts; it does not measure.</b> It multiplies ordinal scores, so equal RPNs can hide very different risks: S10 x O2 x D2 = 40 and S2 x O5 x D4 = 40. That is why severity 9 or 10 always gets an action. The 2019 AIAG and VDA FMEA handbook replaces RPN with an "action priority" table that weighs severity first; this page keeps the classic RPN because it is simpler to run in a small team.</li>
+        <li><b>No fixed RPN threshold.</b> Work the top of the list and every severity 9 or 10, then move down as capacity allows.</li>
+        <li><b>Close the loop.</b> When an action is done, re-score. Better detection lowers D; fewer causes lower O; only removing the effect lowers S.</li>
+      </ol>
+    </details>
+
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="fmea-demo">Load the fictional example</button>
+        <button type="button" id="fmea-add">Add a row</button>
+        <button type="button" class="secondary" id="fmea-sort">Sort the rows below by RPN</button>
+        <button type="button" class="ghost" id="fmea-clear">Clear all rows</button>
+      </div>
+      <p class="status" role="status" aria-live="polite" id="st-fmea"></p>
+    </div>
+
+    <h3 id="ranked-h">Ranked by RPN</h3>
+    <p class="hint" id="ranked-sum" aria-live="polite"></p>
+    <div class="tablewrap">
+      <table class="ranked" aria-labelledby="ranked-h">
+        <thead><tr><th scope="col" class="num">#</th><th scope="col">Failure mode</th><th scope="col" class="num">S</th><th scope="col" class="num">O</th><th scope="col" class="num">D</th><th scope="col" class="num">RPN</th><th scope="col">Flag</th><th scope="col" class="num">After</th></tr></thead>
+        <tbody id="ranked-rows"></tbody>
+      </table>
+    </div>
+
+    <h3>Edit the rows</h3>
+    <p class="hint">Open a row to edit it. The ranking above updates as you type. Rows stay in the order you typed them until you press "Sort the rows below by RPN".</p>
+    <div id="fmea-rows"></div>
+
+    <div>
+      <div class="btns">
+        <button type="button" id="fmea-csv">Save as CSV</button>
+        <label class="button secondary" for="fmea-import" id="fmea-import-label" style="margin:0">Import a CSV<input type="file" id="fmea-import" accept=".csv,text/csv" class="visually-hidden"></label>
+      </div>
+      <p class="status" role="status" aria-live="polite" id="st-fmea-io"></p>
+    </div>
+    <p class="hint">The CSV opens in Excel, Numbers or Google Sheets. Edit it there if you prefer, then import it back. Columns: rank, id, journey_step, failure_mode, effect, severity, cause, occurrence, occurrence_note, current_controls, detection, rpn, flag, action, owner_role, due, new_severity, new_occurrence, new_detection, new_rpn.</p>
+  </section>
+
+  <!-- 2. POLICY -->
+  <section class="card" aria-labelledby="policy">
+    <h2 id="policy">2. Policy completeness check</h2>
+    <p>A disruption forces the same decisions every time. Decided in October, they take a minute on the day. Undecided, they take the duty lead's whole morning and come out different each time. Each blank or "TBD" answer is flagged <b>Decide before May</b>.</p>
+    <p class="reminder">Write decisions and roles only. No guest or staff names, no phone numbers.</p>
+    <p><span class="scorebig" id="pol-score">0 of 13</span> <span class="hint">decided</span></p>
+    <form id="pol-form" novalidate></form>
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="pol-demo">Load the fictional example</button>
+        <button type="button" class="ghost" id="pol-clear">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite" id="st-pol"></p>
+    </div>
+    <h3 id="gaps-h">Decide before May</h3>
+    <ul class="chk" id="pol-gaps" aria-labelledby="gaps-h"></ul>
+    <div class="output">
+      <p class="label">Your disruption policy sheet (the message pack uses only this)</p>
+      <pre id="pol-sheet" tabindex="0" aria-label="Disruption policy sheet"></pre>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" data-copy="pol-sheet" data-copy-msg="Copied the policy sheet.">Copy policy sheet</button>
+        <button type="button" class="secondary" data-download="disruption-policy-sheet.txt" data-from="pol-sheet">Save as .txt</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- 3. MESSAGE PACK -->
+  <section class="card" aria-labelledby="pack">
+    <h2 id="pack">3. Message pack builder</h2>
+    <p>For each scenario you select, the page writes one prompt. The AI drafts four items: a <b>first notice</b> (sent within your first-notice target), an <b>options message</b>, a <b>confirmation</b>, and a <b>staff decision card</b>. The prompt carries your policy sheet and nothing else, so the AI cannot borrow a refund rule or a wait time you never decided. Gaps go in as [FILL].</p>
+    <label for="pack-business">Business name, as guests know it</label>
+    <input type="text" id="pack-business" autocomplete="organization" value="Channel Light Excursions (fictional)">
+    <h3 id="scen-h">Scenarios</h3>
+    <p class="hint">The action list (top five by RPN plus every severity 9 or 10) is selected to start.</p>
+    <ul class="scen" id="pack-scen" aria-labelledby="scen-h"></ul>
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="pack-actionlist">Select the action list</button>
+        <button type="button" class="ghost" id="pack-none">Select none</button>
+      </div>
+      <p class="status" role="status" aria-live="polite" id="st-pack-sel"></p>
+    </div>
+    <p class="hint" id="pack-gapnote" aria-live="polite"></p>
+    <div id="pack-out"></div>
+    <div>
+      <div class="btns">
+        <button type="button" id="pack-copyall">Copy all prompts</button>
+        <button type="button" class="secondary" id="pack-save">Save all as .txt</button>
+      </div>
+      <p class="status" role="status" aria-live="polite" id="st-pack"></p>
+    </div>
+    <p class="ailinks">Open: <a href="https://claude.ai/new" target="_blank" rel="noopener">Claude</a> <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a> <a href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini</a> <span class="hint">(internet needed; check each tool's data-use setting first)</span></p>
+
+    <h3 id="example">Polished but wrong, versus grounded</h3>
+    <p>A model asked to "write a nice message about the late ship" writes something warm and wrong. Both drafts below answer the same scenario (a cruise guest's ship arrives late) under the fictional policy sheet.</p>
+    <div class="vs">
+      <div class="output wrong">
+        <p class="label">Polished but wrong</p>
+        <pre id="ex-polished"></pre>
+      </div>
+      <div class="output right">
+        <p class="label">Grounded</p>
+        <pre id="ex-grounded"></pre>
+      </div>
+    </div>
+    <h4>What is wrong with the polished one</h4>
+    <ol id="ex-problems"></ol>
+    <p class="hint">The grounded one reads less friendly. It is also true, it follows the policy, it goes to the right person, and the duty lead can fill the gaps in a minute.</p>
+
+    <h3 id="check-h">Check a draft</h3>
+    <p>Paste what the AI wrote. The page checks it against your policy sheet, here in your browser: the DRAFT line, promise words, times, amounts and durations that are not in your policies, compensation that was never decided, names and contact details, and open [FILL] items.</p>
+    <label for="draft">The AI draft</label>
+    <p class="reminder" id="draft-note">Paste a template draft only. If it holds a real guest's name or contact details, delete them here and in your AI chat.</p>
+    <textarea id="draft" class="tall" aria-describedby="draft-note" spellcheck="false"></textarea>
+    <div>
+      <div class="btns">
+        <button type="button" id="draft-check">Check the draft</button>
+        <button type="button" class="secondary" id="draft-polished">Load the polished example</button>
+        <button type="button" class="secondary" id="draft-grounded">Load the grounded example</button>
+        <button type="button" class="ghost" id="draft-clear">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite" id="st-draft"></p>
+    </div>
+    <ul class="chk" id="draft-results" aria-labelledby="check-h"></ul>
+    <p class="hint">This is a first pass. It cannot tell whether a sentence is true or sent to the right person. A person still reads every line against the policy sheet. Asking the AI to check its own draft is not a check.</p>
+  </section>
+
+  <!-- 4. GETTING HERE -->
+  <section class="card" aria-labelledby="getting-here">
+    <h2 id="getting-here">4. "Getting here, honestly" section builder</h2>
+    <p>A short website section that tells guests the transit facts and your buffers before they book. It prevents the failure modes you can prevent (wrong meeting point, a departure booked too close to a landing), and it sets expectations for the ones you cannot. Empty boxes become [FILL] in the text, so nothing is guessed.</p>
+    <p class="reminder">Business facts only. No guest details.</p>
+    <form id="gh-form" class="fgrid" novalidate></form>
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="gh-demo">Load the fictional example</button>
+        <button type="button" class="ghost" id="gh-clear">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite" id="st-gh"></p>
+    </div>
+    <p class="hint" id="gh-gaps" aria-live="polite"></p>
+    <div class="output">
+      <p class="label">"Getting here, honestly" (Markdown, ready to paste)</p>
+      <pre id="gh-out" tabindex="0" aria-label="Getting here section"></pre>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" data-copy="gh-out" data-copy-msg="Copied the section. The owner approves it before it goes on the website.">Copy the section</button>
+        <button type="button" class="secondary" data-download="getting-here-honestly.md" data-from="gh-out" data-mime="text/markdown">Save as .md</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <details>
+      <summary>Optional: a prompt to tighten the wording without adding facts</summary>
+      <div class="output">
+        <p class="label">Tighten prompt</p>
+        <pre id="gh-prompt" tabindex="0" aria-label="Tighten prompt"></pre>
+      </div>
+      <div>
+        <div class="btns"><button type="button" data-copy="gh-prompt">Copy prompt</button></div>
+        <p class="status" role="status" aria-live="polite"></p>
+      </div>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files">Downloads</h2>
+    <p class="hint">Every file is made in your browser from what is on this page now. Nothing is uploaded.</p>
+    <ul class="files">
+      <li><button type="button" class="secondary small" id="dl-fmea">journey-fmea.csv</button> <span class="hint">Your FMEA, ranked, with flags and after-action scores.</span></li>
+      <li><button type="button" class="secondary small" id="dl-scales">fmea-scoring-guide.txt</button> <span class="hint">The three scoring tables and the five rules, to print for the team meeting.</span></li>
+      <li><button type="button" class="secondary small" data-download="disruption-policy-sheet.txt" data-from="pol-sheet">disruption-policy-sheet.txt</button> <span class="hint">Your decided policies; gaps marked [FILL].</span></li>
+      <li><button type="button" class="secondary small" id="dl-pack">message-pack-prompts.txt</button> <span class="hint">One prompt per selected scenario.</span></li>
+      <li><button type="button" class="secondary small" data-download="getting-here-honestly.md" data-from="gh-out" data-mime="text/markdown">getting-here-honestly.md</button> <span class="hint">The website section, for the owner to approve.</span></li>
+    </ul>
+    <p class="status" role="status" aria-live="polite" id="st-files"></p>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure">How you will know it worked</h2>
+    <ul>
+      <li><b>Number 3, disruption recovery rate:</b> guests on transit- or weather-disrupted bookings who were rebooked or whose seat was refilled, divided by all guests on disrupted bookings. Count it per season, by cause. Fictional 2026: 191 of 545 = 35.0%.</li>
+      <li><b>Minutes from first alert to first guest message:</b> for each disruption, write down when you first knew (the alert) and when the first message went out after approval. Track the median per season against your first-notice target.</li>
+    </ul>
+    <p><b>Noise versus a real change.</b> A season has a few dozen events, and guests on one event share an outcome. On the fictional 2026 log, resampling the 38 events gives a rough 95% range of 28% to 42% around the 35.0%. A formula that treats every guest as independent says 31% to 39%, which is too narrow. <span class="hint">(Arithmetic on the fictional data; your range depends on your events.)</span> <span class="pill grey">My read</span> Treat a season-to-season change smaller than about 7 points as possibly noise, and look at it by cause before you credit the playbook.</p>
+    <h3>Quick calculator <span class="hint">(this browser only)</span></h3>
+    <form id="m-form" class="calc" novalidate>
+      <div><label for="m-guests">Guests on disrupted bookings</label><input type="number" id="m-guests" min="0" step="1" inputmode="numeric"></div>
+      <div><label for="m-rec">Rebooked or seat refilled</label><input type="number" id="m-rec" min="0" step="1" inputmode="numeric"></div>
+      <div><label for="m-min">Minutes from alert to first message, one per event <small>(for example 12, 30, 9)</small></label><input type="text" id="m-min" inputmode="numeric" autocomplete="off"></div>
+    </form>
+    <div class="output"><p class="label">Your numbers</p><pre id="m-out" aria-live="polite"></pre></div>
+    <div>
+      <div class="btns">
+        <button type="button" class="secondary" id="m-demo">Load the fictional season</button>
+        <button type="button" class="secondary" data-copy="m-out" data-copy-msg="Copied your numbers.">Copy these numbers</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe">Before you use it</h2>
+    <p><strong>AI drafts. You approve.</strong> Every prompt on this page asks for DRAFT - PENDING OWNER REVIEW on the first line and [FILL] where a fact is missing. Nothing here sends, books, refunds or decides anything.</p>
+    <ul class="obl">
+      <li><span class="lbl">Recommendation</span> <b>Safety calls stay with a qualified person.</b> The captain on duty (or another qualified person) makes every weather and vessel safety call. The FMEA, the policies and the messages never make it. Reason: a message drafted to keep a departure running can pressure a captain; the cost of that is counted in people, not refunds.</li>
+      <li><span class="lbl legal">Legal mandate</span> <b>Vessel passenger limits</b> come from each vessel's Coast Guard certificate of inspection. A rebook or a refilled seat never puts more guests on a departure than the certificate allows. The limit is vessel-specific: check your certificate.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Cruise-line guests.</b> Who contacts the guest, which refund applies and what you may offer come from your cruise line contract. Check your contract before you write the cruise-line policy line.</li>
+      <li><span class="lbl contract">Contractual</span> <b>OTA guests.</b> Messaging outside the OTA and refund terms are set by your OTA supplier agreement. Check it.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Partner transfers.</b> Who pays for an extra or changed shuttle run, and how much notice the shuttle needs, belong in your agreement with the shuttle partner. Check it.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Glacier or park allocation.</b> Moving a guest between departures on the same day does not change the day's count; refilling a seat with a new combo guest does. Check your permit's terms on counts and reporting.</li>
+      <li><span class="lbl">Policy choice</span> The all-aboard buffer, the decision deadline, the waitlist rule, how long the shuttle waits, goodwill offers and the first-notice target. Each is your decision; the page only checks that you made it.</li>
+      <li><span class="lbl">Recommendation</span> <b>Keep guest and staff data out of AI tools.</b> Templates use [GUEST FIRST NAME] and [BOOKING REF]; real names are merged in your booking system. Check your AI tool's data-use setting.</li>
+      <li><span class="lbl">Recommendation</span> <b>Scores are team judgments.</b> Write where each occurrence score came from (your log, or a team estimate) so next season's re-score can be checked.</li>
+    </ul>
+    <div>
+      <div class="btns"><button type="button" class="danger" id="forget">Forget everything this page saved</button></div>
+      <p class="status" role="status" aria-live="polite" id="st-forget"></p>
+    </div>
+  </section>
+
+  <section class="card teal" aria-labelledby="next">
+    <h2 id="next">Next rung: 2b Arrival watch and backfill</h2>
+    <p><a href="../2b/"><b>2b</b></a> turns detection into a routine: a rebook board that works out who is affected, which departures still fit the buffer, and which waitlist guests can take the freed seats, plus no-code automation recipes that watch the port schedule and weather alerts and put drafts in an approval sheet. Your policy sheet and message pack from this page are its inputs.</p>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+</body>
+</html>

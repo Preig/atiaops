@@ -1,0 +1,14 @@
+{
+  "allocation_per_day": 100,
+  "days": 153,
+  "base_used_pct": 79.06,
+  "combo_net_per_guest": 146.3,
+  "plan_used_pct": 76.0,
+  "premium_share_pct": 48.5,
+  "premium_uplift_pct": 18.3,
+  "whale_per_day": 12.3,
+  "whale_net_per_guest": 106.39,
+  "seats_per_day": 120,
+  "uncertainty_pct": 30,
+  "baseline_per_slot": 115.67
+}

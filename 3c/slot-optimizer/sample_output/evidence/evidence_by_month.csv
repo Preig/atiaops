@@ -1,0 +1,6 @@
+month,days,allocation,used,used_pct,unused,days_at_cap,turned_away_at_cap,turned_away_seats_or_timing,whale_only_guests,passengers_in_port
+May,31,3100,1728,55.7,1372,1,0,70,291,173170
+June,30,3000,2748,91.6,252,21,59,330,408,293778
+July,31,3100,3075,99.2,25,30,128,925,535,374504
+August,31,3100,2698,87.0,402,13,19,358,400,283559
+September,30,3000,1847,61.6,1153,1,0,47,247,179951

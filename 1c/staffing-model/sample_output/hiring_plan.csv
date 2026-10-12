@@ -1,0 +1,38 @@
+scenario,role,kind,channel,people,needed_solo_by,start_onboarding,lead_time,latest_start_recruiting,status
+Rehire 35%,Deckhand,New hire,J1_SPONSOR,1,2027-05-01,2027-04-17,16 to 24 weeks,2026-10-31,SOON (20 days away)
+Rehire 35%,Dock coordinator,New hire,J1_SPONSOR,1,2027-05-01,2027-04-17,16 to 24 weeks,2026-10-31,SOON (20 days away)
+Rehire 35%,Naturalist guide,New hire,J1_SPONSOR,1,2027-05-01,2027-04-17,16 to 24 weeks,2026-10-31,SOON (20 days away)
+Rehire 35%,Reservations,New hire,J1_SPONSOR,1,2027-05-01,2027-04-17,16 to 24 weeks,2026-10-31,SOON (20 days away)
+Rehire 35%,Captain,New hire,JOB_BOARD,1,2027-05-01,2027-04-17,6 to 10 weeks,2027-02-06,OK
+Rehire 35%,Deckhand,New hire,JOB_BOARD,1,2027-05-01,2027-04-17,6 to 10 weeks,2027-02-06,OK
+Rehire 35%,Dock coordinator,New hire,JOB_BOARD,1,2027-05-01,2027-04-17,6 to 10 weeks,2027-02-06,OK
+Rehire 35%,Naturalist guide,New hire,JOB_BOARD,1,2027-05-01,2027-04-17,6 to 10 weeks,2027-02-06,OK
+Rehire 35%,Reservations,New hire,JOB_BOARD,1,2027-05-01,2027-04-17,6 to 10 weeks,2027-02-06,OK
+Rehire 35%,Captain,New hire,REFERRAL,1,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 35%,Captain,Returning,RETURNING,1,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 35%,Deckhand,Returning,RETURNING,2,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 35%,Dock coordinator,Returning,RETURNING,1,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 35%,Naturalist guide,Returning,RETURNING,2,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 35%,Reservations,Returning,RETURNING,1,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 35%,Naturalist guide,New hire,REFERRAL,1,2027-05-08,2027-04-24,4 to 8 weeks,2027-02-27,OK
+Rehire 35%,Deckhand,New hire,REFERRAL,1,2027-05-29,2027-05-15,4 to 8 weeks,2027-03-20,OK
+Rehire 35%,Dock coordinator,New hire,REFERRAL,1,2027-06-12,2027-05-29,4 to 8 weeks,2027-04-03,OK
+Rehire 35%,Deckhand,New hire,LOCAL,1,2027-06-05,2027-05-22,3 to 6 weeks,2027-04-10,OK
+Rehire 35%,Naturalist guide,New hire,LOCAL,1,2027-06-05,2027-05-22,3 to 6 weeks,2027-04-10,OK
+Rehire 50%,Deckhand,New hire,J1_SPONSOR,1,2027-05-01,2027-04-17,16 to 24 weeks,2026-10-31,SOON (20 days away)
+Rehire 50%,Dock coordinator,New hire,J1_SPONSOR,1,2027-05-01,2027-04-17,16 to 24 weeks,2026-10-31,SOON (20 days away)
+Rehire 50%,Naturalist guide,New hire,J1_SPONSOR,1,2027-05-01,2027-04-17,16 to 24 weeks,2026-10-31,SOON (20 days away)
+Rehire 50%,Reservations,New hire,J1_SPONSOR,1,2027-05-01,2027-04-17,16 to 24 weeks,2026-10-31,SOON (20 days away)
+Rehire 50%,Captain,New hire,JOB_BOARD,1,2027-05-01,2027-04-17,6 to 10 weeks,2027-02-06,OK
+Rehire 50%,Reservations,New hire,JOB_BOARD,1,2027-05-01,2027-04-17,6 to 10 weeks,2027-02-06,OK
+Rehire 50%,Naturalist guide,New hire,JOB_BOARD,1,2027-05-08,2027-04-24,6 to 10 weeks,2027-02-13,OK
+Rehire 50%,Captain,New hire,REFERRAL,1,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 50%,Captain,Returning,RETURNING,1,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 50%,Deckhand,Returning,RETURNING,3,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 50%,Dock coordinator,Returning,RETURNING,2,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 50%,Naturalist guide,Returning,RETURNING,3,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 50%,Reservations,Returning,RETURNING,1,2027-05-01,2027-04-17,4 to 8 weeks,2027-02-20,OK
+Rehire 50%,Deckhand,New hire,JOB_BOARD,1,2027-05-29,2027-05-15,6 to 10 weeks,2027-03-06,OK
+Rehire 50%,Dock coordinator,New hire,JOB_BOARD,1,2027-06-12,2027-05-29,6 to 10 weeks,2027-03-20,OK
+Rehire 50%,Deckhand,New hire,REFERRAL,1,2027-06-05,2027-05-22,4 to 8 weeks,2027-03-27,OK
+Rehire 50%,Naturalist guide,New hire,REFERRAL,1,2027-06-05,2027-05-22,4 to 8 weeks,2027-03-27,OK

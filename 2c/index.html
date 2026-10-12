@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>2c Disruption re-planner and loss ledger · ATIA Operations Kit</title>
+<meta name="description" content="When a ship runs late, re-seat the touched guests with a plan a person approves; at season end, add up what disruptions cost by cause. A Python bundle, an in-browser feasibility checker and a sample ledger.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='10' width='4' height='5' fill='%235c8727'/%3E%3Crect x='6' y='6' width='4' height='9' fill='%235c8727'/%3E%3Crect x='11' y='1' width='4' height='14' fill='%230d92b4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/kit.css">
+<script src="../assets/kit.js" defer></script>
+<script src="replan-core.js" defer></script>
+<script src="replan.js" defer></script>
+<style>
+/* Page-specific styles for tool 2c. Shared styles live in ../assets/kit.css. */
+.onpage{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:12px 0 0;padding:0;list-style:none}
+.onpage a{color:var(--teal-d)}
+.bignums{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));margin:14px 0}
+.bignums div{background:var(--teal-t);border-radius:4px;padding:12px 14px;min-width:0}
+.bignums b{display:block;font-size:28px;line-height:1.15;color:var(--teal-d)}
+.bignums span{font-size:14px;color:var(--slate);display:block;margin-top:2px}
+.twocol{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.twocol>div{min-width:0}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;max-width:100%}
+table.compact th,table.compact td{padding:7px 9px}
+.fit-q{margin:10px 0}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts label{display:inline-flex;align-items:center;gap:8px;margin:0;border:1px solid #b8beb4;border-radius:4px;padding:8px 12px;background:#fff;cursor:pointer;font-weight:normal;font-size:15px;color:var(--ink)}
+.opts input{width:18px;height:18px;margin:0;flex:none}
+.verdict{border-radius:4px;padding:12px 16px;margin:12px 0;background:var(--amber-t);border-left:5px solid #d49a1a}
+.verdict.ok{background:var(--green-t);border-left-color:var(--green)}
+.verdict.err{background:var(--red-t);border-left-color:var(--red)}
+.verdict p{margin:.3em 0}
+.fgrid{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.fgrid>div{min-width:0;display:flex;flex-direction:column;justify-content:flex-end}
+.fgrid label{margin-top:12px}
+.privacy{font-size:14px;color:#8a2a2a;margin:4px 0 0}
+td.yes{color:var(--green-d);font-weight:bold}
+td.no{color:var(--red)}
+tr.move td{background:#f6faf0}
+tr.nsd td{background:#fdf3f3}
+code.cmd{display:block;white-space:pre-wrap;overflow-wrap:anywhere;padding:10px 12px;margin:8px 0;background:#1e293b;color:#f1f5f9;border-radius:4px;font-size:14.5px;line-height:1.55}
+pre.draft{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.55 Consolas,"Courier New",monospace;margin:8px 0 0;color:#222}
+.lbl-list{list-style:none;padding:0;margin:8px 0}
+.lbl-list li{padding:9px 0;border-top:1px solid var(--line);font-size:15.5px;line-height:1.5}
+.lbl-list li:first-child{border-top:0}
+.files li span.hint{flex:1 1 220px}
+.bar{display:inline-block;height:10px;background:var(--teal);border-radius:2px;vertical-align:middle;margin-right:6px}
+@media(max-width:640px){
+  .bignums{grid-template-columns:repeat(2,1fr);gap:8px}.bignums div{padding:10px}.bignums b{font-size:22px}.bignums span{font-size:13px;line-height:1.35}
+  table.stack thead{position:absolute;left:-10000px}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack tr{border:1px solid #ccd2c8;border-radius:4px;margin:0 0 10px;padding:4px 0}
+  table.stack td{border:0;padding:2px 12px;text-align:left;display:flex;gap:10px;align-items:baseline}
+  table.stack td::before{content:attr(data-label);flex:0 0 42%;font-size:11.5px;font-weight:bold;letter-spacing:.04em;text-transform:uppercase;color:var(--green-d);line-height:1.3}
+  table.stack td.num{text-align:left}
+  .bignums .wide{grid-column:1/-1}
+}
+@media print{.verdict,.bignums div{break-inside:avoid}}
+</style>
+</head>
+<body data-page="2c">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs"><a href="../">ATIA 2026 Annual Convention · Fairbanks · Operations Kit</a></p>
+  <p class="kicker"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>Pain 2 · Advanced · <span class="focus ops">OPS</span></p>
+  <h1>Disruption re-planner and loss ledger</h1>
+  <p class="lede">When a ship runs late, re-seat the guests it touches with a plan a person approves, and at the end of the season add up what disruptions cost you, by cause.</p>
+  <ul class="meta">
+    <li><b>Time</b> an hour to try on fictional data; 2 to 6 weeks to connect your own exports (estimate)</li>
+    <li><b>Cost</b> free code (Python, standard library); developer or analyst time (estimate)</li>
+    <li><b>Who</b> a developer or analyst sets it up; the duty lead approves every plan</li>
+    <li><b>Feeds</b> Number 3, disruption recovery rate</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="2c" aria-label="All tools"></nav>
+  <ul class="onpage" aria-label="On this page">
+    <li><a href="#why">The pain it fixes</a></li><li><a href="#fit">Is it for you?</a></li><li><a href="#how">How to use it</a></li><li><a href="#check">Feasibility checker</a></li><li><a href="#replan">Sample re-plan</a></li><li><a href="#ledger">Sample ledger</a></li><li><a href="#prompt">Memo prompt</a></li><li><a href="#files">Downloads</a></li><li><a href="#measure">How you will know</a></li><li><a href="#safe">Before you use it</a></li><li><a href="#next">Before this rung</a></li>
+  </ul>
+</header>
+
+<main class="kit">
+  <div class="callout green">
+    <p><strong>AI drafts. You approve.</strong> The re-planner writes a plan and message drafts marked DRAFT - PENDING OWNER REVIEW. It has no sending code. A person checks the plan, confirms the shuttle and approves every message. The examples use <strong>Channel Light Excursions, Juneau, a fictional teaching business</strong>. What you type on this page stays in this browser.</p>
+  </div>
+
+  <section class="card teal" aria-labelledby="why">
+    <h2 id="why">The pain it fixes</h2>
+    <p>Arrival time is an input you do not control. When a ship slips, the morning turns into a puzzle: which guests can still make which departure, with the seats left, the all-aboard buffer, and parties kept together. Solved by phone at 6:30 a.m., it is easy to give away a seat that could have been kept, and it gets solved differently every time <small class="hint">(my read)</small>. The re-planner solves it the same way every time and shows its work. Then the loss ledger adds up the season's refunds and staff time by cause: what Six Sigma calls the <strong>cost of poor quality</strong>, the number you need for pricing, staffing, insurance and advocacy.</p>
+    <h3>The fictional 2026 season</h3>
+    <div class="bignums">
+      <div><b>38</b><span>disruption events</span></div>
+      <div><b>545</b><span>guests on disrupted bookings</span></div>
+      <div><b>35.0%</b><span>recovered (191 guests): Number 3</span></div>
+      <div><b>$51,596</b><span>net revenue lost to refunds</span></div>
+      <div><b>127.8 h</b><span>staff time handling them</span></div>
+    </div>
+    <p class="hint">Channel Light Excursions is fictional; every number here is invented teaching data (kit data, summary_2026.json). Causes: ship late or tendering from anchor (14 events), marine weather hold (9), flight delay or fog for independent guests (7), road or traffic delay on the shuttle route (5), ship schedule change or skipped call (3).</p>
+  </section>
+
+  <section class="card" aria-labelledby="fit">
+    <h2 id="fit">Is it for you?</h2>
+    <p>The bundle is two programs. The <strong>re-planner</strong> needs a booking export and a port schedule on the morning of a disruption. The <strong>loss ledger</strong> needs a disruption log and a bookings export once a season. Answer three questions.</p>
+    <form id="fit-form" autocomplete="off">
+      <fieldset class="fit-q">
+        <legend>How often does a disruption change your day?</legend>
+        <div class="opts">
+          <label><input type="radio" name="freq" value="rare"> A few times a season</label>
+          <label><input type="radio" name="freq" value="some"> Most weeks in peak season</label>
+          <label><input type="radio" name="freq" value="often"> Several times a week</label>
+        </div>
+      </fieldset>
+      <fieldset class="fit-q">
+        <legend>Can you export bookings with departure time, party size and net revenue?</legend>
+        <div class="opts">
+          <label><input type="radio" name="data" value="yes"> Yes, as CSV</label>
+          <label><input type="radio" name="data" value="unsure"> Not sure</label>
+          <label><input type="radio" name="data" value="no"> No</label>
+        </div>
+      </fieldset>
+      <fieldset class="fit-q">
+        <legend>Who could run a Python script?</legend>
+        <div class="opts">
+          <label><input type="radio" name="who" value="me"> Me or someone on staff</label>
+          <label><input type="radio" name="who" value="dev"> A developer or vendor</label>
+          <label><input type="radio" name="who" value="nobody"> Nobody yet</label>
+        </div>
+      </fieldset>
+    </form>
+    <div class="verdict" id="fit-out" role="status" aria-live="polite"><p>Answer the three questions to see where to start.</p></div>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <ol class="steps">
+      <li><strong>Write down your timing rules.</strong> Departure times, tour minutes dock to dock for each product, walk-off and tender minutes, and how long before all-aboard you want guests back (a policy choice). <em>Written down: the settings file, <code>config/departures.json</code>.</em></li>
+      <li><strong>Test the rules on last season.</strong> Use the feasibility checker below on three ships that ran late. Does the answer match what your team did? <em>Written down: which departures each ship could make.</em></li>
+      <li><strong>Run the demo, then one of your own days.</strong> Export the day's manifest (no names), copy an example event file and change it, run <code>python replan.py</code>. <em>Written down: the plan, the approval queue and the staff summary.</em></li>
+      <li><strong>A person decides.</strong> The duty lead reads the staff summary, confirms shuttle runs with the partner, fills the [FILL] gaps and approves each message. <em>Written down: a name in <code>approved_by</code> for every message sent.</em></li>
+      <li><strong>Log every disruption.</strong> One row per event: date, cause, guests affected, rebooked, refilled, refunded, net lost, staff hours. <em>Written down: the disruption log.</em></li>
+      <li><strong>At season end, run the ledger.</strong> <code>python ledger.py</code> gives the cost by cause and month and Number 3 with its uncertainty. <em>Written down: the ledger summary and, if you share it, the aggregates-only advocacy export.</em></li>
+    </ol>
+  </section>
+
+  <section class="card teal" aria-labelledby="check">
+    <h2 id="check">Feasibility checker: which departures can a cruise guest still make?</h2>
+    <p>The same timing rule the re-planner uses, for one ship. A departure works when the guests can be at your meeting point before it leaves, and the tour brings them back at least the buffer before all-aboard.</p>
+    <form data-builder="feas" id="feas-form" autocomplete="off" novalidate>
+      <p class="privacy">Times and minutes only. No guest names or booking details.</p>
+      <div class="fgrid">
+        <div><label for="f-arrival">Ship arrival, as scheduled</label><input type="text" id="f-arrival" name="arrival" inputmode="numeric" placeholder="7:30"></div>
+        <div><label for="f-delay">Running late by, minutes</label><input type="number" id="f-delay" name="delay" min="0" step="5" inputmode="numeric" placeholder="0"></div>
+        <div><label for="f-walk">Minutes from arrival to your meeting point <small>(walk-off or tender)</small></label><input type="number" id="f-walk" name="toMeeting" min="0" step="5" inputmode="numeric" placeholder="0"></div>
+        <div><label for="f-aa">All-aboard time</label><input type="text" id="f-aa" name="allAboard" inputmode="numeric" placeholder="17:00"></div>
+        <div><label for="f-buffer">Buffer before all-aboard, minutes <small>(policy choice)</small></label><input type="number" id="f-buffer" name="buffer" min="0" step="5" inputmode="numeric" placeholder="60"></div>
+        <div><label for="f-tour">Tour length, dock to dock, minutes</label><input type="number" id="f-tour" name="tour" min="1" step="5" inputmode="numeric" placeholder="270"></div>
+        <div><label for="f-road">Road delay on the tour, minutes</label><input type="number" id="f-road" name="road" min="0" step="5" inputmode="numeric" placeholder="0"></div>
+        <div><label for="f-deps">Departure times</label><input type="text" id="f-deps" name="departures" placeholder="8:00, 10:30, 13:00, 15:30"></div>
+      </div>
+      <div class="btns">
+        <button type="button" class="secondary" data-fill="feas" data-example="feas-demo">Load the fictional example</button>
+        <button type="button" class="ghost" data-reset="feas">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </form>
+    <div id="feas-out" aria-live="polite">
+      <div class="verdict" id="feas-verdict"><p>Type a ship's times, or load the fictional example.</p></div>
+      <div class="tablewrap" id="feas-tablewrap" hidden>
+        <table class="compact stack">
+          <caption class="visually-hidden">Each departure: back at the dock, minutes before all-aboard, verdict</caption>
+          <thead><tr><th scope="col">Departure</th><th scope="col">Back at the dock</th><th scope="col" class="num">Minutes before all-aboard</th><th scope="col">Verdict</th></tr></thead>
+          <tbody id="feas-rows"></tbody>
+        </table>
+      </div>
+      <p class="hint" id="feas-window"></p>
+    </div>
+    <script type="application/json" id="feas-demo">{"arrival":"7:30","delay":"90","toMeeting":"0","allAboard":"17:00","buffer":"60","tour":"270","road":"0","departures":"8:00, 10:30, 13:00, 15:30"}</script>
+    <details>
+      <summary>The formula</summary>
+      <p>Ready = arrival + minutes late + minutes to the meeting point. Back = departure + tour minutes + road delay. A departure works when ready is no later than the departure and all-aboard minus back is at least the buffer. The latest departure that keeps the buffer is all-aboard minus buffer minus tour minus road delay.</p>
+      <p>The full re-planner adds what one ship cannot show: seats left on each departure (the smaller of boat and shuttle seats), parties kept together, the notice you need before a departure, and which bookings to keep when seats run short.</p>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="replan">
+    <h2 id="replan">Sample re-plan: Ship F, 90 minutes late</h2>
+    <p>Wednesday, September 16, 2026 (fictional). At 6:30 Ship F reports its first guests will be ashore at 9:00, not 7:30. All-aboard stays at 17:00. The re-planner touches only Ship F's nine bookings; the other 19 on the day stay as they are.</p>
+<!-- SAMPLE-REPLAN:START -->
+<div class="bignums">
+<div><b>9</b><span>bookings touched (27 guests)</span></div>
+<div><b>4</b><span>stay on their own departure</span></div>
+<div><b>4</b><span>move to another departure today</span></div>
+<div><b>1</b><span>no seat today: a person calls</span></div>
+<div class="wide"><b>$3,184</b><span>of $3,455 net at stake kept, if every move is accepted</span></div>
+</div>
+<div class="tablewrap">
+<table class="compact stack">
+<caption class="visually-hidden">Ship F bookings: booked departure, plan, return and margin</caption>
+<thead><tr><th scope="col">Booking</th><th scope="col">Product</th><th scope="col" class="num">Guests</th><th scope="col" class="num">Net</th><th scope="col">Booked</th><th scope="col">Plan</th><th scope="col">Back at the dock</th><th scope="col" class="num">Minutes before all-aboard</th></tr></thead>
+<tbody>
+<tr class="move"><td data-label="Booking">CL-26-04575</td><td data-label="Product">Combo</td><td data-label="Guests" class="num">4</td><td data-label="Net" class="num">$543.12</td><td data-label="Booked">8:00</td><td data-label="Plan">Moves to 10:30</td><td data-label="Back at the dock">15:00</td><td data-label="Minutes before all-aboard" class="num">120</td></tr>
+<tr class="move"><td data-label="Booking">CL-26-04577</td><td data-label="Product">Whale</td><td data-label="Guests" class="num">4</td><td data-label="Net" class="num">$394.32</td><td data-label="Booked">8:00</td><td data-label="Plan">Moves to 13:00</td><td data-label="Back at the dock">16:00</td><td data-label="Minutes before all-aboard" class="num">60</td></tr>
+<tr class="move"><td data-label="Booking">CL-26-04583</td><td data-label="Product">Combo</td><td data-label="Guests" class="num">4</td><td data-label="Net" class="num">$543.12</td><td data-label="Booked">8:00</td><td data-label="Plan">Moves to 10:30</td><td data-label="Back at the dock">15:00</td><td data-label="Minutes before all-aboard" class="num">120</td></tr>
+<tr class="move"><td data-label="Booking">CL-26-04591</td><td data-label="Product">Combo</td><td data-label="Guests" class="num">4</td><td data-label="Net" class="num">$512.12</td><td data-label="Booked">8:00</td><td data-label="Plan">Moves to 10:30</td><td data-label="Back at the dock">15:00</td><td data-label="Minutes before all-aboard" class="num">120</td></tr>
+<tr><td data-label="Booking">CL-26-04566</td><td data-label="Product">Combo</td><td data-label="Guests" class="num">4</td><td data-label="Net" class="num">$543.12</td><td data-label="Booked">10:30</td><td data-label="Plan">Stays</td><td data-label="Back at the dock">15:00</td><td data-label="Minutes before all-aboard" class="num">120</td></tr>
+<tr><td data-label="Booking">CL-26-04567</td><td data-label="Product">Combo</td><td data-label="Guests" class="num">2</td><td data-label="Net" class="num">$271.56</td><td data-label="Booked">10:30</td><td data-label="Plan">Stays</td><td data-label="Back at the dock">15:00</td><td data-label="Minutes before all-aboard" class="num">120</td></tr>
+<tr><td data-label="Booking">CL-26-04586</td><td data-label="Product">Combo</td><td data-label="Guests" class="num">2</td><td data-label="Net" class="num">$240.56</td><td data-label="Booked">10:30</td><td data-label="Plan">Stays</td><td data-label="Back at the dock">15:00</td><td data-label="Minutes before all-aboard" class="num">120</td></tr>
+<tr><td data-label="Booking">CL-26-04588</td><td data-label="Product">Combo</td><td data-label="Guests" class="num">1</td><td data-label="Net" class="num">$135.78</td><td data-label="Booked">10:30</td><td data-label="Plan">Stays</td><td data-label="Back at the dock">15:00</td><td data-label="Minutes before all-aboard" class="num">120</td></tr>
+<tr class="nsd"><td data-label="Booking">CL-26-04590</td><td data-label="Product">Combo</td><td data-label="Guests" class="num">2</td><td data-label="Net" class="num">$271.56</td><td data-label="Booked">8:00</td><td data-label="Plan">No seat today: call</td><td data-label="Back at the dock">&nbsp;</td><td data-label="Minutes before all-aboard" class="num">&nbsp;</td></tr>
+</tbody>
+</table>
+</div>
+<p>Why the party of two gets a call: Ship F guests can make 10:30, but 10:30 is full once the three parties of four move in, and a 13:00 combo would be back at 17:30, after the 17:00 all-aboard. The four-guest whale-only party fits 13:00 because that tour is 3 hours: back at 16:00, exactly the 60-minute buffer.</p>
+<p>Keeping every booking that still works on its own seat cost <strong>$31</strong> on this day: a plan allowed to bump one would keep that much more. The staff summary says so, and the setting is yours <span class="lbl">Policy choice</span></p>
+<p>The plan also flags one booking on another ship that was already sold inside the 60-minute buffer before anything went wrong (CL-26-04573, back 30 minutes before all-aboard). It does not move it; a person checks, and checks the sales rule that allowed it.</p>
+<details><summary>One message draft from the approval queue (CL-26-04575, move)</summary>
+<pre class="draft">DRAFT - PENDING OWNER REVIEW
+Booking CL-26-04575 · Wednesday, September 16, 2026
+
+Hello,
+
+Your ship is expected about 90 minutes later than scheduled today. Your 8:00 (8 am) departure no longer works for your party.
+
+We are holding 4 seats for you on the 10:30 (10:30 am) departure the same day. It is planned to be back at the meeting point by 15:00 (3 pm). That leaves 120 minutes before your ship&#x27;s all-aboard time of 17:00 (5 pm).
+
+Please reply by [FILL: reply-by time] to confirm. If the new time does not suit you, here are your options: [FILL: your rebook or refund terms].
+
+Meeting point: [FILL: meeting point, from your approved facts]
+
+[FILL: name of the person on duty and how to reach them]
+The Channel Light Excursions team</pre>
+<p class="hint">Every draft waits as PENDING. Cruise line bookings are routed through the shore-excursion desk if your agreement says so <span class="lbl contract">Contractual</span></p>
+</details>
+<!-- SAMPLE-REPLAN:END -->
+    <h3>How the plan is chosen</h3>
+    <p>The goal, in order: keep the most net revenue on the day, then make the fewest moves, then put moved guests on earlier departures. A booking whose own departure still works keeps its seat <span class="lbl">Policy choice</span>. The program runs a fast greedy method and an exact search, and says which plan it shows and whether it is proven best.</p>
+    <details>
+      <summary>Greedy against exact, measured</summary>
+      <p>On the fictional season, every ship running 45, 90 or 150 minutes late (1,108 cases), the greedy plan matched the exact plan every time. On 1,000 deliberately hard random cases with 8 to 14 parties and tight seats, the exact search kept more revenue in 101 cases: by 3.0% on average and by 19.7% at worst. When seats are cut on every shuttle run (the largest cases, up to 47 parties), the exact search hit its budget in 14 of 132 cases and says so; the greedy there was within 1.06% of the best plan found.</p>
+      <p><small class="hint">My read: on days like the fictional season the greedy alone would almost always do; the exact search is cheap insurance that proves it. These are fictional cases. The full table comes with the reference implementation, available on request.</small></p>
+    </details>
+  </section>
+
+  <section class="card teal" aria-labelledby="ledger">
+    <h2 id="ledger">Sample ledger: the fictional 2026 season</h2>
+    <p>The ledger reads the bookings and the disruption log, checks that they agree event by event, and reports by cause and month. Cost of poor quality here is <strong>partial</strong>: refunds plus staff time at a loaded $32 an hour (a fictional input). Goodwill, reviews, partner fees and comps are not counted, so it is a floor.</p>
+<!-- SAMPLE-LEDGER:START -->
+<div class="bignums">
+<div><b>35.0%</b><span>recovery rate, 191 of 545 guests (Number 3)</span></div>
+<div><b>28.3% to 41.5%</b><span>95% interval, resampling the 38 events</span></div>
+<div><b>$51,596</b><span>net lost; $27,910 recovered</span></div>
+<div><b>$55,686</b><span>cost of poor quality (partial), with 127.8 staff hours</span></div>
+</div>
+<h3>By cause, largest cost first (Pareto)</h3>
+<div class="tablewrap">
+<table class="compact stack">
+<caption class="visually-hidden">Fictional 2026 disruptions by cause</caption>
+<thead><tr><th scope="col">Cause</th><th scope="col" class="num">Events</th><th scope="col" class="num">Guests</th><th scope="col" class="num">Recovered</th><th scope="col" class="num">Net lost</th><th scope="col" class="num">Staff hours</th><th scope="col" class="num">Cost (partial)</th><th scope="col">Share of cost</th><th scope="col" class="num">Cumulative</th></tr></thead>
+<tbody>
+<tr><td data-label="Cause">Marine weather hold</td><td data-label="Events" class="num">9</td><td data-label="Guests" class="num">205</td><td data-label="Recovered" class="num">69 (33.7%)</td><td data-label="Net lost" class="num">$21,187</td><td data-label="Staff hours" class="num">32.2</td><td data-label="Cost (partial)" class="num">$22,218</td><td data-label="Share of cost"><span class="bar" style="width:40px" aria-hidden="true"></span>39.9%</td><td data-label="Cumulative" class="num">39.9%</td></tr>
+<tr><td data-label="Cause">Ship late or tendering from anchor</td><td data-label="Events" class="num">14</td><td data-label="Guests" class="num">180</td><td data-label="Recovered" class="num">78 (43.3%)</td><td data-label="Net lost" class="num">$12,603</td><td data-label="Staff hours" class="num">48.9</td><td data-label="Cost (partial)" class="num">$14,168</td><td data-label="Share of cost"><span class="bar" style="width:25px" aria-hidden="true"></span>25.4%</td><td data-label="Cumulative" class="num">65.3%</td></tr>
+<tr><td data-label="Cause">Flight delay or fog (independent guests)</td><td data-label="Events" class="num">7</td><td data-label="Guests" class="num">81</td><td data-label="Recovered" class="num">26 (32.1%)</td><td data-label="Net lost" class="num">$9,304</td><td data-label="Staff hours" class="num">23.6</td><td data-label="Cost (partial)" class="num">$10,059</td><td data-label="Share of cost"><span class="bar" style="width:18px" aria-hidden="true"></span>18.1%</td><td data-label="Cumulative" class="num">83.4%</td></tr>
+<tr><td data-label="Cause">Road or traffic delay on the shuttle route</td><td data-label="Events" class="num">5</td><td data-label="Guests" class="num">39</td><td data-label="Recovered" class="num">6 (15.4%)</td><td data-label="Net lost" class="num">$4,985</td><td data-label="Staff hours" class="num">14.7</td><td data-label="Cost (partial)" class="num">$5,455</td><td data-label="Share of cost"><span class="bar" style="width:10px" aria-hidden="true"></span>9.8%</td><td data-label="Cumulative" class="num">93.2%</td></tr>
+<tr><td data-label="Cause">Ship schedule change or skipped call</td><td data-label="Events" class="num">3</td><td data-label="Guests" class="num">40</td><td data-label="Recovered" class="num">12 (30.0%)</td><td data-label="Net lost" class="num">$3,517</td><td data-label="Staff hours" class="num">8.4</td><td data-label="Cost (partial)" class="num">$3,785</td><td data-label="Share of cost"><span class="bar" style="width:7px" aria-hidden="true"></span>6.8%</td><td data-label="Cumulative" class="num">100.0%</td></tr>
+</tbody>
+</table>
+</div>
+<h3>By month</h3>
+<div class="tablewrap">
+<table class="compact stack">
+<caption class="visually-hidden">Fictional 2026 disruptions by month</caption>
+<thead><tr><th scope="col">Month</th><th scope="col" class="num">Events</th><th scope="col" class="num">Guests</th><th scope="col" class="num">Recovered</th><th scope="col" class="num">Rate</th><th scope="col" class="num">Net lost</th><th scope="col" class="num">Staff hours</th></tr></thead>
+<tbody>
+<tr><td data-label="Month">May</td><td data-label="Events" class="num">8</td><td data-label="Guests" class="num">81</td><td data-label="Recovered" class="num">25</td><td data-label="Rate" class="num">30.9%</td><td data-label="Net lost" class="num">$7,803</td><td data-label="Staff hours" class="num">28.2</td></tr>
+<tr><td data-label="Month">June</td><td data-label="Events" class="num">8</td><td data-label="Guests" class="num">103</td><td data-label="Recovered" class="num">33</td><td data-label="Rate" class="num">32.0%</td><td data-label="Net lost" class="num">$10,574</td><td data-label="Staff hours" class="num">21.7</td></tr>
+<tr><td data-label="Month">July</td><td data-label="Events" class="num">9</td><td data-label="Guests" class="num">167</td><td data-label="Recovered" class="num">60</td><td data-label="Rate" class="num">35.9%</td><td data-label="Net lost" class="num">$15,181</td><td data-label="Staff hours" class="num">34.9</td></tr>
+<tr><td data-label="Month">August</td><td data-label="Events" class="num">7</td><td data-label="Guests" class="num">118</td><td data-label="Recovered" class="num">47</td><td data-label="Rate" class="num">39.8%</td><td data-label="Net lost" class="num">$11,323</td><td data-label="Staff hours" class="num">22.5</td></tr>
+<tr><td data-label="Month">September</td><td data-label="Events" class="num">6</td><td data-label="Guests" class="num">76</td><td data-label="Recovered" class="num">26</td><td data-label="Rate" class="num">34.2%</td><td data-label="Net lost" class="num">$6,715</td><td data-label="Staff hours" class="num">20.5</td></tr>
+</tbody>
+</table>
+</div>
+<p class="hint">Fictional data. With 6 to 9 events a month, month-to-month swings in the rate are mostly noise; causes with few events (road delay 5, skipped call 3) give rough rates. Staff cost at a fictional $32 an hour.</p>
+<p class="hint">My read on the fictional season: marine weather holds cost more than late ships for three reasons that multiply: more guests in total (205 against 180), fewer of them recovered (33.7% against 43.3%), and more net revenue per refunded guest ($156 against $124), because a held departure hits every sales channel while late-ship guests booked through the lower-net cruise desk. The gap in recovery rates between causes may be noise at these counts.</p>
+<!-- SAMPLE-LEDGER:END -->
+    <h3>The advocacy export</h3>
+    <p><code>advocacy_export.csv</code> holds month by cause aggregates only: events, guests affected and recovered, net lost in whole dollars, staff hours. No booking references, no event IDs, no dates finer than a month, and a shared list of cause codes, so an association could add members' files together to show, for example, what road delays cost its members. Small cells can be combined, and dollars can be left out. Pooling needs a written data-sharing agreement <span class="lbl contract">Contractual</span></p>
+  </section>
+
+  <section class="card" aria-labelledby="prompt">
+    <h2 id="prompt">One prompt: turn the ledger into a one-page memo</h2>
+    <p>No code needed. Paste the ledger summary into Claude, ChatGPT or Gemini with this prompt. Replace each [BRACKET] first.</p>
+    <p class="privacy">The ledger summary holds counts and dollars only. Do not paste booking lists, guest names or staff names.</p>
+    <div class="output">
+      <p class="label">Prompt</p>
+      <pre id="memo-prompt">You are helping [BUSINESS NAME], a [TYPE OF OPERATION] in [PORT], write a one-page memo for [AUDIENCE: owner / insurer / city or port / our association] about what transit and weather disruptions cost us last season.
+
+Use ONLY the ledger summary pasted below. Do not add numbers, causes, benchmarks or industry figures that are not in it. Where the memo needs a fact the ledger does not have, write [FILL: what is missing] instead of guessing.
+
+Write:
+1. Two sentences: the season's disruption recovery rate (guests rebooked or refilled / guests affected) with its uncertainty range, and the partial cost of poor quality (refunds plus staff time), saying it leaves out goodwill, reviews and partner fees.
+2. A short table of the causes in order of cost, with events, guests, recovery rate and cost.
+3. For the top two causes: what is in our control, what is not, and one question to ask [AUDIENCE] about each.
+4. One request we are making of [AUDIENCE], tied to a number from the ledger.
+5. A line on what the numbers cannot show (small counts per month are mostly noise; compare season to season).
+
+Plain words, short sentences, no hype. Label any interpretation "my read". Start the memo with DRAFT - PENDING OWNER REVIEW.
+
+Ledger summary:
+[PASTE ledger_summary.md HERE]</pre>
+    </div>
+    <div class="btns"><button type="button" data-copy="memo-prompt" data-copy-msg="Copied. Paste it into Claude, ChatGPT or Gemini, then paste your ledger summary at the end.">Copy prompt</button></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files">Downloads</h2>
+    <div class="callout amber"><p><strong>The reference implementation is held back from the public kit.</strong> The Python program behind this rung (standard library only, with its own test suite) is available on request for operators or associations that want to run it on their own data: <a href="https://www.linkedin.com/in/pascualreig/" target="_blank" rel="noopener">contact the presenter</a>. Everything on this page, and the sample output below, is public.</p></div>
+    <h3>Sample output (fictional business)</h3>
+    <ul class="files">
+      <li><a href="replanner/sample_output/replan/staff_summary.md">sample_output/replan/staff_summary.md</a> <span class="hint">The demo plan on one page.</span></li>
+      <li><a href="replanner/sample_output/replan/replan.csv" download>sample_output/replan/replan.csv</a> <span class="hint">Every booking on the demo day with its plan and reason.</span></li>
+      <li><a href="replanner/sample_output/replan/approval_queue.csv" download>sample_output/replan/approval_queue.csv</a> <span class="hint">Nine message drafts, every one PENDING.</span></li>
+      <li><a href="replanner/sample_output/ledger/ledger_summary.md">sample_output/ledger/ledger_summary.md</a> <span class="hint">The season ledger on one page.</span></li>
+      <li><a href="replanner/sample_output/ledger/ledger_by_cause.csv" download>sample_output/ledger/ledger_by_cause.csv</a> <span class="hint">Pareto by cause.</span></li>
+      <li><a href="replanner/sample_output/ledger/advocacy_export.csv" download>sample_output/ledger/advocacy_export.csv</a> <span class="hint">Aggregates only, month by cause.</span></li>
+      <li><a href="replanner/config/departures.json">config/departures.json</a> <span class="hint">The settings, each with its source (policy choice, contractual, legal).</span></li>
+    </ul>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure">How you will know it worked</h2>
+    <h3>Number 3 · Disruption recovery rate</h3>
+    <p>Guests on transit- or weather-disrupted bookings who were rebooked or whose seat was refilled, divided by all guests on disrupted bookings. Count it from the disruption log monthly in season; judge it season to season.</p>
+    <p><strong>Noise or a real change?</strong> The fictional season's 35.0% rests on 38 events. Resampling those events gives a 95% interval of about 28.3% to 41.5%. Next season will have its own interval; if the two overlap a lot, treat the change as noise. A month holds 6 to 9 events, so monthly swings say little.</p>
+    <p><strong>Also watch:</strong> minutes from the first alert to the first approved message (note the alert time; the queue has an approved_at column), the share of touched net revenue the plan kept on the day, and staff hours per event. No targets: set them after a season of your own data.</p>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe">Before you use it</h2>
+    <p><strong>The plan is a proposal. A person approves.</strong> Every message is a draft with [FILL] gaps. Guests may say no to a move, and the plan does not know their needs.</p>
+    <ul class="lbl-list">
+      <li><span class="lbl legal">Legal mandate</span> Seats per departure in the settings never above the passenger limit on the vessel's Coast Guard certificate of inspection (vessel-specific: confirm on your certificate).</li>
+      <li><span class="lbl legal">Legal mandate</span> Alaska's Personal Information Protection Act, AS 45.48, sets breach-notification duties for certain personal information. Confirm current text.</li>
+      <li><span class="lbl">Recommendation</span> Keep names, contact and payment data out of the manifest and the event files. The tools need none of it, and data you never export cannot leak.</li>
+      <li><span class="lbl contract">Contractual</span> Who may contact cruise guests about a change, and on what terms: check your cruise line agreement. OTA guests: check your OTA supplier terms.</li>
+      <li><span class="lbl contract">Contractual</span> Extra or changed shuttle runs: check your transport agreement (the fictional Kestrel Shuttle needs 30 minutes' notice for an extra run).</li>
+      <li><span class="lbl">Policy choice</span> The buffer before all-aboard, the notice before a move, whether a booking that still works keeps its seat, and your rebook and refund terms. The staff summary shows what the seat policy cost on the day.</li>
+      <li><span class="lbl">Recommendation</span> Weather and safety calls stay with the captain; the tool only re-seats guests. Ignoring this mixes a seating plan with a safety decision.</li>
+      <li><span class="lbl">Recommendation</span> Test on the fictional data, then on a copy of one past day of your own, before using it on a live morning. A wrong plan sent to guests costs more than the minutes it saves.</li>
+    </ul>
+    <p>This page keeps what you type in this browser only. Nothing is sent anywhere.</p>
+    <div class="btns"><button type="button" class="danger" id="clear-all">Clear my data on this page</button></div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="next">
+    <h2 id="next">Before this rung</h2>
+    <p>2c is the top rung of Pain 2. It works best on top of the two below it: <a href="../2a/">2a Journey FMEA and disruption playbook</a> gives you the policies the plan follows and the message pack the drafts lean on, and <a href="../2b/">2b Arrival watch and backfill</a> catches the alert early and refills the seats the plan opens.</p>
+    <div class="btns"><a class="button secondary" href="../2a/">Go to 2a</a> <a class="button secondary" href="../2b/">Go to 2b</a> <a class="button secondary" href="../leak/">Season Leak Audit</a></div>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,4 @@
+plan,season_net_p10,season_net_p50,season_net_p90,per_slot_p10,per_slot_p50,per_slot_p90,allocation_used_pct_p10,allocation_used_pct_p50,allocation_used_pct_p90,gain_vs_nothing_changes_p10,gain_p50,gain_p90,beats_nothing_changes_share
+2027 if nothing changes,1833550,1934333,2015389,108.99,114.34,118.43,74.2,77.7,80.2,0,0,0,0.0
+2027 recommended plan,1901636,2031041,2137693,113.83,120.93,126.69,71.6,76.0,79.5,45236,100103,141887,0.992
+2027 use-neutral alternative,1861302,1962502,2042548,110.21,115.63,119.54,75.4,79.0,81.6,26198,27870,29278,1.0

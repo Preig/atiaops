@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>1.a Rehire before you recruit · ATIA Operations Kit</title>
+<meta name="description" content="Sort last season's exit notes into a Pareto, fix the top two reasons, ask the right people back, and write an honest job post for the rest. Free tier, no code, nothing leaves your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='10' width='4' height='5' fill='%235c8727'/%3E%3Crect x='6' y='6' width='4' height='9' fill='%235c8727'/%3E%3Crect x='11' y='1' width='4' height='14' fill='%230d92b4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/kit.css">
+<style>
+.onpage{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:10px 0 0;padding:0;list-style:none}
+.stat{background:#fff;border:1px solid var(--line);border-radius:4px;padding:12px 14px;min-width:0}
+.stat .score{font-size:30px;margin:2px 0 4px}
+.stat p{margin:.3em 0;font-size:15px;line-height:1.45}
+.fict{font-size:14px;color:var(--slate-m);margin:10px 0 0}
+.reminder{font-size:14px;line-height:1.45;color:#5c3d00;background:var(--amber-t);border-left:4px solid #d49a1a;border-radius:4px;padding:7px 11px;margin:6px 0 4px}
+.warnline{color:var(--amber);background:var(--amber-t);border-radius:4px;padding:6px 10px;font-size:15px}
+.warnline:empty{display:none}
+input[type=file]{font-size:15px;max-width:100%;margin:4px 0}
+.inline-fields{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.facts-grid{display:grid;gap:0 18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.facts-grid>div{min-width:0}
+.summary-line{font-size:16px;margin:6px 0 10px}
+/* would-return split: one stacked bar, 2px surface gaps, legend with counts */
+.split{display:flex;gap:2px;height:22px;margin:6px 0;background:#fff}
+.split i{display:block;height:100%;min-width:2px}
+.split i:first-child{border-radius:4px 0 0 4px}
+.split i:last-child{border-radius:0 4px 4px 0}
+.sw-yes{background:#476a1e}.sw-maybe{background:#0d92b4}.sw-no{background:#8a5a00}.sw-unknown{background:#c9cfc5}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;list-style:none;padding:0;margin:4px 0 10px;font-size:15px}
+.legend .sw{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+/* Pareto bars: one series, value at the tip, top two in the accent with a text tag */
+.pchart{list-style:none;padding:0;margin:8px 0 4px}
+.pchart li{display:grid;grid-template-columns:minmax(96px,30%) 1fr 4.4em;gap:4px 10px;align-items:center;padding:4px 0}
+.pchart .pl{font-size:15px;color:var(--slate);overflow-wrap:anywhere;line-height:1.25}
+.pchart .pb{display:block;height:18px;background:transparent;border-left:1px solid #b8beb4}
+.pchart .pb i{display:block;height:100%;border-radius:0 4px 4px 0;background:#0d92b4}
+.pchart li.top .pb i{background:#476a1e}
+.pchart .pv{font-size:15px;color:var(--slate);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pchart .pv small{display:block;font-size:12px;color:var(--slate-m)}
+.tag{display:inline-block;font-size:11.5px;font-weight:bold;letter-spacing:.04em;text-transform:uppercase;border-radius:3px;padding:0 6px;background:var(--green-t);color:var(--green-d);margin-left:4px;white-space:nowrap}
+.charthead{display:grid;grid-template-columns:minmax(96px,30%) 1fr 4.4em;gap:10px;font-size:12.5px;color:var(--slate-m);border-bottom:1px solid var(--line);padding-bottom:2px}
+.charthead span:last-child{text-align:right}
+.table-wrap{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0}
+td.ids{font-size:13.5px;color:var(--slate-m);overflow-wrap:anywhere}
+.hl{white-space:pre-wrap;overflow-wrap:anywhere;background:#fff;border:1px solid var(--line);border-radius:4px;padding:12px 14px;margin:8px 0;min-height:3em}
+mark.gen{background:#ffe08a;color:#3a2a00;border-radius:2px;padding:0 2px}
+mark.promise{background:#f9c9c9;color:#7a1010;border-radius:2px;padding:0 2px}
+mark.risk{background:#fff;color:var(--red);border:2px solid var(--red);border-radius:3px;padding:0 2px}
+span.fact{background:var(--teal-t);color:var(--teal-d);border-bottom:2px solid var(--teal);padding:0 1px}
+span.fillmark{background:#eef1ec;color:var(--slate);border:1px dashed var(--slate-m);border-radius:2px;padding:0 2px;font-weight:bold}
+.keyrow{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--slate-m);margin:6px 0}
+.counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;padding:0;list-style:none}
+.counts li{font-size:14px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.sugg{list-style:none;padding:0;margin:8px 0}
+.sugg li{border-top:1px solid var(--line);padding:8px 0;font-size:15px}
+.sugg .try{display:block;color:var(--teal-d)}
+.chk{display:flex;flex-wrap:wrap;gap:4px 14px;margin:4px 0}
+.chk label{display:inline-flex;align-items:center;gap:8px;font-weight:normal;margin:4px 0;font-size:15.5px}
+.chk input{width:18px;height:18px;margin:0}
+.output pre{max-height:30em;overflow:auto}
+.ailinks a{margin-right:12px;white-space:nowrap}
+.obl{list-style:none;padding:0;margin:8px 0}
+.obl>li{margin:0 0 12px}
+.files li a{white-space:nowrap}
+.preview ol,.preview ul{padding-left:20px;margin:4px 0 10px}
+.preview li{margin:3px 0}
+.rates-out{font-size:17px}
+.rates-out b{color:var(--teal-d)}
+ul.errs{color:var(--red);font-size:14px;margin:4px 0;padding-left:18px}
+ul.errs:empty{display:none}
+button.small{font-size:14px;padding:5px 12px}
+#filter{max-width:460px}
+@media(max-width:640px){
+  table.stack thead{position:absolute;left:-9999px}
+  table.stack,table.stack tbody,table.stack tr,table.stack th,table.stack td{display:block;width:auto}
+  table.stack{background:transparent}
+  table.stack tr{background:#fff;border:1px solid #ccd2c8;border-radius:4px;margin:0 0 8px}
+  table.stack th,table.stack td{border:0;padding:4px 10px;text-align:left}
+  table.stack th{background:var(--green-t)}
+  table.stack td[data-label]::before{content:attr(data-label) ": ";font-weight:bold;color:var(--slate)}
+}
+@media print{.output pre{max-height:none;overflow:visible}}
+</style>
+<script src="../assets/kit.js" defer></script>
+<script src="rehire-core.js" defer></script>
+<script src="rehire.js" defer></script>
+</head>
+<body data-page="1a">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs">ATIA 2026 Annual Convention · Fairbanks · <a href="../">Operations Kit</a></p>
+  <p class="kicker"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Pain 1 · Basic · <span class="focus ops">OPS</span></p>
+  <h1>Rehire before you recruit</h1>
+  <p class="lede">My read: October is the cheapest time to recruit for next season, because the crew you want back just left. Sort what they told you, fix the top two reasons, ask the right people back, then write an honest post for the rest.</p>
+  <ul class="meta">
+    <li><b>Time</b> about 2 to 3 hours (estimate)</li><li><b>Cost</b> free tier of any AI tool</li><li><b>Who</b> owner or manager</li><li><b>Feeds</b> Numbers 1 and 2</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="1a" aria-label="All tools"></nav>
+  <ul class="onpage" aria-label="On this page">
+    <li><a href="#why">The pain</a></li><li><a href="#how">How to use it</a></li><li><a href="#pareto">1 · Exit-notes Pareto</a></li><li><a href="#letter">2 · Rehire message</a></li><li><a href="#post">3 · Honest job post</a></li><li><a href="#first14">4 · First 14 days</a></li><li><a href="#files">Downloads</a></li><li><a href="#measure">Measure</a></li><li><a href="#safe">Before you use it</a></li><li><a href="#next">Next rung</a></li>
+  </ul>
+</header>
+
+<main class="kit">
+  <noscript><div class="callout amber"><p><strong>This page needs JavaScript</strong> for the Pareto, the builders and the word finder. The core prompt is in the <a href="../Prompt-Kit.html">printable prompt kit</a>, and the checklist is in <a href="first-14-days-checklist.md">first-14-days-checklist.md</a>.</p></div></noscript>
+  <div class="callout green">
+    <p><strong>AI drafts. You approve.</strong> Every prompt here asks the AI to mark its answer DRAFT - PENDING OWNER REVIEW and to leave [FILL] gaps instead of guessing. A person reads, edits and sends every message. Nothing on this page leaves your browser. The examples use <strong>Channel Light Excursions, Juneau, a fictional teaching business</strong>.</p>
+  </div>
+
+  <section class="card teal" aria-labelledby="why">
+    <h2 id="why">The pain it fixes</h2>
+    <p>Every early quit is rework: recruiting, travel, housing and training done twice. Every returning crew member is a hire you do not make and a week of training you do not repeat. The Lean move is to Pareto the reasons people leave and stay, fix the vital few, and then ask the right people back before you advertise. Write the job post last, with the hard parts in it, so the people who say yes know what they are saying yes to.</p>
+    <div class="grid three">
+      <div class="stat"><p class="score">20 hires</p><p>for 22 seasonal positions. 6 staff returned, of 17 eligible from 2025: rehire rate 35.3%.</p></div>
+      <div class="stat"><p class="score">20.0%</p><p>early-quit rate: 4 of 20 new hires left in their first 30 days, and each one was replaced.</p></div>
+      <div class="stat"><p class="score">$2,800</p><p>all-in cost per hire (estimate range $2,100 to $3,500), so about $56,000 for 20 hires ($42,000 to $70,000).</p></div>
+    </div>
+    <p>For 2027, 20 of this season's crew finished in good standing and are eligible to return. <span class="hint">My read:</span> each yes from that list saves one hire, about $2,800 by the fictional estimate, and the person already knows the dock, the boat and the ship-late procedure.</p>
+    <p class="fict">Fictional teaching business: Channel Light Excursions, Juneau, season May 1 to September 30, 2026. The cost per hire is a fictional build-up (ads, sponsor fees, travel, housing setup, hiring time, training, trainer time, ramp-up); put your own in the <a href="../leak/">Season Leak Audit</a>.</p>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <ol class="steps">
+      <li><strong>Collect season-end notes</strong> before the crew scatters: three written questions, no names. "What would make you come back? What nearly made you leave? What should we fix first?" Add role and yes, maybe or no to returning. Write them into <a href="exit-notes-template.csv" download>the template</a>.</li>
+      <li><strong>Run the Pareto</strong> below and read the notes under the top themes. Write down the top two themes and the note IDs behind them.</li>
+      <li><strong>Copy the Pareto prompt</strong> into Claude, ChatGPT or Gemini. Check every quote against the notes. Write down the two fixes you decide on, who owns each, and the date.</li>
+      <li><strong>Build the rehire message</strong> with those fixes. Write down your rule for who is asked back, then send the same message to everyone it covers. Log each yes, maybe and no.</li>
+      <li><strong>Build the honest job post</strong> for the positions still open. Run the word finder on the AI's draft and write down every [FILL] you still owe.</li>
+      <li><strong>Give every new hire the first-14-days checklist.</strong> Write the check-in dates in the schedule.</li>
+      <li><strong>Count Numbers 1 and 2</strong> when the season starts and after day 30. Write them next to this season's.</li>
+    </ol>
+  </section>
+
+  <section class="card" aria-labelledby="pareto">
+    <h2 id="pareto">1 · Exit-notes Pareto</h2>
+    <p>Paste one note per line, or a CSV with a <code>note</code> column (and optionally <code>note_id</code>, <code>role</code>, <code>would_return</code>). To mark yes, maybe or no on a plain line, start it with <code>yes:</code>, <code>maybe:</code> or <code>no:</code>.</p>
+    <label for="notes">Season-end notes <small>de-identified, one per line</small></label>
+    <p class="reminder" id="notes-reminder"><b>Recommendation.</b> Remove names before you paste. Never paste staff emails, phone numbers, ID numbers, health details or immigration status. The page removes contact details from the prompt and flags words that look like names; it does not catch everything.</p>
+    <textarea id="notes" class="tall" spellcheck="false" aria-describedby="notes-reminder" placeholder="maybe: Schedule came out too late to plan days off.&#10;no: Rent for a shared room ate most of my tips."></textarea>
+    <label for="notes-file">Or load a CSV or text file <small>read on this device; it does not upload</small></label>
+    <input type="file" id="notes-file" accept=".csv,.txt,text/csv,text/plain">
+    <div class="btns">
+      <button type="button" class="secondary" id="btn-notes-example">Load the 30 fictional notes</button>
+      <button type="button" class="ghost" id="btn-notes-clear">Clear</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+    <p class="warnline" id="notes-warn" role="status" aria-live="polite"></p>
+
+    <div class="inline-fields">
+      <div><label for="filter">Count notes from</label>
+        <select id="filter">
+          <option value="all">Everyone</option>
+          <option value="yesmaybe">Would return: yes or maybe (the people you can win back)</option>
+          <option value="yes">Would return: yes</option>
+          <option value="maybe">Would return: maybe</option>
+          <option value="no">Would return: no</option>
+        </select></div>
+    </div>
+
+    <p class="summary-line" id="pareto-summary" role="status" aria-live="polite">Paste notes or load the fictional set to see the Pareto.</p>
+    <div id="pareto-body" hidden>
+      <h3>Would they return?</h3>
+      <div class="split" id="split" aria-hidden="true"></div>
+      <ul class="legend" id="split-legend"></ul>
+
+      <h3 id="chart-h">Themes, largest first</h3>
+      <div class="charthead" aria-hidden="true"><span>Theme</span><span>Notes that mention it</span><span>Notes</span></div>
+      <ol class="pchart" id="pchart" aria-labelledby="chart-h"></ol>
+      <p class="hint" id="pareto-note"></p>
+
+      <h3>Pareto table</h3>
+      <div class="table-wrap">
+        <table class="stack">
+          <caption class="visually-hidden">Themes with counts, share of mentions and cumulative share</caption>
+          <thead><tr><th scope="col">Theme</th><th scope="col" class="num">Notes</th><th scope="col" class="num">Share of mentions</th><th scope="col" class="num">Cumulative</th><th scope="col">Which notes</th></tr></thead>
+          <tbody id="pareto-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <details>
+      <summary>Edit the keywords</summary>
+      <p class="hint">One theme per line: <code>Theme name: keyword, keyword</code>. A keyword matches the start of a word, so <code>hour</code> also finds "hours" and "12-hour". Your edits are saved in this browser.</p>
+      <label for="themes">Themes and keywords</label>
+      <textarea id="themes" class="tall" spellcheck="false"></textarea>
+      <ul class="errs" id="themes-errs"></ul>
+      <div class="btns"><button type="button" class="ghost" id="btn-themes-reset">Reset to the kit's keywords</button></div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </details>
+    <details>
+      <summary>Expected counts for the 30 fictional notes (for a live demo)</summary>
+      <p>Everyone: Housing 9, Pay 7, The work itself 5, Hours and schedule 4, Training 4, Leads and feedback 4, Life events 2. That is 35 mentions from 30 notes, because 5 notes ("Pay was fine for Juneau but not after rent") mention both pay and housing. Would return: 3 yes, 20 maybe, 7 no.</p>
+      <p>Yes or maybe only (23 notes): Housing 7, The work itself 5, Pay 4, Training 4, Hours and schedule 3, Leads and feedback 2, Life events 2.</p>
+      <p><span class="hint">My read:</span> "The work itself" mixes a stay reason ("Loved the guests and the whales") with a fixable complaint (a stale naturalist script). That is why a person, and then the prompt, reads the notes behind each count.</p>
+    </details>
+
+    <h3>Prompt: sort the notes and propose the top two fixes</h3>
+    <div class="output"><p class="label">Pareto prompt</p><pre id="out-pareto" tabindex="0" aria-label="Pareto prompt"></pre></div>
+    <div class="btns">
+      <button type="button" data-copy="out-pareto">Copy prompt</button>
+      <button type="button" class="secondary" data-download="1a-pareto-prompt.txt" data-from="out-pareto">Save as .txt</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+    <p class="ailinks">Paste it into <a href="https://claude.ai/" target="_blank" rel="noopener">Claude</a> <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a> <span class="hint">(plain links; nothing from this page goes with them)</span></p>
+    <p class="hint">Check the answer: every quote appears word for word in your notes, and the top two match what you read. If not, fix it before you act on it. The owner decides the fixes. An AI checking its own work is not verification.</p>
+  </section>
+
+  <section class="card" aria-labelledby="letter">
+    <h2 id="letter">2 · Rehire message builder</h2>
+    <p>One message, the same terms, for everyone your rule covers. The AI drafts it; you fill the gaps, read it and send it yourself. Names stay as [FIRST NAME] until you merge them in your own email or text tool: never type a staff name, email or phone number into this form or the AI chat.</p>
+    <p class="callout" id="letter-top">Run the Pareto first: its top two themes are what this message should answer.</p>
+    <form data-builder="letter" id="form-letter" autocomplete="off">
+      <div class="facts-grid">
+        <div><label for="l-business">Business name and town</label><input type="text" id="l-business" name="business"></div>
+        <div><label for="l-role">Role</label><input type="text" id="l-role" name="role" placeholder="e.g. Deckhand"></div>
+        <div><label for="l-season">Next season: dates and start date</label><input type="text" id="l-season" name="season"></div>
+        <div><label for="l-replyby">Reply by</label><input type="text" id="l-replyby" name="replyby" placeholder="e.g. November 15"></div>
+        <div><label for="l-pay">Pay range <span class="lbl">Policy choice</span></label><input type="text" id="l-pay" name="pay" placeholder="e.g. $00 to $00 per hour"></div>
+        <div><label for="l-bonus">Returning bonus <span class="lbl">Policy choice</span></label><input type="text" id="l-bonus" name="bonus" placeholder="amount and when it is paid, or none"></div>
+        <div><label for="l-housing">Housing <small>cost and conditions, or "not provided"</small></label><input type="text" id="l-housing" name="housing"></div>
+        <div><label for="l-channel">Sent as</label><select id="l-channel" name="channel"><option value="email">email</option><option value="text message">text message</option></select></div>
+      </div>
+      <label for="l-changes">What changes next season <small>decided fixes only, one per line</small></label>
+      <textarea id="l-changes" name="changes" placeholder="1. Housing: ...&#10;2. Pay: ..."></textarea>
+      <label for="l-signoff">Sign off as <small>optional</small></label>
+      <input type="text" id="l-signoff" name="signoff" placeholder="[YOUR NAME], owner">
+      <div class="btns">
+        <button type="button" class="secondary" data-fill="letter" data-example="ex-letter">Load the fictional example</button>
+        <button type="button" class="ghost" data-reset="letter">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </form>
+    <div class="output"><p class="label">Rehire message prompt</p><pre id="out-letter" data-render="tpl-letter" data-builder-src="letter" tabindex="0" aria-label="Rehire message prompt"></pre></div>
+    <div class="btns">
+      <button type="button" data-copy="out-letter">Copy prompt</button>
+      <button type="button" class="secondary" data-download="1a-rehire-message-prompt.txt" data-from="out-letter">Save as .txt</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+<template id="tpl-letter">Draft a short rehire {{channel|email}} to a seasonal crew member who finished last season in good standing. We send the same message, on the same terms, to everyone eligible to return in this role.
+
+Business: {{business|[BUSINESS NAME AND TOWN]}}
+Role: {{role|[ROLE]}}
+Next season: {{season|[FILL: season dates and start date]}}
+What changes next season (decided; say only these):
+{{changes|[FILL: the fixes you have decided, one per line]}}
+Pay range: {{pay|[FILL: pay range]}}
+Returning bonus: {{bonus|[FILL: returning bonus, or "none"]}}
+Housing: {{housing|[FILL: housing and cost, or "not provided"]}}
+Reply by: {{replyby|[FILL: reply-by date]}}
+Sign off as: {{signoff|[YOUR NAME AND ROLE]}}
+
+Rules:
+- Address the person as [FIRST NAME]. Do not invent or insert any name.
+- Under 150 words for an email, under 60 words for a text message.
+- Thank them for last season in one sentence, without inventing anything they did. If a specific would help, write [FILL: one thing they did well, from your own notes].
+- State the changes as listed. Do not add promises, perks, dates or numbers that are not above. Where a fact is missing, write [FILL].
+- Do not mention other staff, why anyone left, or anything about the person's health, family or immigration status. Say nothing about visas or sponsorship; if it matters for this person, write [CHECK SPONSOR AGREEMENT].
+- Ask for a yes, no or maybe by the reply-by date, and say a maybe is welcome.
+- Plain and warm. No pressure, and no deadline other than the reply-by date.
+- Mark the message DRAFT - PENDING OWNER REVIEW.</template>
+  </section>
+
+  <section class="card" aria-labelledby="post">
+    <h2 id="post">3 · Honest job post builder</h2>
+    <p>A post full of adjectives attracts people who find out the truth in week one. Checkable facts, the hard parts included, attract people who stay. <span class="hint">(My read, not a measured finding.)</span></p>
+
+    <h3 id="finder-h">Adjective finder</h3>
+    <p>Paste your current post, or the AI's draft. The finder marks generic words, promises and wording that can carry legal risk, and highlights the checkable facts.</p>
+    <label for="adj">Post text</label>
+    <textarea id="adj" spellcheck="false" aria-describedby="adj-sum"></textarea>
+    <div class="btns">
+      <button type="button" class="secondary" id="btn-adj-example">Load a generic post (fictional)</button>
+      <button type="button" class="ghost" id="btn-adj-clear">Clear</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+    <ul class="counts" id="adj-sum" aria-live="polite"></ul>
+    <p class="keyrow" aria-hidden="true"><span><mark class="gen">generic word</mark></span><span><mark class="promise">promise</mark></span><span><mark class="risk">check: legal risk</mark></span><span><span class="fact">checkable fact</span></span><span><span class="fillmark">[FILL]</span> still owed</span></p>
+    <div class="hl" id="adj-out" aria-label="Post text with marks"></div>
+    <ul class="sugg" id="adj-list"></ul>
+
+    <h3>Your facts</h3>
+    <p class="hint">Facts you can stand behind on day one. Empty boxes become [FILL] in the prompt, so the AI never has to guess. Business facts only: no staff names or personal contact details.</p>
+    <form data-builder="post" id="form-post" autocomplete="off">
+      <div class="facts-grid">
+        <div><label for="p-business">Business name and town</label><input type="text" id="p-business" name="business"></div>
+        <div><label for="p-role">Role</label><input type="text" id="p-role" name="role"></div>
+        <div><label for="p-dates">Season dates and start date</label><input type="text" id="p-dates" name="dates"></div>
+        <div><label for="p-hours">Hours per week <small>lowest to highest</small></label><input type="text" id="p-hours" name="hours" placeholder="e.g. 38 to 50"></div>
+        <div><label for="p-daysoff">Days-off pattern <small>and when schedules are posted</small></label><input type="text" id="p-daysoff" name="daysoff"></div>
+        <div><label for="p-pay">Pay range <small>and how overtime is paid</small></label><input type="text" id="p-pay" name="pay"></div>
+        <div><label for="p-housing">Housing <small>cost and conditions, or "not provided"</small></label><input type="text" id="p-housing" name="housing"></div>
+        <div><label for="p-apply">How to apply, and by when</label><input type="text" id="p-apply" name="apply"></div>
+      </div>
+      <fieldset>
+        <legend>What is hard about this job</legend>
+        <div class="chk">
+          <label><input type="checkbox" name="hard" value="- Rain and cold on deck"> Rain and cold</label>
+          <label><input type="checkbox" name="hard" value="- Early starts"> Early starts</label>
+          <label><input type="checkbox" name="hard" value="- Ship-day rushes"> Ship-day rushes</label>
+          <label><input type="checkbox" name="hard" value="- Seasickness on rough days"> Seasickness on rough days</label>
+          <label><input type="checkbox" name="hard" value="- Standing and lifting most of the day"> Standing and lifting</label>
+          <label><input type="checkbox" name="hard" value="- Shared housing"> Shared housing</label>
+        </div>
+        <label for="p-hard-other">Anything else that is hard <small>optional</small></label>
+        <input type="text" id="p-hard-other" name="hard_other">
+      </fieldset>
+      <label for="p-day">A day in the job <small>one line per step: time, then what happens</small></label>
+      <textarea id="p-day" name="day" placeholder="6:45 Boat checks with the captain&#10;8:25 First guests board; safety briefing"></textarea>
+      <label for="p-needs">What you need <small>certificates, licenses, physical tasks</small></label>
+      <input type="text" id="p-needs" name="needs">
+      <div class="btns">
+        <button type="button" class="secondary" data-fill="post" data-example="ex-post">Load the fictional example</button>
+        <button type="button" class="ghost" data-reset="post">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </form>
+    <p id="post-count" class="summary-line" role="status" aria-live="polite"></p>
+    <div class="output"><p class="label">Honest job post prompt</p><pre id="out-post" data-render="tpl-post" data-builder-src="post" tabindex="0" aria-label="Honest job post prompt"></pre></div>
+    <div class="btns">
+      <button type="button" data-copy="out-post">Copy prompt</button>
+      <button type="button" class="secondary" data-download="1a-job-post-prompt.txt" data-from="out-post">Save as .txt</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+    <p class="hint">Then paste the AI's draft into the adjective finder above. It should come back with facts marked and no generic words. Fill every [FILL] from your own records before you post.</p>
+<template id="tpl-post">Write an honest seasonal job post from the facts below. Plain language, short sentences, US spelling.
+
+Business: {{business|[BUSINESS NAME AND TOWN]}}
+Role: {{role|[ROLE]}}
+Dates: {{dates|[FILL: season dates and start date]}}
+Hours: {{hours|[FILL: hours per week, lowest to highest]}}
+Days off: {{daysoff|[FILL: days-off pattern and when schedules are posted]}}
+Pay: {{pay|[FILL: pay range and how overtime is paid]}}
+Housing: {{housing|[FILL: housing, cost and conditions, or "not provided"]}}
+What is hard about this job:
+{{hard|[FILL: for example rain, early starts, ship-day rushes, seasickness]}}
+Also hard: {{hard_other|[none added]}}
+A day in the job (times and tasks):
+{{day|[FILL: a typical day, step by step]}}
+What you need: {{needs|[FILL: certificates, licenses, physical tasks]}}
+How to apply: {{apply|[FILL: how to apply and by when]}}
+
+Rules:
+- Sections in this order: the job in one line; dates and hours; pay and housing; what is hard (say it plainly); a day in the job; what you need; how to apply.
+- Use only the facts above. Where a fact is missing, write [FILL] instead of guessing. Do not add perks, numbers or promises.
+- No generic adjectives or claims, such as "fast-paced", "competitive pay", "flexible hours", "family atmosphere", "passionate", "rockstar", "once in a lifetime", "amazing" or "fun".
+- Describe physical work as tasks (for example: lift 40 lb, stand on a moving deck), never as traits.
+- No wording about age, sex, national origin, religion, disability or family status. Never "young", "recent graduate", "native speaker" or "able-bodied".
+- Do not mention visas or sponsorship unless the facts above do.
+- Under 350 words.
+- Mark the post DRAFT - PENDING OWNER REVIEW.</template>
+  </section>
+
+  <section class="card" aria-labelledby="first14">
+    <h2 id="first14">4 · First-14-days checklist</h2>
+    <p><span class="hint">My read:</span> an early quit usually starts as a small problem nobody asked about. A short checklist with three check-ins, a buddy and written procedures turns the first two weeks into standard work. In the fictional notes, 3 of 30 said "Nobody told me the ship-late procedure until it happened."</p>
+    <div class="btns">
+      <a class="button" href="first-14-days-checklist.md" download>Download the checklist (.md)</a>
+      <a class="button secondary" href="first-14-days-checklist.csv" download>Download as a tracker (.csv)</a>
+    </div>
+    <details class="preview">
+      <summary>What is in it</summary>
+      <ol>
+        <li><b>Before day 1:</b> housing confirmed in writing; first two weeks of schedule with days off; pay, pay dates and overtime in writing; a named buddy; sponsor terms checked for J-1 or H-2B staff; new-hire paperwork from your payroll provider's list.</li>
+        <li><b>Day 1:</b> walk-through; role safety briefing by a qualified person; wildlife rules (100-yard humpback rule); the ship-late procedure, read together; who to ask.</li>
+        <li><b>Days 2 to 3, shadow:</b> full departures with the buddy; day 3 check-in (10 minutes).</li>
+        <li><b>Days 4 to 7, co-lead:</b> routine tasks with the buddy watching; one drill of the ship-late and lost-guest procedures; day 7 check-in.</li>
+        <li><b>Days 8 to 14, solo with a check:</b> sign-off per task by the lead; safety tasks signed off by a qualified person; day 14 check-in.</li>
+        <li><b>Day 30:</b> last check-in of the early-quit window. Count Number 2.</li>
+      </ol>
+      <p class="hint">Check-ins are about the job, the schedule and housing. They are not performance scores. The standard work behind them is built in <a href="../1b/">1.b Standard work and crew coach</a>.</p>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files">Downloads</h2>
+    <ul class="files">
+      <li><a href="exit_notes_2026.csv" download>exit_notes_2026.csv</a> <span class="hint">The 30 fictional season-end notes (note_id, role, would_return, note). No names. Load it in the Pareto or open it in a spreadsheet.</span></li>
+      <li><a href="exit-notes-template.csv" download>exit-notes-template.csv</a> <span class="hint">Blank template for your own notes, same columns, two example rows to delete.</span></li>
+      <li><a href="first-14-days-checklist.md" download>first-14-days-checklist.md</a> <span class="hint">The checklist with every item labeled Recommendation, Policy choice, Contractual or Legal mandate.</span></li>
+      <li><a href="first-14-days-checklist.csv" download>first-14-days-checklist.csv</a> <span class="hint">The same items as a tracker: day, phase, task, owner, label, done date, signed by.</span></li>
+      <li><a href="../Prompt-Kit.html">Printable prompt kit</a> <span class="hint">The Pareto prompt with placeholders, beside the other tools' prompts.</span></li>
+    </ul>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure">How you will know it worked</h2>
+    <ul>
+      <li><b>Number 1 · Rehire rate</b> (want up) = staff who return this season ÷ staff eligible to return from last season (finished in good standing). Count it once, when the season starts.</li>
+      <li><b>Number 2 · Early-quit rate</b> (want down) = new hires who leave in their first 30 days ÷ new hires who started. Count it once every new hire has passed day 30.</li>
+    </ul>
+    <p>No targets: set them after a season of your own data. Compare season to season. Small crews make big swings: with 20 new hires, one early quit moves the rate 5 points, so read the direction over two or three seasons before you credit a fix.</p>
+    <h3>Quick calculator <span class="hint">(saved in this browser only)</span></h3>
+    <form data-builder="rates" id="form-rates" autocomplete="off">
+      <div class="inline-fields">
+        <div><label for="r-eligible">Eligible to return</label><input type="text" inputmode="numeric" id="r-eligible" name="eligible"></div>
+        <div><label for="r-returning">Returned</label><input type="text" inputmode="numeric" id="r-returning" name="returning"></div>
+        <div><label for="r-hires">New hires who started</label><input type="text" inputmode="numeric" id="r-hires" name="hires"></div>
+        <div><label for="r-quits">Left in their first 30 days</label><input type="text" inputmode="numeric" id="r-quits" name="quits"></div>
+      </div>
+      <div class="btns">
+        <button type="button" class="secondary" data-fill="rates" data-example="ex-rates">Load the fictional numbers</button>
+        <button type="button" class="ghost" data-reset="rates">Clear</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </form>
+    <div class="output"><p class="label">Your numbers</p><p class="rates-out" id="rates-out" role="status" aria-live="polite"></p></div>
+    <p class="hint">The <a href="../leak/">Season Leak Audit</a> puts a dollar range on both numbers and saves them season by season.</p>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe">Before you use it</h2>
+    <p><strong>AI drafts. You approve.</strong> Every prompt marks its answer DRAFT - PENDING OWNER REVIEW. A person edits and sends every message; nothing is sent from this page.</p>
+    <ul class="obl">
+      <li><span class="lbl legal">Legal mandate</span> Federal anti-discrimination law (Title VII, ADA, ADEA) applies to rehire and hiring decisions, whatever tool helps make them. Confirm current text with a qualified person. This page never scores, ranks or flags individual people, and the prompts tell the AI not to.</li>
+      <li><span class="lbl">Policy choice</span> Who is asked back. Write the rule down (for example: finished the season in good standing) and send the same message to everyone it covers.</li>
+      <li><span class="lbl">Policy choice</span> The pay range and any returning bonus are the owner's decisions. <span class="lbl contract">Contractual</span> Once a pay rate or bonus is offered in writing, treat it as a term of that offer: check what you sent before you change it.</li>
+      <li><span class="lbl legal">Legal mandate</span> Alaska overtime law applies to the hours you post and schedule: AS 23.10.060 (daily and weekly overtime, with exemptions in AS 23.10.055). Confirm with Alaska DOLWD Wage and Hour. <span class="lbl">Recommendation</span> Say in the post how overtime is paid.</li>
+      <li><span class="lbl contract">Contractual</span> For J-1 or H-2B staff, obligations vary by sponsor and program. Check your sponsor agreement and current DOL and State Department rules before you promise dates, housing or pay to sponsored staff.</li>
+      <li><span class="lbl">Recommendation</span> De-identify notes before you paste them: no names, contact details, health details or immigration status. The page catches contact details, not everything. Cost of ignoring it: personal data in an AI chat history you do not control.</li>
+      <li><span class="lbl">Recommendation</span> List the hard parts in the post. Cost of ignoring it, in my read: new hires who discover them in week one, inside the early-quit window.</li>
+    </ul>
+  </section>
+
+  <section class="card teal" aria-labelledby="next">
+    <h2 id="next">Next rung</h2>
+    <p><a href="../1b/"><b>1.b Standard work and crew coach</b></a> (intermediate): turns the procedure that lives in one head, such as the ship-late protocol, into written standard work and a grounded coach new crew can ask. Training was a top-four theme in the fictional notes.</p>
+    <p>Later, <a href="../1c/"><b>1.c Season staffing model</b></a> (advanced): weekly headcount with an attrition curve, hires by date and channel, and a workload check.</p>
+    <p>Not sure crew is your biggest leak? Run the <a href="../leak/">Season Leak Audit</a> first.</p>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+</body>
+</html>

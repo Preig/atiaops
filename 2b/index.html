@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+<title>2b Arrival watch and backfill · ATIA Operations Kit</title>
+<meta name="description" content="Practice the rebook on a fictional day: who is affected, which departures still fit the all-aboard buffer, which waitlist guests can take the freed seats, and message drafts in an approval queue. Plus no-code watch recipes for Zapier and Make that only ever draft. Works in your browser; nothing you type leaves it.">
+<link rel="stylesheet" href="../assets/kit.css">
+<style>
+  /* Page-specific styles for tool 2b. Shared styles live in ../assets/kit.css. */
+  .toc{display:flex;flex-wrap:wrap;gap:4px 16px;list-style:none;padding:0;margin:4px 0 0;font-size:15px}
+  .card>h2:first-child{margin-top:0}
+  .reminder{font-size:14px;line-height:1.45;color:#5c3d00;background:var(--amber-t);border-left:4px solid #d49a1a;border-radius:4px;padding:7px 11px;margin:6px 0 10px}
+  .myread{font-size:15px;color:var(--slate)}
+  .pill.grey{background:#eef1ec;color:var(--slate)}
+  .stats{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));margin:12px 0}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+  .stat b{display:block;font-size:26px;color:var(--teal);line-height:1.1}
+  .stat span{font-size:14px;color:var(--slate-m)}
+  .stat.bad b{color:var(--red)}
+  .stat.good b{color:var(--green-d)}
+  .fgrid{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+  .fgrid>div{min-width:0}
+  .chkline{display:flex;gap:8px;align-items:flex-start;font-weight:normal;font-size:15px;color:var(--ink)}
+  .chkline input{width:20px;height:20px;flex:none;margin-top:2px;accent-color:var(--green)}
+  .radios label{display:flex;gap:8px;align-items:flex-start;font-weight:normal;font-size:15px;margin:6px 0;color:var(--ink)}
+  .radios input{width:20px;height:20px;flex:none;margin-top:2px;accent-color:var(--green)}
+  .story{font-size:15px;color:var(--slate);margin:6px 0 0}
+  .errors{color:var(--red);font-weight:bold}
+  .errors:empty{display:none}
+  .evtext{font-size:18px;color:var(--slate);margin:4px 0}
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
+  .tablewrap table td{overflow-wrap:anywhere}
+  td .pill{white-space:nowrap}
+  tr.cancelled td{color:var(--slate-m);text-decoration:line-through}
+  tr.cancelled td:last-child{text-decoration:none}
+  .act-move{color:var(--green-d);font-weight:bold}
+  .act-no_seat,.act-no_call{color:var(--red);font-weight:bold}
+  .act-decide{color:var(--amber);font-weight:bold}
+  .lesson{margin:14px 0}
+  /* approval queue */
+  .qitem{border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:4px;background:#fff;padding:10px 14px;margin:12px 0}
+  .qitem.approved{border-left-color:var(--green)}
+  .qitem.held{border-left-color:#d49a1a}
+  .qhead{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;justify-content:space-between}
+  .qhead b{color:var(--slate)}
+  .qitem textarea{font:14.5px/1.5 Consolas,"Courier New",monospace;min-height:200px}
+  .qstate{font-size:14px;color:var(--slate-m);margin:6px 0 0}
+  button.small{font-size:14px;padding:6px 12px}
+  .flow{list-style:none;padding:0;margin:12px 0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));counter-reset:flow}
+  .flow li{counter-increment:flow;background:#fff;border:1px solid var(--line);border-top:4px solid var(--teal);border-radius:4px;padding:10px 12px;font-size:15px;line-height:1.45}
+  .flow li::before{content:counter(flow);display:block;font-weight:bold;color:var(--teal-d);font-size:20px}
+  .flow li.person{border-top-color:var(--green)}
+  .flow li.person::before{color:var(--green-d)}
+  .flow b{display:block;color:var(--slate)}
+  .recipe h3{margin-top:0}
+  .recipe ol{padding-left:1.4em;margin:6px 0 10px}
+  .recipe li{margin:0 0 8px}
+  .recipe .where{display:block;font-size:14px;color:var(--slate-m)}
+  .obl{list-style:none;padding:0;margin:10px 0}
+  .obl li{padding:8px 0;border-top:1px solid var(--line)}
+  .card.warn .lbl{background:#fff}
+  .files li{flex-wrap:wrap;gap:4px 12px}
+  .calc{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+  .rules label{font-size:15px}
+  @media(max-width:640px){
+    table.stack thead{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+    table.stack{background:none}
+    table.stack tr{border:1px solid #ccd2c8;border-radius:4px;margin:0 0 8px;background:#fff;padding:4px 0}
+    table.stack td,table.stack td.num{border:0;padding:2px 10px;text-align:left}
+    table.stack td[data-label]::before{content:attr(data-label) ": ";font-weight:bold;color:var(--green-d)}
+    table.stack td:empty{display:none}
+    table.stack td.il,table.stack td.il.num{display:inline-block;width:auto;padding-right:4px}
+    table.stack td.hd{font-weight:bold;color:var(--slate)}
+    .qitem{padding:10px}
+  }
+  @media print{.reminder,.qitem .btns{display:none}.qitem{break-inside:avoid}}
+</style>
+<script src="../assets/kit.js" defer></script>
+<script src="watch-core.js" defer></script>
+<script src="watch.js" defer></script>
+</head>
+<body data-page="2b">
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs"><a href="../">ATIA 2026 Annual Convention · Fairbanks · Operations Kit</a></p>
+  <p class="kicker"><span class="rung r2" aria-hidden="true"><i></i><i></i><i></i></span>Pain 2 · Intermediate · <span class="focus ops">OPS</span></p>
+  <h1>Arrival watch and backfill</h1>
+  <p class="lede">The earlier you know a ship is late or a departure is off, the more seats you can save. Practice the rebook on a fictional day, then set up a no-code watch that drafts the messages into an approval sheet. A person approves and sends every one.</p>
+  <ul class="meta">
+    <li><b>Time</b> 1 hour to practice; 1 to 2 days to set up one watch (estimate)</li>
+    <li><b>Cost</b> a Zapier or Make plan, roughly $20 to $30 a month (estimate; check current plans)</li>
+    <li><b>Who</b> duty lead, plus whoever builds your automations</li>
+    <li><b>Feeds</b> Number 3, disruption recovery rate</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="2b" aria-label="All tools"></nav>
+</header>
+
+<main class="kit">
+  <noscript><p class="callout amber">The rebook board needs JavaScript. The recipes, templates and safety notes below work without it.</p></noscript>
+
+  <nav class="card note" aria-labelledby="toc-h">
+    <h2 id="toc-h" style="font-size:18px">On this page</h2>
+    <ul class="toc">
+      <li><a href="#why">The pain it fixes</a></li>
+      <li><a href="#how">How to use it</a></li>
+      <li><a href="#board">1. Rebook board</a></li>
+      <li><a href="#queue">2. Approval queue</a></li>
+      <li><a href="#recipes">3. Watch recipes</a></li>
+      <li><a href="#waitlist">4. Waitlist rule</a></li>
+      <li><a href="#files">Downloads</a></li>
+      <li><a href="#measure">How you will know</a></li>
+      <li><a href="#safe">Before you use it</a></li>
+      <li><a href="#next">Next rung</a></li>
+    </ul>
+  </nav>
+
+  <section class="card teal" aria-labelledby="why">
+    <h2 id="why">The pain it fixes</h2>
+    <p>Detection is a control. In the journey FMEA (<a href="../2a/">2a</a>), a late ship you notice at the dock scores detection 6 to 8; the same ship flagged by a watched port schedule an hour earlier scores 3 or 4. That hour is what lets you move guests to an earlier departure and offer the freed seats to your waitlist before the boat leaves. Once the alert is in, the rebook is a small, rule-bound puzzle: seats, the all-aboard buffer, travel times. A tool can lay it out in a second. A person still decides and sends.</p>
+    <h3>The fictional example: Channel Light Excursions, Juneau, 2026</h3>
+    <p class="hint">FICTIONAL TEACHING BUSINESS. Numbers from the invented teaching data (data/disruptions_2026.csv).</p>
+    <div class="stats">
+      <div class="stat"><b>545</b><span>guests on disrupted bookings, 38 events</span></div>
+      <div class="stat good"><b>127</b><span>rebooked</span></div>
+      <div class="stat good"><b>64</b><span>seats refilled</span></div>
+      <div class="stat"><b>35.0%</b><span>recovered (Number 3)</span></div>
+      <div class="stat bad"><b>354</b><span>refunded: $51,596 net revenue lost</span></div>
+    </div>
+    <p class="myread"><span class="pill grey">My read</span> Refilled seats are the smallest of the three. A refill needs a waitlist, an early alert and a quick decision, all at once. That is the gap this rung works on.</p>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how">How to use it</h2>
+    <ol class="steps">
+      <li><b>Run the four fictional days</b> on the rebook board. On each, change "We knew at" by an hour and watch the moves and offers change. Write down what an hour of warning is worth on your busiest day.</li>
+      <li><b>Set your rules</b> under "Rules for the board": your buffer, walk-off times, notice and waitlist rule. Write them into your 2a policy sheet.</li>
+      <li><b>Practice the approval queue:</b> read each draft, fix the [FILL] items, approve with your initials. Write down how many minutes the queue took.</li>
+      <li><b>Pick one watch</b> from the recipes (the port-schedule sheet is the easiest) and build it in Zapier or Make with the fictional rows first. Write down the date it passed the test.</li>
+      <li><b>Decide your waitlist rule</b> with the template and write it into the policy sheet.</li>
+      <li><b>Each month in season,</b> count freed seats and refilled seats, and write down Number 3.</li>
+    </ol>
+  </section>
+
+  <!-- 1. BOARD -->
+  <section class="card" aria-labelledby="board">
+    <h2 id="board">1. Rebook board simulator</h2>
+    <p>Pick a fictional day and an event. The board loads that day's manifest (from the fictional bookings and port schedule, built into this page so it works offline), works out which bookings the event hurts, which other departures still fit (seats, the walk from the ship, the all-aboard buffer, time to reach the guest), which waitlist guests can take the freed seats, and drafts the messages into an approval queue. It sends nothing.</p>
+    <p class="reminder">The manifest holds booking references, counts, products and ships. No names, emails or phone numbers. Everything stays in this browser.</p>
+    <form id="board-form" novalidate>
+      <fieldset>
+        <legend>The day</legend>
+        <label for="b-day">Fictional day</label>
+        <select id="b-day" name="day"></select>
+        <p class="story" id="b-story"></p>
+      </fieldset>
+      <fieldset>
+        <legend>The event</legend>
+        <div class="fgrid">
+          <div><label for="b-type">What happened</label><select id="b-type" name="type"></select></div>
+          <div id="w-ship"><label for="b-ship">Ship</label><select id="b-ship" name="ship"></select></div>
+          <div id="w-dep"><label for="b-dep">Departure</label><select id="b-dep" name="departure"></select></div>
+          <div id="w-min"><label for="b-min" id="b-min-l">Minutes late</label><input type="number" id="b-min" name="minutes" min="1" max="600" step="5" inputmode="numeric"></div>
+          <div id="w-shift"><label for="b-shift">All-aboard moves by, in minutes <small>(0 if it stays)</small></label><input type="number" id="b-shift" name="allaboardShift" min="-240" max="240" step="5" inputmode="numeric"></div>
+          <div><label for="b-known">We knew at <small>(first alert)</small></label><input type="time" id="b-known" name="knownAt" step="300"></div>
+        </div>
+        <div id="w-cancel"><label class="chkline" for="b-cancel"><input type="checkbox" id="b-cancel" name="cancel"> The captain cancelled the departure (otherwise it is held for the minutes above)</label></div>
+      </fieldset>
+      <details class="rules">
+        <summary>Rules for the board (your policy choices and facts)</summary>
+        <div class="fgrid">
+          <div><label for="p-seats">Seats per departure <span class="lbl legal">Legal mandate</span></label><input type="number" id="p-seats" name="seats" min="1" max="200" inputmode="numeric">
+            <span class="hint">The vessel's Coast Guard certificate of inspection sets the passenger limit; it is vessel-specific. Check your certificate. The board never fills past this number.</span></div>
+          <div><label for="p-buffer">All-aboard buffer, minutes <span class="lbl">Policy choice</span></label><input type="number" id="p-buffer" name="bufferMin" min="0" max="240" inputmode="numeric">
+            <span class="hint">Back at the dock at least this long before the ship's all-aboard.</span></div>
+          <div><label for="p-notice">Minimum notice for a move or a waitlist offer, minutes <span class="lbl">Policy choice</span></label><input type="number" id="p-notice" name="noticeMin" min="0" max="600" inputmode="numeric">
+            <span class="hint">Time to draft, approve, reach the guest and get them to the dock.</span></div>
+          <div><label for="p-walkdock">Ship arrival to our meeting point, docked ship, minutes <span class="lbl">Policy choice</span></label><input type="number" id="p-walkdock" name="walkDock" min="0" max="240" inputmode="numeric"></div>
+          <div><label for="p-walkanchor">Ship arrival to our meeting point, ship at anchor (tender), minutes <span class="lbl">Policy choice</span></label><input type="number" id="p-walkanchor" name="walkAnchor" min="0" max="300" inputmode="numeric"></div>
+          <div><label for="p-alloc">Glacier allocation, guest visits per day <span class="lbl contract">Contractual</span></label><input type="number" id="p-alloc" name="allocation" min="0" max="10000" inputmode="numeric">
+            <span class="hint">From your permit. A refilled combo seat uses a visit; a guest moved within the day does not.</span></div>
+          <div><label for="p-tour">Trip length, dock to dock, minutes <small>(your fact)</small></label><input type="number" id="p-tour" name="tourMin" min="30" max="720" inputmode="numeric"></div>
+          <div><label for="p-shuttle">Shuttle, dock to Auke Bay, minutes <small>(your fact)</small></label><input type="number" id="p-shuttle" name="shuttleMin" min="0" max="180" inputmode="numeric"></div>
+        </div>
+        <fieldset class="radios">
+          <legend>Waitlist rule <span class="lbl">Policy choice</span></legend>
+          <label for="p-wl-fifo"><input type="radio" id="p-wl-fifo" name="waitlistRule" value="fifo"> First come, first served, by the time they joined</label>
+          <label for="p-wl-best"><input type="radio" id="p-wl-best" name="waitlistRule" value="bestfit"> Best fit: the largest party that fits the freed seats first, then by time joined</label>
+        </fieldset>
+        <p class="hint">Parties are never split. Fictional defaults: 30 seats, 60-minute buffer, 45 minutes notice, 30 minutes from a docked ship, 60 from a ship at anchor, 100 glacier visits a day, about 4.5 hours dock to dock, 25 minutes to Auke Bay.</p>
+      </details>
+      <div>
+        <div class="btns">
+          <button type="button" class="secondary" id="b-suggest">Load this day's suggested event</button>
+          <button type="button" class="ghost" id="b-reset">Reset the rules to the fictional defaults</button>
+        </div>
+        <p class="status" role="status" aria-live="polite" id="st-board"></p>
+      </div>
+    </form>
+    <p class="errors" id="b-errors" role="alert"></p>
+
+    <div id="b-result" aria-live="polite">
+      <p class="evtext" id="b-event"></p>
+      <div class="stats" id="b-stats"></div>
+      <div class="callout green lesson" id="b-lesson"></div>
+      <p class="hint" id="b-warn"></p>
+
+      <h3 id="deps-h">Departures</h3>
+      <div class="tablewrap">
+        <table class="stack" aria-labelledby="deps-h">
+          <thead><tr><th scope="col">Departure</th><th scope="col">Leaves dock</th><th scope="col">At Auke Bay</th><th scope="col">Back at dock</th><th scope="col" class="num">Booked now</th><th scope="col" class="num">After plan</th><th scope="col" class="num">Freed</th><th scope="col" class="num">Offered</th><th scope="col">Note</th></tr></thead>
+          <tbody id="b-deps"></tbody>
+        </table>
+      </div>
+
+      <h3 id="aff-h">Affected bookings and the proposed plan</h3>
+      <p class="hint">Hardest cases are planned first (fewest options, then the largest party), so the last free seats go where they matter most. The proposal is the fitting departure closest to the booked time. The duty lead approves or changes every line.</p>
+      <div class="tablewrap">
+        <table class="stack" aria-labelledby="aff-h">
+          <thead><tr><th scope="col">Booking</th><th scope="col">Ship, all-aboard</th><th scope="col">Channel</th><th scope="col" class="num">Guests</th><th scope="col">Booked</th><th scope="col">Problem</th><th scope="col">Departures that fit</th><th scope="col">Proposed</th></tr></thead>
+          <tbody id="b-aff"></tbody>
+        </table>
+      </div>
+
+      <h3 id="wl-h">Waitlist for the freed seats</h3>
+      <p class="hint" id="b-wl-note"></p>
+      <div class="tablewrap">
+        <table class="stack" aria-labelledby="wl-h">
+          <thead><tr><th scope="col">Entry</th><th scope="col">Joined</th><th scope="col" class="num">Guests</th><th scope="col">Product</th><th scope="col">Ship or independent</th><th scope="col">Offer</th><th scope="col">Why not elsewhere</th></tr></thead>
+          <tbody id="b-wl"></tbody>
+        </table>
+      </div>
+
+      <details id="b-gaps-d">
+        <summary id="b-gaps-s">Bookings that were already tight before the event</summary>
+        <p>These bookings already break your rules on this day with no event at all: the guest cannot walk from the ship in time, or the trip comes back inside the all-aboard buffer. The fictional booking system sold them anyway. <span class="pill grey">My read</span> That is a prevention gap, not bad luck: a booking rule that refuses the sale scores detection 1 in the 2a FMEA.</p>
+        <div class="tablewrap">
+          <table class="stack">
+            <thead><tr><th scope="col">Booking</th><th scope="col">Ship</th><th scope="col">Booked</th><th scope="col" class="num">Guests</th><th scope="col">Problem</th></tr></thead>
+            <tbody id="b-gaps"></tbody>
+          </table>
+        </div>
+      </details>
+
+      <div>
+        <div class="btns">
+          <button type="button" id="b-plan-csv">Save the rebook plan as CSV</button>
+        </div>
+        <p class="status" role="status" aria-live="polite" id="st-plan"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. QUEUE -->
+  <section class="card" aria-labelledby="queue">
+    <h2 id="queue">2. Approval queue</h2>
+    <p>Every draft from the board lands here as template text, not AI text. Each one starts with DRAFT - PENDING OWNER REVIEW and has [FILL] where only a person knows the answer. Cruise-line bookings go to the ship's shore excursion desk, one message per ship. <b>Nothing on this page sends anything.</b> Approving marks the draft as ready for a person to send from your booking system or email.</p>
+    <div class="fgrid">
+      <div><label for="q-initials">Approver initials <small>(initials only)</small></label><input type="text" id="q-initials" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+    </div>
+    <p class="hint" id="q-sum" aria-live="polite"></p>
+    <div id="q-list"></div>
+    <div>
+      <div class="btns">
+        <button type="button" id="q-csv">Save the approval queue as CSV</button>
+      </div>
+      <p class="status" role="status" aria-live="polite" id="st-queue"></p>
+    </div>
+    <p class="hint">Approvals here are practice. They reset when you change the day or the event. In real use, the queue is a shared sheet (template in Downloads) and the person who sends a message writes sent_by and sent_at.</p>
+  </section>
+
+  <!-- 3. RECIPES -->
+  <section class="card" aria-labelledby="recipes">
+    <h2 id="recipes">3. Watch recipes for Zapier and Make</h2>
+    <p class="callout amber"><strong>Untested in live accounts.</strong> These recipes are written from each product's documented building blocks and checked for logic, not run end to end in a real Zapier or Make account. Step names change. Build with the fictional rows first and check every step against the product's current help before any real booking touches it.</p>
+    <ol class="flow">
+      <li><b>A watch fires</b>Port-schedule sheet changes, a weather alert, a booking-system webhook, or (paid) flight status.</li>
+      <li><b>Find affected bookings</b>Lookup in your day manifest sheet: IDs, counts and departures only.</li>
+      <li><b>Draft</b>Template text, or an AI step using your 2a message pack and policy sheet.</li>
+      <li><b>Approval sheet</b>One row per draft, status pending. Never a send step.</li>
+      <li class="person"><b>Duty lead notified</b>A staff-only alert: "N drafts waiting".</li>
+      <li class="person"><b>A person approves and sends</b>From the booking system or email, then records it.</li>
+    </ol>
+    <h3>The four watches</h3>
+    <ul>
+      <li><b>Port-schedule sheet change</b> (start here). Your team keeps a shared sheet of ship calls; when someone changes an arrival time, berth or status, the watch fires. Free of extra fees beyond your plan.</li>
+      <li><b>National Weather Service alerts</b> through the public api.weather.gov (no key; the service asks callers to identify themselves with a User-Agent header). Find your own forecast zone on <a href="https://www.weather.gov/" target="_blank" rel="noopener">weather.gov</a>, including the marine zone for your waters. The alert only tells the captain; the captain makes the call, then the duty lead marks the hold and the drafts follow.</li>
+      <li><b>Booking-system webhook.</b> New, changed or cancelled bookings update the day manifest; a same-day cancellation frees seats for the waitlist. Check whether your booking system offers webhooks or a Zapier or Make app.</li>
+      <li><b>Flight status, paid option only.</b> A paid flight-data API, for guests who chose to give you a flight number. It costs per lookup; check the provider's price and terms first. Skip it until the free watches work.</li>
+    </ul>
+    <div class="grid two">
+      <div class="card recipe note" style="margin:0">
+        <h3>Zapier</h3>
+        <p>One Zap per watch, plus one that drafts after the captain records a hold. One approval sheet, a staff alert. Polling and webhook triggers, Google Sheets lookups, optional AI by Zapier or your AI provider's app, Gmail or SMS to staff only.</p>
+        <p><a class="button secondary" href="zapier-arrival-watch.md" download>Download the Zapier recipe (.md)</a></p>
+      </div>
+      <div class="card recipe note" style="margin:0">
+        <h3>Make</h3>
+        <p>The same five automations as scenarios, the same sheets. HTTP module for the weather API, a data store to skip alerts already seen, iterators for affected rows, error handlers so one bad row does not stop the rest.</p>
+        <p><a class="button secondary" href="make-arrival-watch.md" download>Download the Make recipe (.md)</a></p>
+      </div>
+    </div>
+    <h3 id="ai-h">The AI step prompt (optional)</h3>
+    <p>If you use an AI step instead of plain template text, paste this prompt and map each [CAPITALS] item to a sheet field. It drafts the first notice only; it is told not to propose departures, because seats and the buffer are worked out by the duty lead.</p>
+    <div class="output">
+      <p class="label">2b AI step prompt</p>
+      <pre id="ai-prompt" tabindex="0" aria-labelledby="ai-h">You draft the first notice about a disruption for [BUSINESS NAME]. A person approves every message before anyone sends it. You never send anything, and you do not decide rebooking options.
+
+EVENT (from our watch sheet):
+[EVENT: what changed, and the time we first knew]
+
+AFFECTED BOOKINGS (IDs and counts only; no names or contact details):
+[ROWS: booking_ref, channel, guests, booked departure, ship]
+
+OUR APPROVED POLICIES (use only these; a line marked [FILL] is not decided, so do not guess it):
+[POLICY SHEET FROM 2A]
+
+OUR APPROVED FIRST-NOTICE TEXTS (start from these):
+[FIRST NOTICES FROM THE 2A MESSAGE PACK]
+
+TASK
+Draft the first notice for this event:
+- Cruise-line bookings: one message per ship, to that ship's shore excursion desk, listing the booking references and party sizes.
+- OTA bookings: one message per booking, written for the OTA's messaging tool.
+- Direct bookings: one message per booking, to the guest.
+Each first notice says what we know, what we do not know yet, and when we will update. Under 80 words each.
+
+Rules:
+- Use only the event, the rows, the policies and the approved texts. Do not add times, prices, refunds, credits, compensation or waiting promises that are not written above.
+- Do not offer or suggest a new departure. The duty lead sends the options after working out seats and the all-aboard buffer.
+- Do not promise weather, wildlife, or that a ship, flight, shuttle or boat will wait. Do not make or hint at a weather or safety call; the captain makes it.
+- Use [GUEST FIRST NAME] where a name goes. Names and contact details are merged in our booking system, never here.
+- Where something is missing, write [FILL: what is missing].
+- Start each message with three lines: DRAFT - PENDING OWNER REVIEW, then TO: the recipient's role (for example Ship B shore excursion desk), then ABOUT: the booking references.
+- After the last message, list every [FILL] under QUESTIONS FOR THE DUTY LEAD.</pre>
+    </div>
+    <div>
+      <div class="btns">
+        <button type="button" data-copy="ai-prompt" data-copy-msg="Copied. Paste it into the AI step of your Zap or scenario.">Copy prompt</button>
+        <button type="button" class="secondary" data-download="2b-ai-step-prompt.txt" data-from="ai-prompt">Save as .txt</button>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </div>
+    <p class="hint">A .md file is plain text: open it in Notepad, TextEdit, Word or Google Docs. Running cost is an estimate: a polling watch that checks every 15 minutes for 14 hours a day runs 4 x 14 = 56 times a day, about 8,600 times over a 153-day season. Check how your plan counts runs that find nothing.</p>
+  </section>
+
+  <!-- 4. WAITLIST -->
+  <section class="card" aria-labelledby="waitlist">
+    <h2 id="waitlist">4. Waitlist rule template <span class="lbl">Policy choice</span></h2>
+    <p>A freed seat is worth something only if someone can take it before the boat leaves. Decide the rule once, write it in your 2a policy sheet, and the board, the drafts and your staff all follow the same order.</p>
+    <ul>
+      <li><b>Who can join:</b> guests turned away for a full departure or a used-up glacier allocation; which channels.</li>
+      <li><b>Order:</b> first come, first served, or best fit. Parties are never split.</li>
+      <li><b>How long an offer stays open,</b> and how many offers go out at once.</li>
+      <li><b>Minimum notice</b> before a departure for an offer to make sense.</li>
+      <li><b>Glacier allocation:</b> a refilled combo seat uses a visit <span class="lbl contract">Contractual</span> (check your permit).</li>
+      <li><b>Cruise-line guests:</b> whether and how the desk takes a waitlist offer <span class="lbl contract">Contractual</span> (check your contract).</li>
+      <li><b>Price:</b> the same as a normal booking, shown in full. No fake urgency.</li>
+      <li><b>Records:</b> waitlist IDs, party size and the time they joined. Delete contact details after the season.</li>
+    </ul>
+    <p><a class="button secondary" href="waitlist-rule-template.md" download>Download the waitlist rule template (.md)</a></p>
+  </section>
+
+  <section class="card" aria-labelledby="files">
+    <h2 id="files">Downloads</h2>
+    <ul class="files">
+      <li><a href="zapier-arrival-watch.md" download>zapier-arrival-watch.md</a> <span class="hint">Four Zaps, sheet setup, test plan. Untested in live accounts.</span></li>
+      <li><a href="make-arrival-watch.md" download>make-arrival-watch.md</a> <span class="hint">Four Make scenarios, the same sheets and tests. Untested in live accounts.</span></li>
+      <li><a href="approval-queue-template.csv" download>approval-queue-template.csv</a> <span class="hint">The approval sheet columns with three fictional rows. Import it into Google Sheets or Excel.</span></li>
+      <li><a href="waitlist-rule-template.md" download>waitlist-rule-template.md</a> <span class="hint">The decisions behind a waitlist rule, each labeled.</span></li>
+      <li><span>Your rebook plan and approval queue</span> <span class="hint">Use the Save buttons above. Files are made in your browser.</span></li>
+    </ul>
+  </section>
+
+  <section class="card note" aria-labelledby="measure">
+    <h2 id="measure">How you will know it worked</h2>
+    <ul>
+      <li><b>Number 3, disruption recovery rate:</b> guests on disrupted bookings who were rebooked or whose seat was refilled, divided by all guests on disrupted bookings. Per season, by cause. Fictional 2026: 191 of 545 = 35.0%.</li>
+      <li><b>Seats refilled after disruption:</b> freed seats that a waitlist or walk-up guest took, divided by freed seats. Count it per event, add it up per season. Fictional 2026 has 64 seats refilled; it did not record freed seats, so start recording both.</li>
+      <li><b>Minutes from first alert to first message:</b> the watch should push this down. Record both times on every event.</li>
+    </ul>
+    <p>A season has a few dozen events and guests on one event share an outcome, so month-to-month swings are mostly noise. Compare season to season, and by cause. On the fictional 2026 log, resampling the 38 events gives a rough 95% range of 28% to 42% around the 35.0% recovery rate. <span class="hint">(Arithmetic on the fictional data; see 2a.)</span></p>
+    <h3>Quick calculator <span class="hint">(this browser only)</span></h3>
+    <form id="m-form" class="calc" novalidate>
+      <div><label for="m-freed">Seats freed by disruptions</label><input type="number" id="m-freed" min="0" step="1" inputmode="numeric"></div>
+      <div><label for="m-refilled">Of those, refilled</label><input type="number" id="m-refilled" min="0" step="1" inputmode="numeric"></div>
+    </form>
+    <div class="output"><p class="label">Your number</p><pre id="m-out" aria-live="polite"></pre></div>
+  </section>
+
+  <section class="card warn" aria-labelledby="safe">
+    <h2 id="safe">Before you use it</h2>
+    <p><strong>AI drafts. You approve.</strong> The board and the recipes create drafts and approval rows only. No step sends a message, books, refunds or cancels anything. Every draft carries DRAFT - PENDING OWNER REVIEW until a person approves it.</p>
+    <ul class="obl">
+      <li><span class="lbl">Recommendation</span> <b>Weather and vessel safety calls stay with the captain</b> or another qualified person. A weather alert starts a heads-up to the captain, never a guest message. Reason: an automation that drafts "trip on" or "trip off" before the captain decides puts pressure on a safety call.</li>
+      <li><span class="lbl legal">Legal mandate</span> <b>Passenger limits</b> come from each vessel's Coast Guard certificate of inspection, and they are vessel-specific. A move or a refilled seat never goes past it. Check your certificate.</li>
+      <li><span class="lbl legal">Legal mandate</span> <b>Personal information.</b> If your sheets ever hold personal information as Alaska law defines it (for example a name with a payment card or ID number), the Alaska Personal Information Protection Act, AS 45.48, sets breach-notification duties. Confirm the current text. Keep guest details in your booking system; the sheets in these recipes hold IDs, counts and times.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Cruise-line guests:</b> who contacts them, which refund applies and whether a waitlist offer is allowed come from your cruise line contract. Check it.</li>
+      <li><span class="lbl contract">Contractual</span> <b>OTA guests:</b> messaging outside the OTA and refund terms come from your OTA supplier agreement. Check it.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Tools and data:</b> check the terms of Zapier or Make, your AI provider, Google Workspace, your booking platform and any flight-data API before you connect them.</li>
+      <li><span class="lbl contract">Contractual</span> <b>Glacier allocation:</b> refilled combo seats use the day's visits. Check your permit's terms on counts and reporting.</li>
+      <li><span class="lbl">Policy choice</span> The buffer, notice time, walk-off times, waitlist rule, offer window and who approves. The board shows the effect of each; you decide them.</li>
+      <li><span class="lbl">Recommendation</span> <b>Flight numbers are guest data.</b> Ask for one only if the guest agrees, keep it in the booking system, and never send it to an AI step.</li>
+    </ul>
+    <div>
+      <div class="btns"><button type="button" class="danger" id="forget">Forget everything this page saved</button></div>
+      <p class="status" role="status" aria-live="polite" id="st-forget"></p>
+    </div>
+  </section>
+
+  <section class="card teal" aria-labelledby="next">
+    <h2 id="next">Next rung: 2c Disruption re-planner and loss ledger</h2>
+    <p><a href="../2c/"><b>2c</b></a> takes the same puzzle to a Python bundle: an optimizer that keeps parties together, respects shuttle capacity and maximizes retained revenue, checked against an exact search on small days. Plus a loss ledger by cause and month, the cost of poor quality you need for pricing, staffing and advocacy.</p>
+    <p class="hint">Before this rung: <a href="../2a/">2a Journey FMEA and disruption playbook</a>. Its policy sheet and message pack are this rung's inputs.</p>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Effort, cost and time figures are estimates. Checked 11 Oct 2026.</p>
+  <p><a href="../">All tools</a> · <a href="../Prompt-Kit.html">Printable prompt kit</a></p>
+</footer>
+<!-- SAMPLES:BEGIN -->
+<script type="application/json" id="samples">{"note":"FICTIONAL TEACHING DATA: Channel Light Excursions, Juneau. Generated by dev/make_samples.py from data/*.csv. Do not edit by hand.","days":[{"date":"2026-07-24","weekday":"Fri","label":"Fri 24 Jul: the busiest day of the fictional season","story":"Every seat is sold. Ship A is three hours late, and the dock only finds out at 10:00, when it does not appear. Nobody can be moved; the question is how many freed seats the waitlist can take in time.","departures":["08:00","10:30","13:00","15:30"],"ships":[{"ship":"Ship A","berth":"DOCK","arrive":"10:00","depart":"19:00","all_aboard":"18:30"},{"ship":"Ship B","berth":"DOCK","arrive":"08:30","depart":"18:30","all_aboard":"18:00"},{"ship":"Ship C","berth":"DOCK","arrive":"10:30","depart":"20:30","all_aboard":"20:00"},{"ship":"Ship D","berth":"DOCK","arrive":"12:30","depart":"22:30","all_aboard":"22:00"},{"ship":"Ship I","berth":"ANCHOR","arrive":"13:30","depart":"22:30","all_aboard":"22:00"},{"ship":"Ship J","berth":"ANCHOR","arrive":"13:30","depart":"22:30","all_aboard":"22:00"}],"bookings":[{"ref":"CL-26-02795","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship I","all_aboard":"22:00"},{"ref":"CL-26-02796","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":4,"children":0,"guests":4,"net":543.12,"ship":"Ship B","all_aboard":"18:00"},{"ref":"CL-26-02797","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":3,"children":1,"guests":4,"net":512.12,"ship":"Ship J","all_aboard":"22:00"},{"ref":"CL-26-02798","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship A","all_aboard":"18:30"},{"ref":"CL-26-02799","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":4,"children":0,"guests":4,"net":543.12,"ship":"Ship B","all_aboard":"18:00"},{"ref":"CL-26-02800","dep":"15:30","product":"WHALE","channel":"CRUISE","adults":4,"children":1,"guests":5,"net":468.1,"ship":"Ship D","all_aboard":"22:00"},{"ref":"CL-26-02801","dep":"10:30","product":"WHALE","channel":"DIRECT","adults":1,"children":1,"guests":2,"net":269.66,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02802","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":5,"children":0,"guests":5,"net":678.9,"ship":"Ship A","all_aboard":"18:30"},{"ref":"CL-26-02803","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":1,"children":1,"guests":2,"net":376.36,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02804","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":2,"children":2,"guests":4,"net":481.12,"ship":"Ship C","all_aboard":"20:00"},{"ref":"CL-26-02805","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship A","all_aboard":"18:30"},{"ref":"CL-26-02806","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":2,"children":2,"guests":4,"net":752.72,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02807","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":3,"children":2,"guests":5,"net":616.9,"ship":"Ship A","all_aboard":"18:30"},{"ref":"CL-26-02808","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":2,"guests":4,"net":481.12,"ship":"Ship J","all_aboard":"22:00"},{"ref":"CL-26-02809","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship J","all_aboard":"22:00"},{"ref":"CL-26-02810","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":3,"children":0,"guests":3,"net":407.34,"ship":"Ship B","all_aboard":"18:00"},{"ref":"CL-26-02811","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship D","all_aboard":"22:00"},{"ref":"CL-26-02812","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship D","all_aboard":"22:00"},{"ref":"CL-26-02813","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":5,"children":0,"guests":5,"net":1062.15,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02814","dep":"10:30","product":"WHALE","channel":"OTA","adults":2,"children":2,"guests":4,"net":417.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02815","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":424.86,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02816","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":1,"children":2,"guests":3,"net":540.29,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02817","dep":"15:30","product":"COMBO","channel":"OTA","adults":4,"children":0,"guests":4,"net":657.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02818","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship I","all_aboard":"22:00"},{"ref":"CL-26-02819","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":0,"guests":1,"net":135.78,"ship":"Ship A","all_aboard":"18:30"},{"ref":"CL-26-02820","dep":"15:30","product":"COMBO","channel":"OTA","adults":1,"children":0,"guests":1,"net":164.25,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02821","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship B","all_aboard":"18:00"},{"ref":"CL-26-02822","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship I","all_aboard":"22:00"},{"ref":"CL-26-02823","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":1,"children":1,"guests":2,"net":376.36,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02824","dep":"08:00","product":"COMBO","channel":"OTA","adults":3,"children":0,"guests":3,"net":492.75,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02825","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":424.86,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02826","dep":"15:30","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02827","dep":"10:30","product":"COMBO","channel":"OTA","adults":3,"children":0,"guests":3,"net":492.75,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02828","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":1,"children":0,"guests":1,"net":212.43,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02829","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship B","all_aboard":"18:00"},{"ref":"CL-26-02830","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":3,"children":0,"guests":3,"net":407.34,"ship":"Ship C","all_aboard":"20:00"},{"ref":"CL-26-02831","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":1,"children":0,"guests":1,"net":212.43,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02832","dep":"08:00","product":"COMBO","channel":"OTA","adults":4,"children":1,"guests":5,"net":783.75,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02833","dep":"08:00","product":"WHALE","channel":"DIRECT","adults":2,"children":2,"guests":4,"net":539.32,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02834","dep":"08:00","product":"WHALE","channel":"OTA","adults":1,"children":1,"guests":2,"net":208.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02835","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":1,"children":0,"guests":1,"net":135.78,"ship":"Ship C","all_aboard":"20:00"},{"ref":"CL-26-02836","dep":"08:00","product":"WHALE","channel":"DIRECT","adults":2,"children":2,"guests":4,"net":539.32,"ship":"INDEPENDENT","all_aboard":""}],"turned_away_est":46,"waitlist":[{"id":"WL-0724-01","joined":"2026-07-23 11:00","guests":2,"product":"WHALE","channel":"OTA","ship":"INDEPENDENT","all_aboard":""},{"id":"WL-0724-02","joined":"2026-07-23 11:10","guests":2,"product":"COMBO","channel":"CRUISE","ship":"Ship J","all_aboard":"22:00"},{"id":"WL-0724-03","joined":"2026-07-23 15:10","guests":2,"product":"WHALE","channel":"OTA","ship":"INDEPENDENT","all_aboard":""},{"id":"WL-0724-04","joined":"2026-07-23 15:40","guests":1,"product":"COMBO","channel":"CRUISE","ship":"Ship C","all_aboard":"20:00"},{"id":"WL-0724-05","joined":"2026-07-23 16:30","guests":4,"product":"WHALE","channel":"DIRECT","ship":"INDEPENDENT","all_aboard":""},{"id":"WL-0724-06","joined":"2026-07-23 18:40","guests":4,"product":"COMBO","channel":"CRUISE","ship":"Ship C","all_aboard":"20:00"}],"suggested":{"type":"ship_late","ship":"Ship A","minutes":180,"allaboardShift":0,"knownAt":"10:00"}},{"date":"2026-07-13","weekday":"Mon","label":"Mon 13 Jul: a weather cancellation on a full day","story":"The fictional 2026 log recorded a marine weather hold on the 10:30 this day (11 bookings, 28 guests). Try calling it an hour earlier.","departures":["08:00","10:30","13:00","15:30"],"ships":[{"ship":"Ship A","berth":"DOCK","arrive":"11:30","depart":"20:30","all_aboard":"20:00"},{"ship":"Ship C","berth":"DOCK","arrive":"11:00","depart":"20:00","all_aboard":"19:30"},{"ship":"Ship E","berth":"DOCK","arrive":"10:30","depart":"17:30","all_aboard":"17:00"},{"ship":"Ship H","berth":"DOCK","arrive":"11:30","depart":"21:30","all_aboard":"21:00"},{"ship":"Ship I","berth":"ANCHOR","arrive":"09:00","depart":"16:00","all_aboard":"15:30"},{"ship":"Ship J","berth":"ANCHOR","arrive":"07:00","depart":"14:00","all_aboard":"13:30"}],"bookings":[{"ref":"CL-26-02338","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":3,"children":0,"guests":3,"net":407.34,"ship":"Ship A","all_aboard":"20:00"},{"ref":"CL-26-02339","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":2,"children":2,"guests":4,"net":481.12,"ship":"Ship C","all_aboard":"19:30"},{"ref":"CL-26-02340","dep":"10:30","product":"COMBO","channel":"OTA","adults":1,"children":0,"guests":1,"net":164.25,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02341","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":1,"children":0,"guests":1,"net":212.43,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02342","dep":"10:30","product":"WHALE","channel":"CRUISE","adults":4,"children":0,"guests":4,"net":394.32,"ship":"Ship I","all_aboard":"15:30"},{"ref":"CL-26-02343","dep":"13:00","product":"WHALE","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":197.16,"ship":"Ship A","all_aboard":"20:00"},{"ref":"CL-26-02344","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":3,"children":0,"guests":3,"net":407.34,"ship":"Ship E","all_aboard":"17:00"},{"ref":"CL-26-02345","dep":"10:30","product":"COMBO","channel":"OTA","adults":4,"children":0,"guests":4,"net":657.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02346","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":0,"guests":1,"net":135.78,"ship":"Ship E","all_aboard":"17:00"},{"ref":"CL-26-02347","dep":"10:30","product":"WHALE","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":308.46,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02348","dep":"13:00","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02349","dep":"13:00","product":"COMBO","channel":"OTA","adults":1,"children":2,"guests":3,"net":417.75,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02350","dep":"08:00","product":"COMBO","channel":"OTA","adults":3,"children":1,"guests":4,"net":619.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02351","dep":"15:30","product":"COMBO","channel":"OTA","adults":1,"children":0,"guests":1,"net":164.25,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02352","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":0,"guests":1,"net":135.78,"ship":"Ship I","all_aboard":"15:30"},{"ref":"CL-26-02353","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship H","all_aboard":"21:00"},{"ref":"CL-26-02354","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":2,"children":2,"guests":4,"net":481.12,"ship":"Ship I","all_aboard":"15:30"},{"ref":"CL-26-02355","dep":"08:00","product":"COMBO","channel":"OTA","adults":2,"children":2,"guests":4,"net":582.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02356","dep":"15:30","product":"WHALE","channel":"OTA","adults":1,"children":1,"guests":2,"net":208.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02357","dep":"08:00","product":"COMBO","channel":"OTA","adults":5,"children":0,"guests":5,"net":821.25,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02358","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":424.86,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02360","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":4,"children":0,"guests":4,"net":543.12,"ship":"Ship E","all_aboard":"17:00"},{"ref":"CL-26-02361","dep":"08:00","product":"COMBO","channel":"CRUISE","adults":5,"children":0,"guests":5,"net":678.9,"ship":"Ship J","all_aboard":"13:30"},{"ref":"CL-26-02362","dep":"13:00","product":"COMBO","channel":"OTA","adults":3,"children":1,"guests":4,"net":619.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02363","dep":"13:00","product":"COMBO","channel":"OTA","adults":4,"children":0,"guests":4,"net":657.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02364","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":3,"children":1,"guests":4,"net":512.12,"ship":"Ship A","all_aboard":"20:00"},{"ref":"CL-26-02365","dep":"15:30","product":"COMBO","channel":"DIRECT","adults":4,"children":0,"guests":4,"net":849.72,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02366","dep":"08:00","product":"COMBO","channel":"CRUISE","adults":4,"children":0,"guests":4,"net":543.12,"ship":"Ship J","all_aboard":"13:30"},{"ref":"CL-26-02367","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":4,"children":0,"guests":4,"net":543.12,"ship":"Ship C","all_aboard":"19:30"},{"ref":"CL-26-02369","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship H","all_aboard":"21:00"},{"ref":"CL-26-02370","dep":"15:30","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02371","dep":"13:00","product":"WHALE","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":197.16,"ship":"Ship A","all_aboard":"20:00"},{"ref":"CL-26-02372","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":1,"children":1,"guests":2,"net":376.36,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02374","dep":"15:30","product":"WHALE","channel":"OTA","adults":2,"children":0,"guests":2,"net":238.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02375","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship E","all_aboard":"17:00"},{"ref":"CL-26-02376","dep":"13:00","product":"COMBO","channel":"OTA","adults":4,"children":0,"guests":4,"net":657.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02377","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship A","all_aboard":"20:00"},{"ref":"CL-26-02378","dep":"15:30","product":"WHALE","channel":"DIRECT","adults":4,"children":0,"guests":4,"net":616.92,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-02379","dep":"13:00","product":"WHALE","channel":"DIRECT","adults":1,"children":0,"guests":1,"net":154.23,"ship":"INDEPENDENT","all_aboard":""}],"turned_away_est":25,"waitlist":[{"id":"WL-0713-01","joined":"2026-07-12 10:00","guests":2,"product":"COMBO","channel":"OTA","ship":"INDEPENDENT","all_aboard":""},{"id":"WL-0713-02","joined":"2026-07-12 14:20","guests":3,"product":"COMBO","channel":"OTA","ship":"INDEPENDENT","all_aboard":""},{"id":"WL-0713-03","joined":"2026-07-12 19:10","guests":2,"product":"COMBO","channel":"OTA","ship":"INDEPENDENT","all_aboard":""},{"id":"WL-0713-04","joined":"2026-07-13 07:15","guests":2,"product":"COMBO","channel":"OTA","ship":"INDEPENDENT","all_aboard":""}],"suggested":{"type":"weather_hold","departure":"10:30","cancel":true,"minutes":60,"knownAt":"07:30"}},{"date":"2026-06-17","weekday":"Wed","label":"Wed 17 Jun: a late shuttle on a medium day","story":"The 15:30 shuttle is 45 minutes late. The trip still runs, but cruise guests would come back inside the all-aboard buffer. No seat fixes that: a person decides.","departures":["08:00","10:30","13:00","15:30"],"ships":[{"ship":"Ship B","berth":"DOCK","arrive":"13:00","depart":"22:00","all_aboard":"21:30"},{"ship":"Ship F","berth":"DOCK","arrive":"12:30","depart":"21:30","all_aboard":"21:00"},{"ship":"Ship H","berth":"DOCK","arrive":"09:00","depart":"18:00","all_aboard":"17:30"},{"ship":"Ship I","berth":"DOCK","arrive":"11:30","depart":"21:30","all_aboard":"21:00"},{"ship":"Ship J","berth":"ANCHOR","arrive":"07:30","depart":"16:30","all_aboard":"16:00"}],"bookings":[{"ref":"CL-26-01285","dep":"08:00","product":"COMBO","channel":"CRUISE","adults":2,"children":1,"guests":3,"net":376.34,"ship":"Ship J","all_aboard":"16:00"},{"ref":"CL-26-01286","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":4,"children":1,"guests":5,"net":647.9,"ship":"Ship H","all_aboard":"17:30"},{"ref":"CL-26-01287","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":1,"children":1,"guests":2,"net":376.36,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01288","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship B","all_aboard":"21:30"},{"ref":"CL-26-01289","dep":"15:30","product":"COMBO","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":424.86,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01290","dep":"10:30","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01291","dep":"15:30","product":"WHALE","channel":"DIRECT","adults":1,"children":1,"guests":2,"net":269.66,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01292","dep":"15:30","product":"WHALE","channel":"CRUISE","adults":2,"children":2,"guests":4,"net":344.72,"ship":"Ship F","all_aboard":"21:00"},{"ref":"CL-26-01293","dep":"10:30","product":"COMBO","channel":"OTA","adults":1,"children":1,"guests":2,"net":291.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01294","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship F","all_aboard":"21:00"},{"ref":"CL-26-01295","dep":"13:00","product":"WHALE","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":172.36,"ship":"Ship H","all_aboard":"17:30"},{"ref":"CL-26-01296","dep":"15:30","product":"COMBO","channel":"DIRECT","adults":5,"children":0,"guests":5,"net":1062.15,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01297","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship B","all_aboard":"21:30"},{"ref":"CL-26-01298","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":5,"children":0,"guests":5,"net":678.9,"ship":"Ship B","all_aboard":"21:30"},{"ref":"CL-26-01299","dep":"08:00","product":"COMBO","channel":"OTA","adults":3,"children":0,"guests":3,"net":492.75,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01300","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":3,"children":0,"guests":3,"net":407.34,"ship":"Ship H","all_aboard":"17:30"},{"ref":"CL-26-01301","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":5,"children":0,"guests":5,"net":1062.15,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01302","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":1,"children":2,"guests":3,"net":345.34,"ship":"Ship B","all_aboard":"21:30"},{"ref":"CL-26-01303","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":424.86,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01304","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship I","all_aboard":"21:00"},{"ref":"CL-26-01305","dep":"13:00","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01306","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":3,"children":2,"guests":5,"net":616.9,"ship":"Ship H","all_aboard":"17:30"},{"ref":"CL-26-01308","dep":"10:30","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01309","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":3,"children":2,"guests":5,"net":616.9,"ship":"Ship I","all_aboard":"21:00"},{"ref":"CL-26-01310","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":4,"children":0,"guests":4,"net":543.12,"ship":"Ship H","all_aboard":"17:30"},{"ref":"CL-26-01311","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":1,"children":0,"guests":1,"net":135.78,"ship":"Ship H","all_aboard":"17:30"},{"ref":"CL-26-01312","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":5,"children":0,"guests":5,"net":678.9,"ship":"Ship F","all_aboard":"21:00"},{"ref":"CL-26-01313","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":1,"children":0,"guests":1,"net":135.78,"ship":"Ship B","all_aboard":"21:30"},{"ref":"CL-26-01314","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":0,"guests":1,"net":135.78,"ship":"Ship J","all_aboard":"16:00"},{"ref":"CL-26-01315","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":1,"children":1,"guests":2,"net":376.36,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01316","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":2,"children":1,"guests":3,"net":588.79,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01317","dep":"10:30","product":"COMBO","channel":"OTA","adults":4,"children":0,"guests":4,"net":657.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01318","dep":"13:00","product":"WHALE","channel":"OTA","adults":1,"children":1,"guests":2,"net":208.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01319","dep":"08:00","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01320","dep":"08:00","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01321","dep":"10:30","product":"COMBO","channel":"OTA","adults":1,"children":0,"guests":1,"net":164.25,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01322","dep":"08:00","product":"COMBO","channel":"OTA","adults":1,"children":1,"guests":2,"net":291.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-01323","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":1,"children":0,"guests":1,"net":135.78,"ship":"Ship I","all_aboard":"21:00"},{"ref":"CL-26-01324","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":1,"children":1,"guests":2,"net":376.36,"ship":"INDEPENDENT","all_aboard":""}],"turned_away_est":2,"waitlist":[{"id":"WL-0617-01","joined":"2026-06-16 10:10","guests":1,"product":"COMBO","channel":"DIRECT","ship":"INDEPENDENT","all_aboard":""}],"suggested":{"type":"shuttle_delay","departure":"15:30","minutes":45,"knownAt":"15:20"}},{"date":"2026-09-09","weekday":"Wed","label":"Wed 9 Sep: a light September day","story":"Plenty of empty seats and no waitlist. The 13:00 is cancelled for weather. Most guests can move; see which cannot, and why.","departures":["08:00","10:30","13:00","15:30"],"ships":[{"ship":"Ship D","berth":"DOCK","arrive":"12:30","depart":"20:30","all_aboard":"20:00"},{"ship":"Ship F","berth":"DOCK","arrive":"08:30","depart":"18:30","all_aboard":"18:00"},{"ship":"Ship G","berth":"DOCK","arrive":"10:00","depart":"17:00","all_aboard":"16:30"},{"ship":"Ship I","berth":"DOCK","arrive":"09:30","depart":"18:30","all_aboard":"18:00"}],"bookings":[{"ref":"CL-26-04385","dep":"13:00","product":"COMBO","channel":"DIRECT","adults":4,"children":0,"guests":4,"net":849.72,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04386","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":3,"children":2,"guests":5,"net":616.9,"ship":"Ship F","all_aboard":"18:00"},{"ref":"CL-26-04387","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship G","all_aboard":"16:30"},{"ref":"CL-26-04388","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":3,"children":0,"guests":3,"net":407.34,"ship":"Ship F","all_aboard":"18:00"},{"ref":"CL-26-04390","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship I","all_aboard":"18:00"},{"ref":"CL-26-04391","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":424.86,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04392","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":4,"children":0,"guests":4,"net":543.12,"ship":"Ship D","all_aboard":"20:00"},{"ref":"CL-26-04393","dep":"15:30","product":"COMBO","channel":"OTA","adults":1,"children":0,"guests":1,"net":164.25,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04394","dep":"15:30","product":"COMBO","channel":"OTA","adults":3,"children":1,"guests":4,"net":619.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04395","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":424.86,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04396","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship D","all_aboard":"20:00"},{"ref":"CL-26-04397","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship F","all_aboard":"18:00"},{"ref":"CL-26-04398","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":2,"children":0,"guests":2,"net":271.56,"ship":"Ship I","all_aboard":"18:00"},{"ref":"CL-26-04399","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":2,"guests":3,"net":345.34,"ship":"Ship I","all_aboard":"18:00"},{"ref":"CL-26-04400","dep":"15:30","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04401","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship D","all_aboard":"20:00"},{"ref":"CL-26-04402","dep":"15:30","product":"COMBO","channel":"CRUISE","adults":3,"children":0,"guests":3,"net":407.34,"ship":"Ship D","all_aboard":"20:00"},{"ref":"CL-26-04403","dep":"08:00","product":"COMBO","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":424.86,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04404","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":3,"children":0,"guests":3,"net":407.34,"ship":"Ship I","all_aboard":"18:00"},{"ref":"CL-26-04406","dep":"10:30","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship G","all_aboard":"16:30"},{"ref":"CL-26-04407","dep":"08:00","product":"COMBO","channel":"OTA","adults":1,"children":0,"guests":1,"net":164.25,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04408","dep":"10:30","product":"COMBO","channel":"OTA","adults":1,"children":1,"guests":2,"net":291.0,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04409","dep":"15:30","product":"COMBO","channel":"DIRECT","adults":5,"children":0,"guests":5,"net":1062.15,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04410","dep":"13:00","product":"COMBO","channel":"OTA","adults":2,"children":0,"guests":2,"net":328.5,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04411","dep":"13:00","product":"COMBO","channel":"CRUISE","adults":1,"children":1,"guests":2,"net":240.56,"ship":"Ship D","all_aboard":"20:00"},{"ref":"CL-26-04412","dep":"10:30","product":"COMBO","channel":"DIRECT","adults":1,"children":0,"guests":1,"net":212.43,"ship":"INDEPENDENT","all_aboard":""},{"ref":"CL-26-04413","dep":"13:00","product":"WHALE","channel":"DIRECT","adults":2,"children":0,"guests":2,"net":308.46,"ship":"INDEPENDENT","all_aboard":""}],"turned_away_est":0,"waitlist":[],"suggested":{"type":"weather_hold","departure":"13:00","cancel":true,"minutes":60,"knownAt":"07:00"}}]}</script>
+<!-- SAMPLES:END -->
+</body>
+</html>

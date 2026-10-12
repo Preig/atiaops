@@ -1,0 +1,1491 @@
+{
+  "title": "Season staffing model",
+  "marker": "DRAFT - PENDING OWNER REVIEW",
+  "business": "Channel Light Excursions, Juneau (FICTIONAL TEACHING BUSINESS)",
+  "fictional": true,
+  "as_of": "2026-10-11",
+  "season": {
+    "start": "2027-05-01",
+    "end": "2027-09-30",
+    "days": 153,
+    "weeks": 22
+  },
+  "inputs": {
+    "demand": "bookings_2026.csv moved forward 364 days",
+    "ship calls": "port_schedule_2027.csv",
+    "staff": "staff_2026.csv",
+    "rota": "rota_sample_2027.csv"
+  },
+  "positions": {
+    "by_role": {
+      "Captain": 3,
+      "Deckhand": 6,
+      "Naturalist guide": 6,
+      "Dock coordinator": 4,
+      "Reservations": 3
+    },
+    "total": 22
+  },
+  "calibration": {
+    "season": "2026-05-01 to 2026-09-30",
+    "model_by_role": {
+      "Captain": 3,
+      "Deckhand": 6,
+      "Naturalist guide": 6,
+      "Dock coordinator": 4,
+      "Reservations": 3
+    },
+    "staffed_by_role": {
+      "Captain": 3,
+      "Deckhand": 5,
+      "Naturalist guide": 6,
+      "Dock coordinator": 5,
+      "Reservations": 3
+    },
+    "ship_calls_used": true
+  },
+  "attrition": {
+    "new": {
+      "people": 20,
+      "early_quits": 4,
+      "share": 0.2,
+      "low": 0.0807,
+      "high": 0.416,
+      "later": 1
+    },
+    "returning": {
+      "people": 6,
+      "early_quits": 0,
+      "share": 0.0,
+      "low": 0.0,
+      "high": 0.3903,
+      "later": 1
+    },
+    "curve": [
+      {
+        "week": 1,
+        "at_risk": 20,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 1.0,
+        "cum_left": 0.0,
+        "band_low": 0.0,
+        "band_high": 0.0
+      },
+      {
+        "week": 2,
+        "at_risk": 20,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 1.0,
+        "cum_left": 0.0,
+        "band_low": 0.0,
+        "band_high": 0.0
+      },
+      {
+        "week": 3,
+        "at_risk": 20,
+        "left": 3,
+        "censored": 0,
+        "hazard": 0.15,
+        "survival": 0.85,
+        "cum_left": 0.15,
+        "band_low": 0.0,
+        "band_high": 0.3
+      },
+      {
+        "week": 4,
+        "at_risk": 17,
+        "left": 1,
+        "censored": 0,
+        "hazard": 0.0588,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 5,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 6,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 7,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 8,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 9,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 10,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 11,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 12,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 13,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 14,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 15,
+        "at_risk": 16,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.8,
+        "cum_left": 0.2,
+        "band_low": 0.05,
+        "band_high": 0.4
+      },
+      {
+        "week": 16,
+        "at_risk": 16,
+        "left": 1,
+        "censored": 0,
+        "hazard": 0.0625,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      },
+      {
+        "week": 17,
+        "at_risk": 15,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      },
+      {
+        "week": 18,
+        "at_risk": 15,
+        "left": 0,
+        "censored": 1,
+        "hazard": 0.0,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      },
+      {
+        "week": 19,
+        "at_risk": 14,
+        "left": 0,
+        "censored": 3,
+        "hazard": 0.0,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      },
+      {
+        "week": 20,
+        "at_risk": 11,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      },
+      {
+        "week": 21,
+        "at_risk": 11,
+        "left": 0,
+        "censored": 1,
+        "hazard": 0.0,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      },
+      {
+        "week": 22,
+        "at_risk": 10,
+        "left": 0,
+        "censored": 2,
+        "hazard": 0.0,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      },
+      {
+        "week": 23,
+        "at_risk": 8,
+        "left": 0,
+        "censored": 4,
+        "hazard": 0.0,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      },
+      {
+        "week": 24,
+        "at_risk": 4,
+        "left": 0,
+        "censored": 4,
+        "hazard": 0.0,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      },
+      {
+        "week": 25,
+        "at_risk": 0,
+        "left": 0,
+        "censored": 0,
+        "hazard": 0.0,
+        "survival": 0.75,
+        "cum_left": 0.25,
+        "band_low": 0.1,
+        "band_high": 0.45
+      }
+    ],
+    "curves": {
+      "new": [
+        {
+          "week": 1,
+          "at_risk": 20,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 2,
+          "at_risk": 20,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 3,
+          "at_risk": 20,
+          "left": 3,
+          "censored": 0,
+          "hazard": 0.15,
+          "survival": 0.85,
+          "cum_left": 0.15,
+          "band_low": 0.0,
+          "band_high": 0.3
+        },
+        {
+          "week": 4,
+          "at_risk": 17,
+          "left": 1,
+          "censored": 0,
+          "hazard": 0.0588,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 5,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 6,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 7,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 8,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 9,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 10,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 11,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 12,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 13,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 14,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 15,
+          "at_risk": 16,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8,
+          "cum_left": 0.2,
+          "band_low": 0.05,
+          "band_high": 0.4
+        },
+        {
+          "week": 16,
+          "at_risk": 16,
+          "left": 1,
+          "censored": 0,
+          "hazard": 0.0625,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        },
+        {
+          "week": 17,
+          "at_risk": 15,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        },
+        {
+          "week": 18,
+          "at_risk": 15,
+          "left": 0,
+          "censored": 1,
+          "hazard": 0.0,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        },
+        {
+          "week": 19,
+          "at_risk": 14,
+          "left": 0,
+          "censored": 3,
+          "hazard": 0.0,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        },
+        {
+          "week": 20,
+          "at_risk": 11,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        },
+        {
+          "week": 21,
+          "at_risk": 11,
+          "left": 0,
+          "censored": 1,
+          "hazard": 0.0,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        },
+        {
+          "week": 22,
+          "at_risk": 10,
+          "left": 0,
+          "censored": 2,
+          "hazard": 0.0,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        },
+        {
+          "week": 23,
+          "at_risk": 8,
+          "left": 0,
+          "censored": 4,
+          "hazard": 0.0,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        },
+        {
+          "week": 24,
+          "at_risk": 4,
+          "left": 0,
+          "censored": 4,
+          "hazard": 0.0,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        },
+        {
+          "week": 25,
+          "at_risk": 0,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.75,
+          "cum_left": 0.25,
+          "band_low": 0.1,
+          "band_high": 0.45
+        }
+      ],
+      "returning": [
+        {
+          "week": 1,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 2,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 3,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 4,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 5,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 6,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 7,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 8,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 9,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 10,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 11,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 12,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 13,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 14,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 15,
+          "at_risk": 6,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 1.0,
+          "cum_left": 0.0,
+          "band_low": 0.0,
+          "band_high": 0.0
+        },
+        {
+          "week": 16,
+          "at_risk": 6,
+          "left": 1,
+          "censored": 0,
+          "hazard": 0.1667,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        },
+        {
+          "week": 17,
+          "at_risk": 5,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        },
+        {
+          "week": 18,
+          "at_risk": 5,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        },
+        {
+          "week": 19,
+          "at_risk": 5,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        },
+        {
+          "week": 20,
+          "at_risk": 5,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        },
+        {
+          "week": 21,
+          "at_risk": 5,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        },
+        {
+          "week": 22,
+          "at_risk": 5,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        },
+        {
+          "week": 23,
+          "at_risk": 5,
+          "left": 0,
+          "censored": 2,
+          "hazard": 0.0,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        },
+        {
+          "week": 24,
+          "at_risk": 3,
+          "left": 0,
+          "censored": 3,
+          "hazard": 0.0,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        },
+        {
+          "week": 25,
+          "at_risk": 0,
+          "left": 0,
+          "censored": 0,
+          "hazard": 0.0,
+          "survival": 0.8333,
+          "cum_left": 0.1667,
+          "band_low": 0.0,
+          "band_high": 0.5
+        }
+      ]
+    },
+    "warning": "20 new hires, 4 early quits. One person more or less moves the rate by about 5 points. Treat the curve as a planning range, not a fact.",
+    "early_quit_days_seen": "16 to 23",
+    "breakdowns": [
+      {
+        "by": "channel",
+        "group": "J1_SPONSOR",
+        "early_quits": 2,
+        "people": 5,
+        "share": 0.4,
+        "low": 0.1176,
+        "high": 0.7693
+      },
+      {
+        "by": "channel",
+        "group": "JOB_BOARD",
+        "early_quits": 1,
+        "people": 7,
+        "share": 0.1429,
+        "low": 0.0257,
+        "high": 0.5131
+      },
+      {
+        "by": "channel",
+        "group": "LOCAL",
+        "early_quits": 1,
+        "people": 4,
+        "share": 0.25,
+        "low": 0.0456,
+        "high": 0.6994
+      },
+      {
+        "by": "channel",
+        "group": "REFERRAL",
+        "early_quits": 0,
+        "people": 4,
+        "share": 0.0,
+        "low": 0.0,
+        "high": 0.4899
+      },
+      {
+        "by": "role",
+        "group": "Captain",
+        "early_quits": 0,
+        "people": 2,
+        "share": 0.0,
+        "low": 0.0,
+        "high": 0.6576
+      },
+      {
+        "by": "role",
+        "group": "Deckhand",
+        "early_quits": 0,
+        "people": 4,
+        "share": 0.0,
+        "low": 0.0,
+        "high": 0.4899
+      },
+      {
+        "by": "role",
+        "group": "Dock coordinator",
+        "early_quits": 1,
+        "people": 4,
+        "share": 0.25,
+        "low": 0.0456,
+        "high": 0.6994
+      },
+      {
+        "by": "role",
+        "group": "Naturalist guide",
+        "early_quits": 2,
+        "people": 7,
+        "share": 0.2857,
+        "low": 0.0822,
+        "high": 0.6411
+      },
+      {
+        "by": "role",
+        "group": "Reservations",
+        "early_quits": 1,
+        "people": 3,
+        "share": 0.3333,
+        "low": 0.0615,
+        "high": 0.7923
+      }
+    ],
+    "breakdowns_overlap": true
+  },
+  "scenarios": [
+    {
+      "name": "Rehire 35%",
+      "rehire_rate": 0.35,
+      "plan": {
+        "returning_total": 7,
+        "new_hires_total": 15,
+        "returning_by_role": {
+          "Captain": 1,
+          "Deckhand": 2,
+          "Naturalist guide": 2,
+          "Dock coordinator": 1,
+          "Reservations": 1
+        },
+        "new_hires_by_role": {
+          "Captain": 2,
+          "Deckhand": 4,
+          "Naturalist guide": 4,
+          "Dock coordinator": 3,
+          "Reservations": 2
+        }
+      },
+      "sim": {
+        "returners": {
+          "mean": 6.963,
+          "p10": 4.0,
+          "p50": 7.0,
+          "p90": 10.0
+        },
+        "new_initial": {
+          "mean": 15.037,
+          "p10": 12.0,
+          "p50": 15.0,
+          "p90": 18.0
+        },
+        "early_quits": {
+          "mean": 4.107,
+          "p10": 1.0,
+          "p50": 3.0,
+          "p90": 8.0
+        },
+        "replacements": {
+          "mean": 4.64,
+          "p10": 1.0,
+          "p50": 4.0,
+          "p90": 9.0
+        },
+        "total_hires": {
+          "mean": 19.677,
+          "p10": 15.0,
+          "p50": 19.0,
+          "p90": 25.0
+        },
+        "later_departures": {
+          "mean": 0.8905,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 3.0
+        },
+        "returner_departures": {
+          "mean": 1.1785,
+          "p10": 0.0,
+          "p50": 1.0,
+          "p90": 3.0
+        },
+        "cost": {
+          "mean": 54513.7605,
+          "p10": 42317.8386,
+          "p50": 53692.9815,
+          "p90": 67732.1033
+        },
+        "shortfall": {
+          "mean": 15.5067,
+          "p10": 3.4,
+          "p50": 13.6,
+          "p90": 30.0
+        }
+      },
+      "early_quit_share_sim": {
+        "mean": 0.191,
+        "p10": 0.0526,
+        "p50": 0.1818,
+        "p90": 0.3529
+      },
+      "hires_by_channel_mean": {
+        "J1_SPONSOR": 3.7455,
+        "JOB_BOARD": 7.8635,
+        "LOCAL": 2.766,
+        "REFERRAL": 5.302
+      },
+      "replacements_by_role": {
+        "Captain": {
+          "mean": 0.8585,
+          "p10": 0.0,
+          "p50": 1.0,
+          "p90": 2.0
+        },
+        "Deckhand": {
+          "mean": 1.183,
+          "p10": 0.0,
+          "p50": 1.0,
+          "p90": 3.0
+        },
+        "Naturalist guide": {
+          "mean": 1.0995,
+          "p10": 0.0,
+          "p50": 1.0,
+          "p90": 3.0
+        },
+        "Dock coordinator": {
+          "mean": 0.697,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 2.0
+        },
+        "Reservations": {
+          "mean": 0.802,
+          "p10": 0.0,
+          "p50": 1.0,
+          "p90": 2.0
+        }
+      },
+      "calendar": [
+        {
+          "latest_start_recruiting": "2026-10-31",
+          "channel": "J1_SPONSOR",
+          "kind": "New hire",
+          "people": 4,
+          "roles": "deckhand 1, dock coordinator 1, naturalist guide 1, reservations 1",
+          "lead_time": "16 to 24 weeks",
+          "needed_solo_by": "2027-05-01",
+          "status": "SOON (20 days away)"
+        },
+        {
+          "latest_start_recruiting": "2027-02-06",
+          "channel": "JOB_BOARD",
+          "kind": "New hire",
+          "people": 5,
+          "roles": "captain 1, deckhand 1, dock coordinator 1, naturalist guide 1, reservations 1",
+          "lead_time": "6 to 10 weeks",
+          "needed_solo_by": "2027-05-01",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-02-20",
+          "channel": "REFERRAL",
+          "kind": "New hire",
+          "people": 1,
+          "roles": "captain 1",
+          "lead_time": "4 to 8 weeks",
+          "needed_solo_by": "2027-05-01",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-02-20",
+          "channel": "RETURNING",
+          "kind": "Returning",
+          "people": 7,
+          "roles": "captain 1, deckhand 2, dock coordinator 1, naturalist guide 2, reservations 1",
+          "lead_time": "4 to 8 weeks",
+          "needed_solo_by": "2027-05-01",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-02-27",
+          "channel": "REFERRAL",
+          "kind": "New hire",
+          "people": 1,
+          "roles": "naturalist guide 1",
+          "lead_time": "4 to 8 weeks",
+          "needed_solo_by": "2027-05-08",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-03-20",
+          "channel": "REFERRAL",
+          "kind": "New hire",
+          "people": 1,
+          "roles": "deckhand 1",
+          "lead_time": "4 to 8 weeks",
+          "needed_solo_by": "2027-05-29",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-04-03",
+          "channel": "REFERRAL",
+          "kind": "New hire",
+          "people": 1,
+          "roles": "dock coordinator 1",
+          "lead_time": "4 to 8 weeks",
+          "needed_solo_by": "2027-06-12",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-04-10",
+          "channel": "LOCAL",
+          "kind": "New hire",
+          "people": 2,
+          "roles": "deckhand 1, naturalist guide 1",
+          "lead_time": "3 to 6 weeks",
+          "needed_solo_by": "2027-06-05",
+          "status": "OK"
+        }
+      ]
+    },
+    {
+      "name": "Rehire 50%",
+      "rehire_rate": 0.5,
+      "plan": {
+        "returning_total": 10,
+        "new_hires_total": 12,
+        "returning_by_role": {
+          "Captain": 1,
+          "Deckhand": 3,
+          "Naturalist guide": 3,
+          "Dock coordinator": 2,
+          "Reservations": 1
+        },
+        "new_hires_by_role": {
+          "Captain": 2,
+          "Deckhand": 3,
+          "Naturalist guide": 3,
+          "Dock coordinator": 2,
+          "Reservations": 2
+        }
+      },
+      "sim": {
+        "returners": {
+          "mean": 9.928,
+          "p10": 7.0,
+          "p50": 10.0,
+          "p90": 13.0
+        },
+        "new_initial": {
+          "mean": 12.072,
+          "p10": 9.0,
+          "p50": 12.0,
+          "p90": 15.0
+        },
+        "early_quits": {
+          "mean": 3.3345,
+          "p10": 0.0,
+          "p50": 3.0,
+          "p90": 7.0
+        },
+        "replacements": {
+          "mean": 4.034,
+          "p10": 1.0,
+          "p50": 4.0,
+          "p90": 8.0
+        },
+        "total_hires": {
+          "mean": 16.106,
+          "p10": 12.0,
+          "p50": 16.0,
+          "p90": 21.0
+        },
+        "later_departures": {
+          "mean": 0.728,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 2.0
+        },
+        "returner_departures": {
+          "mean": 1.696,
+          "p10": 0.0,
+          "p50": 1.0,
+          "p90": 4.1
+        },
+        "cost": {
+          "mean": 44997.0752,
+          "p10": 32812.6151,
+          "p50": 44378.6558,
+          "p90": 57803.6812
+        },
+        "shortfall": {
+          "mean": 14.2182,
+          "p10": 3.2,
+          "p50": 12.4,
+          "p90": 28.4
+        }
+      },
+      "early_quit_share_sim": {
+        "mean": 0.1885,
+        "p10": 0.0,
+        "p50": 0.1765,
+        "p90": 0.3571
+      },
+      "hires_by_channel_mean": {
+        "J1_SPONSOR": 3.088,
+        "JOB_BOARD": 6.8665,
+        "LOCAL": 1.933,
+        "REFERRAL": 4.2185
+      },
+      "replacements_by_role": {
+        "Captain": {
+          "mean": 0.8145,
+          "p10": 0.0,
+          "p50": 1.0,
+          "p90": 2.0
+        },
+        "Deckhand": {
+          "mean": 0.9855,
+          "p10": 0.0,
+          "p50": 1.0,
+          "p90": 3.0
+        },
+        "Naturalist guide": {
+          "mean": 0.9235,
+          "p10": 0.0,
+          "p50": 1.0,
+          "p90": 2.0
+        },
+        "Dock coordinator": {
+          "mean": 0.574,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 2.0
+        },
+        "Reservations": {
+          "mean": 0.7365,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 2.0
+        }
+      },
+      "calendar": [
+        {
+          "latest_start_recruiting": "2026-10-31",
+          "channel": "J1_SPONSOR",
+          "kind": "New hire",
+          "people": 4,
+          "roles": "deckhand 1, dock coordinator 1, naturalist guide 1, reservations 1",
+          "lead_time": "16 to 24 weeks",
+          "needed_solo_by": "2027-05-01",
+          "status": "SOON (20 days away)"
+        },
+        {
+          "latest_start_recruiting": "2027-02-06",
+          "channel": "JOB_BOARD",
+          "kind": "New hire",
+          "people": 2,
+          "roles": "captain 1, reservations 1",
+          "lead_time": "6 to 10 weeks",
+          "needed_solo_by": "2027-05-01",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-02-13",
+          "channel": "JOB_BOARD",
+          "kind": "New hire",
+          "people": 1,
+          "roles": "naturalist guide 1",
+          "lead_time": "6 to 10 weeks",
+          "needed_solo_by": "2027-05-08",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-02-20",
+          "channel": "REFERRAL",
+          "kind": "New hire",
+          "people": 1,
+          "roles": "captain 1",
+          "lead_time": "4 to 8 weeks",
+          "needed_solo_by": "2027-05-01",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-02-20",
+          "channel": "RETURNING",
+          "kind": "Returning",
+          "people": 10,
+          "roles": "captain 1, deckhand 3, dock coordinator 2, naturalist guide 3, reservations 1",
+          "lead_time": "4 to 8 weeks",
+          "needed_solo_by": "2027-05-01",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-03-06",
+          "channel": "JOB_BOARD",
+          "kind": "New hire",
+          "people": 1,
+          "roles": "deckhand 1",
+          "lead_time": "6 to 10 weeks",
+          "needed_solo_by": "2027-05-29",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-03-20",
+          "channel": "JOB_BOARD",
+          "kind": "New hire",
+          "people": 1,
+          "roles": "dock coordinator 1",
+          "lead_time": "6 to 10 weeks",
+          "needed_solo_by": "2027-06-12",
+          "status": "OK"
+        },
+        {
+          "latest_start_recruiting": "2027-03-27",
+          "channel": "REFERRAL",
+          "kind": "New hire",
+          "people": 2,
+          "roles": "deckhand 1, naturalist guide 1",
+          "lead_time": "4 to 8 weeks",
+          "needed_solo_by": "2027-06-05",
+          "status": "OK"
+        }
+      ]
+    }
+  ],
+  "comparison": {
+    "base": "Rehire 35%",
+    "alt": "Rehire 50%",
+    "diff": {
+      "returners": {
+        "mean": -2.965,
+        "p10": -5.0,
+        "p50": -3.0,
+        "p90": -1.0
+      },
+      "new_initial": {
+        "mean": 2.965,
+        "p10": 1.0,
+        "p50": 3.0,
+        "p90": 5.0
+      },
+      "early_quits": {
+        "mean": 0.7725,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 2.0
+      },
+      "replacements": {
+        "mean": 0.606,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 2.0
+      },
+      "total_hires": {
+        "mean": 3.571,
+        "p10": 1.0,
+        "p50": 3.0,
+        "p90": 6.0
+      },
+      "cost": {
+        "mean": 9516.6853,
+        "p10": 2617.293,
+        "p50": 8773.3386,
+        "p90": 17355.1959
+      },
+      "shortfall": {
+        "mean": 1.2885,
+        "p10": -2.4,
+        "p50": 0.0,
+        "p90": 5.8
+      },
+      "share_alt_cheaper": 0.9625
+    }
+  },
+  "standby": {
+    "replacements_p50": 4.0,
+    "replacements_p10": 1.0,
+    "replacements_p90": 9.0,
+    "first_departure_p10": "2027-05-01",
+    "first_departure_p50": "2027-05-04",
+    "ready_by": "2027-05-01",
+    "start_building_by": "2027-03-06",
+    "size": 9,
+    "channels": [
+      "Job boards and ads",
+      "Staff referral",
+      "Local hire (lives in Juneau)"
+    ],
+    "text": "Expect 4 replacement hires (P50; P10 1 to P90 9). In half of the simulated seasons the first departure came by May 4, 2027 (in 1 of 10, by May 1, 2027). Keep a standby list of about 9 pre-screened people from short-lead channels (Job boards and ads; Staff referral; Local hire (lives in Juneau)) ready by May 1, 2027; start building it by Mar 6, 2027 at the latest."
+  },
+  "first_deadline": {
+    "date": "2026-10-31",
+    "channel": "J1_SPONSOR",
+    "channel_label": "J-1 sponsor",
+    "people": 4,
+    "roles": "deckhand 1, dock coordinator 1, naturalist guide 1, reservations 1",
+    "status": "SOON (20 days away)"
+  },
+  "workload": {
+    "items": 18,
+    "check_ins": 9,
+    "watch": 5,
+    "overtime": 4,
+    "thresholds": {
+      "max_weekly_hours": 50,
+      "min_days_off_per_week": 1,
+      "max_consecutive_days": 7,
+      "overtime_daily_hours": 8,
+      "overtime_weekly_hours": 40
+    }
+  },
+  "simulation": {
+    "runs": 2000,
+    "seed": 20270501
+  },
+  "kit_check": {
+    "new_hires": 15,
+    "early_quit_share": 0.2,
+    "expected_hires": 18.75,
+    "all_in_cost": 2794.9,
+    "simple_cost": 52404.375
+  }
+}

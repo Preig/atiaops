@@ -1,0 +1,2 @@
+date,departure,vessel_or_vehicle_id,guide_staff_id,guests_at_site,arrived_at_site,left_site,daily_allocation,visits_so_far_today,allocation_left_today,notes_no_names,recorded_by_staff_id
+2027-05-01,08:00,"VAN-2 (EXAMPLE, fictional)",S07,14,10:20,11:10,100,14,86,EXAMPLE ROW: delete before use,S03

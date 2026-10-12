@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>Nine AI tools for three Alaska operations pains · ATIA Operations Kit</title>
+<meta name="description" content="ATIA 2026 take-home kit: nine practical AI tools for staff turnover, transit bottlenecks and capacity caps, from a free afternoon to a developer project. Operations first. Works on a phone; nothing you type leaves it.">
+<meta property="og:title" content="Nine AI tools for three Alaska operations pains · ATIA 2026 take-home kit">
+<meta property="og:description" content="Staff turnover, transit bottlenecks, capacity caps. AI without the magic: a process step with a defect rate and a control plan. AI drafts. You approve.">
+<meta name="theme-color" content="#5c8727">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='10' width='4' height='5' fill='%235c8727'/%3E%3Crect x='6' y='6' width='4' height='9' fill='%235c8727'/%3E%3Crect x='11' y='1' width='4' height='14' fill='%230d92b4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/kit.css">
+<script src="assets/kit.js" defer></script>
+<style>
+.skip{position:absolute;left:-9999px;top:8px;z-index:10;background:#fff;color:var(--teal-d);padding:8px 14px;border:2px solid var(--teal);border-radius:4px;font-weight:bold}
+.skip:focus{left:12px}
+header.kit .crumbs{margin-bottom:10px}
+section[id],div[id]{scroll-margin-top:12px}
+.safety{margin-top:0}
+.safety .big{font-size:20px;font-weight:bold;color:var(--teal-d);margin:0 0 6px}
+.safety ul{margin:6px 0 4px;padding-left:1.2em}
+.safety li{margin:.35em 0}
+.safety pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14.5px/1.55 Consolas,"Courier New",monospace;margin:10px 0 0;color:#222}
+/* DMAIC strip */
+.dmaic{list-style:none;padding:0;margin:12px 0 4px;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.dmaic li{background:#fff;border:1px solid var(--line);border-top:5px solid var(--green);border-radius:4px;padding:10px 12px}
+.dmaic li.imp{border-top-color:var(--teal);background:var(--teal-t)}
+.dmaic .l{display:inline-block;width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;font-weight:bold;text-align:center;line-height:28px;margin-right:6px}
+.dmaic li.imp .l{background:var(--teal-d)}
+.dmaic b{color:var(--green-d)}
+.dmaic li.imp b{color:var(--teal-d)}
+.dmaic p{font-size:14.5px;line-height:1.45;margin:.4em 0 0}
+/* start row */
+.start{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+.start li{display:flex}
+a.tile{display:flex;flex-direction:column;gap:5px;width:100%;background:#fff;border:1px solid var(--line);border-top:5px solid var(--green);border-radius:4px;padding:14px 16px;text-decoration:none;color:var(--ink)}
+a.tile.first{border-top-color:var(--teal);background:var(--teal-t)}
+a.tile.first .step,a.tile.first .ct{color:#475569}
+a.tile:hover,a.tile:focus-visible{border-color:var(--teal);box-shadow:0 2px 10px rgba(30,41,59,.10)}
+a.tile:hover .nm,a.tile:focus-visible .nm{text-decoration:underline}
+.tile .step{font-size:12px;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-m)}
+.tile .nm{font-weight:bold;font-size:18px;line-height:1.3;color:var(--teal-d)}
+.tile .wt{font-size:15px;line-height:1.45}
+.tile .ct{font-size:14px;color:var(--slate-m);margin-top:auto;padding-top:4px}
+.tile .tonight{font-size:14px;background:#fff;border:1px dashed var(--teal);border-radius:4px;padding:6px 9px;margin-top:4px}
+/* map */
+.map-head,.prow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,3fr);gap:12px}
+.map-head .cols,.prow .cells{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;margin:0;padding:0}
+.map-head{margin:6px 0 8px;align-items:end}
+.colhead{font-size:13px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+.colhead span.sub{display:block;font-weight:normal;letter-spacing:0;text-transform:none;font-size:13.5px;color:var(--slate-m)}
+.colhead.c0{color:var(--slate-m);font-weight:normal;letter-spacing:0;text-transform:none;font-size:13.5px}
+.prow{padding:14px 10px;margin:0 -10px;border-top:1px solid var(--line);border-radius:4px}
+.prow:target{background:var(--green-t);box-shadow:inset 0 0 0 2px var(--green)}
+.pain .pno{font-size:12px;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-m)}
+.pain h3.ph{margin:0 0 .35em;color:var(--green)}
+.pain .pn{display:block;font-size:20px;line-height:1.25;color:var(--green);margin-top:.15em}
+.pain .pc{display:block;font-size:15px;color:var(--slate);font-weight:normal}
+.pain p{font-size:14.5px;line-height:1.45;margin:.35em 0}
+.pain p b{color:var(--slate)}
+.prow .cells li{display:flex}
+a.cell{display:flex;flex-direction:column;gap:4px;width:100%;background:#fff;border:1px solid var(--line);border-left:5px solid var(--green);border-radius:4px;padding:12px 14px;text-decoration:none;color:var(--ink)}
+a.cell.r2{border-left-color:var(--teal)}
+a.cell.r3{border-left-color:var(--teal-d)}
+a.cell:hover,a.cell:focus-visible{border-color:var(--teal);box-shadow:0 2px 10px rgba(30,41,59,.10)}
+a.cell:hover .nm,a.cell:focus-visible .nm{text-decoration:underline}
+.cell .rl{font-size:12px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:var(--slate-m)}
+.cell .nm{font-weight:bold;font-size:16.5px;line-height:1.3;color:var(--teal-d)}
+.cell .wt{font-size:14.5px;line-height:1.45}
+.cell .ct{font-size:13.5px;line-height:1.4;color:var(--slate-m);margin-top:auto;padding-top:4px}
+.source{font-size:13.5px;color:var(--slate-m);margin:14px 0 0;border-top:1px solid var(--line);padding-top:10px}
+.team-card{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.team-card>div{flex:1 1 320px}
+.team-card h2{margin-top:0}
+.numbers td.dir{font-weight:bold;white-space:nowrap}
+.numbers th[scope=row]{background:#fff;color:var(--green-d)}
+p.note{font-size:14.5px;color:var(--slate-m)}
+.frame{list-style:none;padding:0;margin:12px 0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.frame li{background:#fff;border:1px solid var(--line);border-top:5px solid var(--green);border-radius:4px;padding:12px 14px}
+.frame li:nth-child(2){border-top-color:var(--teal)}
+.frame li:nth-child(3){border-top-color:var(--teal-d)}
+.frame .days{font-size:12px;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-m)}
+.frame .what{display:block;font-weight:bold;font-size:17px;color:var(--green);margin:2px 0 4px}
+.frame p{font-size:15px;margin:0}
+.more{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.more li{display:flex}
+.more a.tile{border-top-color:var(--sage)}
+.ext{font-size:13px;color:var(--slate-m)}
+@media(max-width:900px){.map-head{display:none}.prow{grid-template-columns:1fr;gap:10px}}
+@media(max-width:640px){
+  header.kit .tool-nav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 2px 8px;scrollbar-width:thin}
+  header.kit .tool-nav a{white-space:nowrap;flex:0 0 auto}
+  .prow .cells{grid-template-columns:1fr}
+  table.stack thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  table.stack,table.stack tbody,table.stack tr,table.stack th,table.stack td{display:block;width:100%}
+  table.stack{background:transparent}
+  table.stack tr{background:#fff;border:1px solid #ccd2c8;border-radius:4px;margin:0 0 10px}
+  table.stack th,table.stack td{border:0;border-bottom:1px solid #eef1ec}
+  table.stack tr>*:last-child{border-bottom:0}
+  table.stack td::before{content:attr(data-label);display:block;font-size:11.5px;font-weight:bold;letter-spacing:.07em;text-transform:uppercase;color:var(--slate-m)}
+  table.stack th[scope=row]{background:var(--green-t)}
+}
+@media print{.skip{display:none}a.tile,a.cell,.prow{break-inside:avoid}}
+</style>
+</head>
+<body data-page="hub">
+<a class="skip" href="#map">Skip to the map of nine tools</a>
+<div class="band" aria-hidden="true"></div>
+<header class="kit">
+  <p class="crumbs">ATIA 2026 Annual Convention · Wedgewood Resort, Fairbanks · October 14, 2026 · Operations Kit</p>
+  <p class="kicker"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>ATIA 2026 · Take-home kit</p>
+  <h1>Nine AI tools for three Alaska operations pains</h1>
+  <p class="lede">Staff turnover, transit bottlenecks and capacity caps. Each pain has three tools, from a free afternoon to a developer project, with prompts, builders and downloadable files. Operations first. Free to use, and it works on your phone.</p>
+  <ul class="meta">
+    <li><b>9</b> tools, 3 rungs each pain</li><li><b>Start</b> Season Leak Audit</li><li><b>Cost</b> free to use</li><li><b>Checked</b> 11 Oct 2026</li>
+  </ul>
+  <nav class="tool-nav" data-toolnav="hub" data-root="./" aria-label="All tools in the kit">
+    <a href="./" aria-current="page">All tools</a>
+    <a href="leak/">Season Leak Audit</a>
+    <a href="1a/">1.a</a> <a href="1b/">1.b</a> <a href="1c/">1.c</a>
+    <a href="2a/">2.a</a> <a href="2b/">2.b</a> <a href="2c/">2.c</a>
+    <a href="3a/">3.a</a> <a href="3b/">3.b</a> <a href="3c/">3.c</a>
+    <a href="team/">For your team</a>
+  </nav>
+</header>
+
+<main class="kit" id="main">
+
+  <section class="callout safety" aria-labelledby="safe-h">
+    <h2 id="safe-h" class="big">AI drafts. You approve.</h2>
+    <ul>
+      <li><strong>Treat AI as a process step with a defect rate.</strong> It drafts, sorts, predicts and matches, fast, and it is sometimes confidently wrong. Every prompt marks its result DRAFT - PENDING OWNER REVIEW. A person checks it against your own facts before it goes anywhere. <span class="lbl">Recommendation</span></li>
+      <li><strong>Use approved facts only.</strong> Your fact sheet, prices, policies and last season's numbers. Where a fact is missing, the prompts tell the AI to leave a marked gap, such as [FILL], instead of guessing. <span class="lbl">Recommendation</span></li>
+      <li><strong>Never paste personal data</strong> about guests or staff: no names, emails, phone numbers, payment details, IDs or medical details. Dates, counts, roles and booking IDs are enough. <span class="lbl">Recommendation</span> If certain personal information is breached, Alaska law requires notification (AS 45.48). <span class="lbl legal">Legal mandate</span></li>
+      <li><strong>People decisions stay with people.</strong> Nothing in this kit scores or ranks an individual employee. Federal anti-discrimination law (Title VII, ADA, ADEA) applies to hiring decisions whatever tool helps make them. <span class="lbl legal">Legal mandate</span></li>
+      <li><strong>Safety calls stay with a qualified person.</strong> Weather go or no-go, water, glacier, wildlife and vessel limits: AI can draft the wording, a qualified person decides. <span class="lbl">Recommendation</span> Humpback whales in Alaska waters may not be approached within 100 yards (NOAA Fisheries, 50 CFR 216.18). <span class="lbl legal">Legal mandate</span></li>
+      <li><strong>The examples are fictional.</strong> Every tool uses Channel Light Excursions, Juneau, and its partners Kestrel Shuttle and Tern Point Lodge. All three are invented teaching businesses, and all of their numbers are invented.</li>
+    </ul>
+    <details>
+      <summary>See the fictional teaching facts</summary>
+      <pre id="demo-facts">FICTIONAL TEACHING BUSINESS: Channel Light Excursions, Juneau
+Offer: Whale and Glacier Combo, about 4.5 hours dock to dock. Shuttle from the downtown cruise docks to Auke Bay (about 25 minutes), 2.5-hour whale-watching cruise, then a 50-minute stop at Mendenhall Glacier under a commercial-use allocation of 100 guest visits per day. Departures from the downtown docks 8:00, 10:30, 13:00, 15:30, May 1 to September 30. 30 seats per departure (vessel certificate limit). Minimum age 3. Adult $219, child (3 to 12) $169.
+Second product: Whale Only, 3 hours, adult $159, child $119. Sold when the glacier allocation for the day is used up, and to guests who skip the glacier.
+Policies: runs in rain. Cancels for a marine weather warning or a vessel safety call by the captain, with a choice of rebooking or a full refund. Guests booked through a cruise line follow the cruise line&#x27;s terms. We plan every cruise-guest departure to return to the dock at least 60 minutes before the ship&#x27;s all-aboard time.
+Channels: cruise line shore-excursion desks (about half of guests), two OTAs, own website and phone.
+Team: 22 seasonal positions (captains 3, deckhands 5, naturalist guides 6, dock coordinators 5, reservations 3). Staff housing: 12 leased beds.
+Not supplied (ask the owner): group rates, private charters, pet policy, vessel accessibility, the exact refund terms of each cruise line contract.
+
+Partner A: Kestrel Shuttle (FICTIONAL). Dock to Auke Bay and glacier transfers, two 24-seat buses and one 14-seat van. Needs 30 minutes notice for an extra run.
+Partner B: Tern Point Lodge (FICTIONAL). 18-room lodge 20 minutes from Auke Bay. Packages for independent travelers in May, early June and September.</pre>
+      <div class="btns"><button type="button" class="secondary" data-copy="demo-facts">Copy the fictional facts</button></div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </details>
+  </section>
+
+  <section class="card" id="method" aria-labelledby="method-h">
+    <h2 id="method-h" style="margin-top:0">The method: DMAIC, not the news</h2>
+    <p>Tools change every month. A defined problem, a baseline and a control plan do not. My read: most AI disappointment starts at Improve, with a tool bought before the problem was defined or measured.</p>
+    <ol class="dmaic">
+      <li><span class="l" aria-hidden="true">D</span><b>Define</b><p>One pain, one number. Pick from <a href="#numbers">the four numbers</a>.</p></li>
+      <li><span class="l" aria-hidden="true">M</span><b>Measure</b><p>A baseline, as a range: the <a href="leak/">Season Leak Audit</a>.</p></li>
+      <li><span class="l" aria-hidden="true">A</span><b>Analyze</b><p>Causes before tools: <a href="1a/">Pareto</a>, <a href="2a/">journey FMEA</a>, <a href="3a/">slot-use map</a>.</p></li>
+      <li class="imp"><span class="l" aria-hidden="true">I</span><b>Improve</b><p>Now AI comes in: drafts, a crew coach, a re-planner, an optimizer.</p></li>
+      <li><span class="l" aria-hidden="true">C</span><b>Control</b><p>A person approves, a test set runs monthly, the number is tracked season over season.</p></li>
+    </ol>
+  </section>
+
+  <section class="card teal" id="start" aria-labelledby="start-h">
+    <h2 id="start-h" style="margin-top:0">Start here tonight</h2>
+    <p>Run the Season Leak Audit first, so you know which pain costs you most. Then the three basic rungs: an afternoon each, free tier, no code.</p>
+    <ol class="start">
+      <li><a class="tile first" href="leak/">
+        <span class="step">First · Season Leak Audit</span>
+        <span class="nm">Put a dollar range on each pain</span>
+        <span class="wt">Last season's hires, disruptions and slot use go in. A range for each leak comes out, with the tool to start with.</span>
+        <span class="tonight"><b>Tonight:</b> ten minutes with last season's numbers.</span>
+        <span class="ct">About 10 minutes · nothing leaves your phone</span>
+      </a></li>
+      <li><a class="tile" href="1a/">
+        <span class="step"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Then · Pain 1 · 1.a</span>
+        <span class="nm">Rehire before you recruit</span>
+        <span class="wt">A Pareto of season-end notes, the top two fixes, rehire letters before any ad.</span>
+        <span class="ct">An afternoon · free tier · best in October</span>
+      </a></li>
+      <li><a class="tile" href="2a/">
+        <span class="step"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Then · Pain 2 · 2.a</span>
+        <span class="nm">Journey FMEA and playbook</span>
+        <span class="wt">Rank how the trip to your dock fails, and write the standard response and messages for the top five.</span>
+        <span class="ct">An afternoon · free tier</span>
+      </a></li>
+      <li><a class="tile" href="3a/">
+        <span class="step"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Then · Pain 3 · 3.a</span>
+        <span class="nm">Fill every capped slot</span>
+        <span class="wt">A slot-use map from your own export: the empty slots, the full days, and which constraint actually binds.</span>
+        <span class="ct">An afternoon · free tier</span>
+      </a></li>
+    </ol>
+  </section>
+
+  <section class="card" id="map" aria-labelledby="map-h">
+    <h2 id="map-h" style="margin-top:0">The map: three pains, nine tools</h2>
+    <p>Rows are the three pains. Columns are rungs of difficulty. Tags show where each tool pays: <span class="focus ops">OPS</span> operations, <span class="focus cx">CX</span> guest experience, <span class="focus product">PRODUCT</span> product development. Each rung feeds the next, so start with the basic rung on all three and climb only what you can measure.</p>
+
+    <div class="map-head" aria-hidden="true">
+      <div class="colhead c0">Pain, and the Lean lens</div>
+      <div class="cols">
+        <div class="colhead"><span class="rung r1"><i></i><i></i><i></i></span>Basic<span class="sub">Free tier · an afternoon · no code</span></div>
+        <div class="colhead"><span class="rung r2"><i></i><i></i><i></i></span>Intermediate<span class="sub">Paid tier or no-code · a day to a week</span></div>
+        <div class="colhead"><span class="rung r3"><i></i><i></i><i></i></span>Advanced<span class="sub">Developer or analyst · weeks</span></div>
+      </div>
+    </div>
+
+    <div class="prow" id="pain1">
+      <div class="pain">
+        <h3 class="ph"><span class="pno">Pain 1</span> <span class="pn">Staff turnover</span><span class="pc">recruiting and retraining cost</span></h3>
+        <p><b>In Alaska:</b> 54.2% of accommodation workers and 35.2% across visitor-related industries were nonresidents in 2024 (Alaska DOLWD). My read: a large share of every crew is new each spring, and the know-how leaves each fall.</p>
+        <p><b>Lean lens:</b> every early quit is rework: recruiting, travel, housing and training done twice for one position.</p>
+      </div>
+      <ul class="cells" aria-label="Pain 1 tools">
+        <li><a class="cell r1" href="1a/">
+          <span class="rl"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Basic · 1.a <span class="focus ops">OPS</span></span>
+          <span class="nm">Rehire before you recruit</span>
+          <span class="wt">Pareto of season-end notes, rehire letters, an honest job post with checkable facts.</span>
+          <span class="ct">An afternoon · free tier</span>
+        </a></li>
+        <li><a class="cell r2" href="1b/">
+          <span class="rl"><span class="rung r2" aria-hidden="true"><i></i><i></i><i></i></span>Intermediate · 1.b <span class="focus ops">OPS</span> <span class="focus cx">CX</span></span>
+          <span class="nm">Standard work and crew coach</span>
+          <span class="wt">Procedures out of one head, and a coach that answers new crew only from them.</span>
+          <span class="ct">A day to set up, then an hour a procedure · paid tier</span>
+        </a></li>
+        <li><a class="cell r3" href="1c/">
+          <span class="rl"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>Advanced · 1.c <span class="focus ops">OPS</span></span>
+          <span class="nm">Season staffing model</span>
+          <span class="wt">Your attrition curve turned into a hiring plan by date and channel, with cost ranges.</span>
+          <span class="ct">1 to 3 weeks · analyst or developer</span>
+        </a></li>
+      </ul>
+    </div>
+
+    <div class="prow" id="pain2">
+      <div class="pain">
+        <h3 class="ph"><span class="pno">Pain 2</span> <span class="pn">Transit bottlenecks</span><span class="pc">lost operational revenue</span></h3>
+        <p><b>In Alaska:</b> The Denali Park Road was cut at Pretty Rocks for five seasons (2021 to 2026); two state ferries were out of summer 2026 revenue service; about 1.97 million cruise visitors were expected in 2026, through the same docks and roads. No statewide figure for revenue lost to transit disruption exists: measure your own with 2.c.</p>
+        <p><b>Lean lens:</b> arrival-time variation is an input you do not control. Detect early, respond with standard work, price the losses by cause.</p>
+      </div>
+      <ul class="cells" aria-label="Pain 2 tools">
+        <li><a class="cell r1" href="2a/">
+          <span class="rl"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Basic · 2.a <span class="focus cx">CX</span> <span class="focus ops">OPS</span></span>
+          <span class="nm">Journey FMEA and playbook</span>
+          <span class="wt">Rank failure modes on the way to your dock; standard responses and guest messages for the top five.</span>
+          <span class="ct">An afternoon · free tier</span>
+        </a></li>
+        <li><a class="cell r2" href="2b/">
+          <span class="rl"><span class="rung r2" aria-hidden="true"><i></i><i></i><i></i></span>Intermediate · 2.b <span class="focus ops">OPS</span></span>
+          <span class="nm">Arrival watch and backfill</span>
+          <span class="wt">Watch the port schedule, alerts and bookings; drafts and waitlist offers go to an approval queue.</span>
+          <span class="ct">About a week · no-code automation · monthly fee</span>
+        </a></li>
+        <li><a class="cell r3" href="2c/">
+          <span class="rl"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>Advanced · 2.c <span class="focus ops">OPS</span></span>
+          <span class="nm">Re-planner and loss ledger</span>
+          <span class="wt">Re-plan a delayed day under seats and all-aboard limits; lost revenue by cause, season over season.</span>
+          <span class="ct">3 to 6 weeks · developer</span>
+        </a></li>
+      </ul>
+    </div>
+
+    <div class="prow" id="pain3">
+      <div class="pain">
+        <h3 class="ph"><span class="pno">Pain 3</span> <span class="pn">Capacity caps</span><span class="pc">growth stalls at the cap</span></h3>
+        <p><b>In Alaska:</b> Juneau limits cruise arrivals to 16,000 a day from 2026 (12,000 on Saturdays); Mendenhall Glacier commercial tours are capped at 517,650 visitors a season and sold out mid-season in 2023; Glacier Bay admits two cruise ships a day. Most operators statewide are not under a hard cap: check which constraint binds you.</p>
+        <p><b>Lean lens:</b> Theory of Constraints. Identify the constraint that actually binds, exploit it, subordinate everything else to it, then grow where it does not bind.</p>
+      </div>
+      <ul class="cells" aria-label="Pain 3 tools">
+        <li><a class="cell r1" href="3a/">
+          <span class="rl"><span class="rung r1" aria-hidden="true"><i></i><i></i><i></i></span>Basic · 3.a <span class="focus ops">OPS</span></span>
+          <span class="nm">Fill every capped slot</span>
+          <span class="wt">Slot-use map by month and weekday; a pricing and packaging memo you decide on.</span>
+          <span class="ct">An afternoon · free tier</span>
+        </a></li>
+        <li><a class="cell r2" href="3b/">
+          <span class="rl"><span class="rung r2" aria-hidden="true"><i></i><i></i><i></i></span>Intermediate · 3.b <span class="focus product">PRODUCT</span></span>
+          <span class="nm">Off-cap product lab</span>
+          <span class="wt">Light days in next season's ship schedule, product concepts that avoid the cap, a scoring grid to kill most of them.</span>
+          <span class="ct">About a week · paid tier</span>
+        </a></li>
+        <li><a class="cell r3" href="3c/">
+          <span class="rl"><span class="rung r3" aria-hidden="true"><i></i><i></i><i></i></span>Advanced · 3.c <span class="focus ops">OPS</span></span>
+          <span class="nm">Revenue-per-slot optimizer</span>
+          <span class="wt">Product mix and price options per day type, tested across ranges; an evidence pack of actual use.</span>
+          <span class="ct">3 to 6 weeks · analyst or developer</span>
+        </a></li>
+      </ul>
+    </div>
+
+    <p class="source">Sources: Alaska DOLWD, <a href="https://www.legfin.akleg.gov/BudgetBackupDocuments/FY2027/LegReports/Report182.pdf" target="_blank" rel="noopener"><cite>Nonresidents Working in Alaska, 2024</cite></a> (Feb 2026); <a href="https://alaskapublic.org/news/alaska-desk/2026-09-18/after-5-years-a-bridge-to-reconnect-the-denali-park-road-is-finally-open" target="_blank" rel="noopener">Alaska Public Media</a> (Sep 18, 2026); <a href="https://dot.alaska.gov/amhs/doc/summer-considerations-2026.pdf" target="_blank" rel="noopener">AMHS summer 2026 schedule considerations</a> (Dec 29, 2025); <a href="https://live.laborstats.alaska.gov/sites/default/files/trends/may26art2.pdf" target="_blank" rel="noopener">Alaska Economic Trends</a> (May 2026); <a href="https://maritime-executive.com/article/juneau-and-cruise-lines-agree-to-cap-on-daily-passengers-starting-in-2026" target="_blank" rel="noopener">Maritime Executive</a> (Jun 7, 2024); <a href="https://www.ktoo.org/2023/07/21/as-mendenhall-glacier-hits-tour-capacity-juneau-visitors-are-opting-for-the-city-bus/" target="_blank" rel="noopener">KTOO</a> (Jul 21, 2023); 36 CFR 13.1160. Checked 11 Oct 2026. "Lean lens" lines are the presenter's interpretation. Time and cost are estimates.</p>
+  </section>
+
+  <section class="card teal" id="team" aria-labelledby="team-h">
+    <div class="team-card">
+      <div>
+        <h2 id="team-h">For your team</h2>
+        <p>Twelve lines about your business, written once and pasted first, plus three ready-to-paste assistants: a Crew Coach, a Disruption Desk and a Slot Planner. AI drafts. You approve.</p>
+        <p class="hint">The assistants are draft instructions, not yet tested in a live account. Try them with the fictional example first.</p>
+      </div>
+      <a class="button" href="team/">Open the team tools</a>
+    </div>
+  </section>
+
+  <section class="card" id="plan" aria-labelledby="plan-h">
+    <h2 id="plan-h" style="margin-top:0">Your first 30 days: DMAIC in four sittings</h2>
+    <p>One sitting a week. Off season is the right time: the data is fresh and nobody is on the dock.</p>
+    <ol class="steps">
+      <li><strong>Week 1, Define and measure:</strong> run the <a href="leak/">Season Leak Audit</a> with last season's numbers and write down the four baselines below.</li>
+      <li><strong>Week 2, Analyze the crew:</strong> the Pareto of season-end notes in <a href="1a/">1.a</a>. Rehire letters go out before any ad.</li>
+      <li><strong>Week 3, Analyze the road:</strong> the <a href="2a/">journey FMEA</a> and the message pack for your top five failure modes. Decide your rebook and refund rules before May. <span class="lbl">Policy choice</span></li>
+      <li><strong>Week 4, Analyze the cap:</strong> the <a href="3a/">slot-use map</a>. Then choose one intermediate rung from <a href="#map">the map</a> for spring. Bring your numbers to a no-cost Alaska SBDC advising session at <a href="https://aksbdc.org/" target="_blank" rel="noopener">aksbdc.org</a>. <span class="lbl">Recommendation</span></li>
+    </ol>
+
+    <h3 id="numbers">The four numbers</h3>
+    <p>Your control chart. Count them the same way every time. The last column shows which tools move each number.</p>
+    <table class="numbers stack">
+      <thead>
+        <tr><th scope="col">Number</th><th scope="col">How to count it</th><th scope="col">How often</th><th scope="col">You want it</th><th scope="col">Moved by</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">1. Rehire rate</th><td data-label="How to count it">Staff who return this season, divided by staff eligible to return from last season (finished in good standing).</td><td data-label="How often">Each spring</td><td class="dir" data-label="You want it">Up</td><td data-label="Moved by">1.a, 1.b, 1.c</td></tr>
+        <tr><th scope="row">2. Early-quit rate</th><td data-label="How to count it">New hires who leave within their first 30 days, divided by new hires who started.</td><td data-label="How often">Each season</td><td class="dir" data-label="You want it">Down</td><td data-label="Moved by">1.a, 1.b, 1.c</td></tr>
+        <tr><th scope="row">3. Disruption recovery rate</th><td data-label="How to count it">Guests on transit- or weather-disrupted bookings who were rebooked or whose seat was refilled, divided by all guests on disrupted bookings.</td><td data-label="How often">Monthly in season</td><td class="dir" data-label="You want it">Up</td><td data-label="Moved by">2.a, 2.b, 2.c</td></tr>
+        <tr><th scope="row">4. Revenue per allocated slot</th><td data-label="How to count it">Net revenue of the capped product, divided by allocated slots for the season. Report allocation used % beside it.</td><td data-label="How often">Each season</td><td class="dir" data-label="You want it">Up</td><td data-label="Moved by">3.a, 3.b, 3.c</td></tr>
+      </tbody>
+    </table>
+    <p class="note">No targets on purpose: set them after a season of your own data. A few hundred events a season make month-to-month swings mostly noise, so compare season to season.</p>
+
+    <h3 id="ninety">The 90-day frame</h3>
+    <ol class="frame">
+      <li><span class="days">Days 1 to 30</span><span class="what">Establish the truth</span><p>The leak audit, the three Analyze tools, and a baseline for each of the four numbers.</p></li>
+      <li><span class="days">Days 31 to 60</span><span class="what">Test with review</span><p>Climb one intermediate rung. A person reads every output, and you log every correction: that log is your defect data.</p></li>
+      <li><span class="days">Days 61 to 90</span><span class="what">Keep, change or stop</span><p>Compare the old effort with AI plus review and upkeep. Decide in writing, then repeat.</p></li>
+    </ol>
+    <details>
+      <summary>Prompt: decide whether to keep a rung</summary>
+      <p class="hint">Paste counts and times only. Leave out guest and staff names, emails, phone numbers and payment details.</p>
+      <div class="output">
+        <p class="label">Your prompt</p>
+        <pre id="p-keep">Using only my results below, compare the old effort with the AI effort plus review and correction. Subtract upkeep and show setup time separately. List the errors caught in review as well as the time saved. Do not turn saved minutes into revenue or profit without evidence. Say whether to keep, change or stop this rung, and what remains uncertain. Mark the result DRAFT - PENDING OWNER REVIEW.
+
+[PASTE DE-IDENTIFIED RESULTS: the rung, weeks used, outputs drafted, corrections needed, minutes before and after, and the four numbers]</pre>
+      </div>
+      <div class="btns"><button type="button" data-copy="p-keep">Copy prompt</button></div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </details>
+  </section>
+
+  <section class="card note" id="more" aria-labelledby="more-h">
+    <h2 id="more-h" style="margin-top:0">More from the session</h2>
+    <ul class="more">
+      <li><a class="tile" href="Prompt-Kit.html">
+        <span class="nm">Printable prompt kit</span>
+        <span class="wt">Every core prompt on one page.</span>
+      </a></li>
+      <li><a class="tile" href="https://preig.github.io/atiafuture/" target="_blank" rel="noopener">
+        <span class="nm">What is coming</span>
+        <span class="wt">AI impact horizon for Alaska travel, 2026 to 2032, sector by sector.</span>
+        <span class="ext">Opens in a new tab</span>
+      </a></li>
+      <li><a class="tile" href="https://preig.github.io/atiakit/" target="_blank" rel="noopener">
+        <span class="nm">Companion kit: the traveler side</span>
+        <span class="wt">Nine tools for three traveler pains: the short list, second-guessing, coordinating the trip.</span>
+        <span class="ext">Opens in a new tab</span>
+      </a></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="kit">
+  <p>ATIA 2026 Annual Convention · Small Business Focus: Leveraging AI Solutions · Pascual Reig-Munoz. Channel Light Excursions, Kestrel Shuttle and Tern Point Lodge are fictional teaching businesses. Use your own approved facts, terms and responsible review. Effort, cost and time figures are estimates. Not legal advice.</p>
+  <p><a href="./">All nine tools</a> · <a href="leak/">Season Leak Audit</a> · <a href="Prompt-Kit.html">Printable prompt kit</a></p>
+  <p>Facts last checked 11 October 2026.</p>
+</footer>
+</body>
+</html>
